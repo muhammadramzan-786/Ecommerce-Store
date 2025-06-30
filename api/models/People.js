@@ -1,8 +1,8 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const PeopleSchema = new mongoose.Schema({
   name: String,
-  age: Number,
+  email: String,
 });
 
-module.exports = mongoose.models.People || mongoose.model('People', PeopleSchema);
+export default mongoose.models.People || mongoose.model('People', PeopleSchema);
