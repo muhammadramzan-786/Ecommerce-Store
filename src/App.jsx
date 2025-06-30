@@ -28,6 +28,12 @@ function App() {
   useEffect(() => {
     fetchUsers();
   }, []);
+useEffect(() => {
+  fetch('https://ecommerce-store-three-beta-84.vercel.app/api/people')
+    .then(res => res.json())
+    .then(data => console.log(data))
+    .catch(err => console.error('Error fetching users:', err));
+}, []);
 
   // POST User
   const handleSubmit = async (e) => {
