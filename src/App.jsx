@@ -4,7 +4,7 @@
 // import './App.css';
 
 import UserCrud from "./Pages/UserCrud";
-
+import './App.css';
 // function App() {
 //   const [users, setUsers] = useState([]);
 //   const [loading, setLoading] = useState(true);
