@@ -1,8 +1,30 @@
 import mongoose from 'mongoose';
 
-const PeopleSchema = new mongoose.Schema({
-  name: String,
-  age: Number, // ✅ Age field add karlo, warna POST fail karega
+const UserSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  phone: String,
+  address: String,
+  city: String,
+  country: String,
+  postalCode: String,
+  image: String,  // ✅ User Image URL (for now, just link)
+
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
-export default mongoose.models.People || mongoose.model('People', PeopleSchema);
+export default mongoose.models.User || mongoose.model('User', UserSchema);
