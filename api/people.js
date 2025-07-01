@@ -10,23 +10,24 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
-  await connectMongo();
-
   try {
+    await connectMongo();
+
     if (req.method === 'GET') {
       const people = await People.find();
       return res.status(200).json(people);
     }
 
     if (req.method === 'POST') {
-      const person = new People(req.body);
-      await person.save();
-      return res.status(201).json(person);
+      const { name, age } = req.body;
+      const newPerson = new People({ name, age });
+      await newPerson.save();
+      return res.status(201).json(newPerson);
     }
 
     return res.status(405).json({ message: 'Method Not Allowed' });
   } catch (error) {
     console.error('API Error:', error);
-    return res.status(500).json({ message: 'Internal Server Error' });
+    return res.status(500).json({ message: 'Server Error', error: error.message });
   }
 }
