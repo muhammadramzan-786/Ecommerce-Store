@@ -1,5 +1,5 @@
 
-import People from '../../models/People';
+
 import connectMongo from './mongodb';
 import People from './modals/People';
 export default async function handler(req, res) {
