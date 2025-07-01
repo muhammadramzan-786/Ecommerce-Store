@@ -1,5 +1,5 @@
 import connectMongo from './mongodb.js';
-import User from '../models/User.js';
+import User from '../models/People.js';
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
