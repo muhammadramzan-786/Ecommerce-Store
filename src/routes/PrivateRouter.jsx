@@ -1,10 +1,10 @@
 import React from 'react'
 import { Routes, Route, Navigate } from "react-router-dom";
-import Cart from "../pages/PrivatePages/Ecommerce/Cart";
-import Checkout from "../pages/PrivatePages/Ecommerce/Checkout";
-import Shop from "../pages/PrivatePages/Ecommerce/Shop";
-import ProductDetails from "../pages/PrivatePages/Ecommerce/ProductDetails";
-import Home from "../pages/Home";
+import Cart from "../Pages/PrivatePages/Ecommerce/Cart";
+import Checkout from "../Pages/PrivatePages/Ecommerce/Checkout";
+import Shop from "../Pages/PrivatePages/Ecommerce/Shop";
+import ProductDetails from "../Pages/PrivatePages/Ecommerce/ProductDetails";
+import Home from "../Pages/Home";
 import ProtectedRoute from './ProtectedRoute';
 
 

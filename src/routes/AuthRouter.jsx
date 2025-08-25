@@ -1,8 +1,8 @@
 import React from 'react'
 import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "../Pages/PublicPages/Login";
-import Signup from "../pages/PublicPages/Signup";
-import ForgotPassword from "../pages/PublicPages/ForgotPassword";
+import Signup from "../Pages/PublicPages/Signup";
+import ForgotPassword from "../Pages/PublicPages/ForgotPassword";
 
 function AuthRouter() {
   return (
