@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from 'react'
 import loginImg from '../../assets/images/loginImg.png'
-import { Link } from 'react-router-dom'
+import { Link,useNavigate } from 'react-router-dom'
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { signup ,login} from '../../api/auth';
+import { toast } from 'react-toastify';
 
 function Signup() {
   const [showHidePass,setShowHidePass]=useState(false)
   const [formData,setFormData]=useState({
-      fullName:'',
+      name:'',
       email:'',
       password:''
     })
+const [loading, setLoading] = useState(false);
+
+    const navigate = useNavigate();
+
     const handleInputChange=(e)=>{
       const{name,value}=e.target
       setFormData(prev=>({
@@ -21,9 +27,45 @@ function Signup() {
       console.log(formData);
       
     },[formData])
+
+    const signUp=async(e)=>{
+      e.preventDefault()
+
+      if(formData.name === '' || formData.email === '' || formData.password === ''){
+        alert('Fill all fields.')
+        return
+      }
+      setLoading(true)
+      try {
+        const response=await signup(formData)
+        // console.log(response);
+        
+        if(response.status===201){
+          const loginResponse =await login({
+            email:formData.email,
+            password:formData.password
+          })
+          if(loginResponse .status===200){
+            localStorage.setItem('token',loginResponse .data.token)
+            localStorage.setItem('userId',loginResponse .data.user._id)
+            window.dispatchEvent(new Event("authChange"));
+            toast.success("Signup successful")
+            // navigate to home
+            navigate("/");
+          }
+                
+        }else{
+                toast.error('Error in Signup')
+        }
+      } catch (error) {
+        console.error("Axios error:", error.response?.data, error);
+        toast.error(error.response?.data?.message || "Login failed ❌")
+      }finally{
+        setLoading(false)
+      }
+    }
   return (
-    <div>
-      <div className="min-w-screen min-h-screen flex items-center justify-center px-5 py-5">
+      <div className="min-w-screen min-h-screen flex items-center justify-center px-5 py-5 bg-gray-200">
         <div className="bg-gray-100 text-gray-500 rounded-3xl shadow-2xl w-full overflow-hidden" style={{maxWidth: 1000}}>
           <div className="md:flex w-full">
             <div className="hidden md:block w-1/2 bg-purple py-10 px-10 text-center">
@@ -43,33 +85,23 @@ function Signup() {
                 <h1 className="font-bold text-3xl text-gray-900">REGISTER</h1>
                 <p>Enter your information to register</p>
               </div>
-              <div>
-                <div className="flex -mx-3">
-                  <div className="w-full px-3 mb-5">
-                    <label htmlFor="fullName" className="text-xs font-semibold px-1">Full name</label>
-                    <div className="flex">
-                      <div className="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center"><i className="mdi mdi-account-outline text-gray-400 text-lg" /></div>
-                      <input type="text" id='fullName' name='fullName' onChange={handleInputChange} className="w-full -ml-10 px-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-purple" placeholder="John Smith" />
-                    </div>
+              <form onSubmit={signUp}>
+                  <div className="w-full mb-5">
+                    <label htmlFor="fullName" className="text-xs font-semibold px-1 text-black mb-1">Full name</label>
+                      <input type="text" id='fullName' name='name' onChange={handleInputChange} className="w-full  px-3 py-2 rounded-lg border-1 border-gray-200 outline-none focus:border-purple" placeholder="John Smith" />
                   </div>
-                </div>
-                <div className="flex -mx-3">
-                  <div className="w-full px-3 mb-5">
-                    <label htmlFor="email" className="text-xs font-semibold px-1">Email</label>
-                    <div className="flex">
-                      <div className="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center"><i className="mdi mdi-email-outline text-gray-400 text-lg" /></div>
-                      <input type="email" id='email' name='email' onChange={handleInputChange} className="w-full -ml-10 px-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-purple" placeholder="johnsmith@example.com" />
-                    </div>
+
+                  <div className="w-full flex flex-col mb-5">
+                    <label htmlFor="email" className="text-xs font-semibold px-1 text-black mb-1">Email</label>
+                      <input type="email" id='email' name='email' onChange={handleInputChange} className="w-full  px-3 py-2 rounded-lg border-1 border-gray-200 outline-none focus:border-purple" placeholder="johnsmith@example.com" />
                   </div>
-                </div>
-                <div className="flex -mx-3">
-                  <div className="w-full px-3 mb-12">
-                    <label htmlFor="password" className="text-xs font-semibold px-1">Password</label>
+
+                  <div className="w-full mb-8">
+                    <label htmlFor="password" className="text-xs font-semibold px-1 text-black mb-1">Password</label>
                     <div className="flex relative">
-                      
                         <input type={showHidePass ? "text" : "password"}
                           id="password" name="password" onChange={handleInputChange}
-                          className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-purple"
+                          className="w-full px-3 py-2 rounded-lg border-1 border-gray-200 outline-none focus:border-purple"
                           placeholder="************"
                         />
                         <button
@@ -83,12 +115,18 @@ function Signup() {
 
                      </div>
                   </div>
-                </div>
-                <div className="flex -mx-3">
-                  <div className="w-full px-3 mb-5">
-                    <button className="block w-full bg-purple text-white rounded-lg px-3 py-3 font-semibold">REGISTER NOW</button>
+
+                  <div className="w-full mb-5">
+                    <button className="flex items-center justify-center w-full bg-purple text-white rounded-lg px-3 py-3 font-semibold">
+                      {loading && (
+                     <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                  )}
+                      REGISTER NOW</button>
                   </div>
-                </div>
+
                 <div className="text-center mt-6">
                 <p className="text-gray-600">
                   Already have an account?
@@ -101,12 +139,11 @@ function Signup() {
                   </Link>
                 </p>
               </div>
-              </div>
+              </form>
             </div>
           </div>
         </div>
       </div>
-    </div>
   )
 }
 
