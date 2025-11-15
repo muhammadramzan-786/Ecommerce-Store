@@ -65,7 +65,7 @@ const [loading, setLoading] = useState(false);
       }
     }
   return (
-      <div className="min-w-screen min-h-screen flex items-center justify-center px-5 py-5 bg-gray-200">
+      <div className="min-h-screen flex items-center justify-center px-5 py-5 bg-gray-200">
         <div className="bg-gray-100 text-gray-500 rounded-3xl shadow-2xl w-full overflow-hidden" style={{maxWidth: 1000}}>
           <div className="md:flex w-full">
             <div className="hidden md:block w-1/2 bg-purple py-10 px-10 text-center">

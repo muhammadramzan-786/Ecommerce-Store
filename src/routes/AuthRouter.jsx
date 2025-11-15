@@ -8,7 +8,7 @@ import Layout from '../components/Layout';
 function AuthRouter() {
   return (
     <Routes>
-      <Route element={<Layout header={true} footer={false} />}>
+      <Route element={<Layout header={false} footer={false} />}>
         <Route path='/login' element={<Login/>} />
         <Route path='/signup' element={<Signup/>} />
         <Route path='/forgot-password' element={<ForgotPassword/>} />

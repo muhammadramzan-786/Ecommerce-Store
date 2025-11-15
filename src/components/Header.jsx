@@ -1,4 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
+import Input from "./Input";
+import { Link } from "react-router-dom";
+import { useUser } from "../hooks/useUser";
+import { useGetCart } from "../hooks/useCart";
 
 const profilPopup = [
   {
@@ -167,126 +171,74 @@ const profilPopup = [
 ];
 
 function Header() {
+  const [searchVal, setSearchVal] = useState('');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const userId=localStorage.getItem("userId")
+  const {data:userData}=useUser(userId)
+
+  const {data:cartItems}=useGetCart(userId)
+  
   return (
-    <div className="w-full px-4 mx-auto max-w-7xl sm:px-6 xl:px-0">
-      <div className="flex flex-col lg:flex-row gap-5 items-end lg:items-center xl:justify-between ease-out duration-200 py-6">
-        <div className="flex flex-col w-full gap-5 xl:w-auto sm:flex-row xl:justify-between sm:items-center sm:gap-10">
-          <a className="shrink-0" href="/">
-            <img
-              alt="Logo"
-              loading="lazy"
-              width={165}
-              height={36}
-              decoding="async"
-              data-nimg={1}
-              src="/images/logo/logo.svg"
-              style={{ color: "transparent" }}
-            />
-          </a>
-          <div className="max-w-[475px] w-full">
-            <form>
-              <div className="flex gap-2 items-center">
-                <div
-                  className="dropdown-content custom-select rounded-full relative"
-                  style={{ width: 200 }}
-                >
-                  <div className="select-selected gap-1 whitespace-nowrap  leading-[22px]">
-                    <div className="flex gap-2 items-center">
-                      <svg
-                        className="text-dark"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width={20}
-                        height={20}
-                        viewBox="0 0 20 20"
-                        fill="none"
-                      >
-                        <path
-                          d="M3.33398 5L16.6673 5M3.33398 15L16.6673 15M3.33398 10L16.6673 10"
-                          stroke="#1C274C"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                      <span className="text-dark font-medium text-sm">
-                        All Categories
-                      </span>
-                    </div>
-                    <svg
-                      className="text-dark shrink-0 transition-transform "
-                      xmlns="http://www.w3.org/2000/svg"
-                      width={18}
-                      height={18}
-                      viewBox="0 0 18 18"
-                      fill="none"
-                    >
-                      <path
-                        d="M4.3125 7.21875L9 11.9063L13.6875 7.21875"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </div>
-                  <div className="select-items space-y-1" hidden>
-                    <div className="select-item ">
-                      <a href="/categories/laptop--pc">Laptop &amp; PC</a>
-                    </div>
-                    <div className="select-item ">
-                      <a href="/categories/watches">Watches</a>
-                    </div>
-                    <div className="select-item ">
-                      <a href="/categories/mobile--tablets">
-                        Mobile &amp; Tablets
-                      </a>
-                    </div>
-                    <div className="select-item ">
-                      <a href="/categories/health--sports">
-                        Health &amp; Sports
-                      </a>
-                    </div>
-                    <div className="select-item ">
-                      <a href="/categories/home-appliances">Home Appliances</a>
-                    </div>
-                    <div className="select-item ">
-                      <a href="/categories/games--videos">Games &amp; Videos</a>
-                    </div>
-                    <div className="select-item ">
-                      <a href="/categories/televisions">Televisions</a>
-                    </div>
+    <div className="w-full px-4 sm:px-6 xl:px-0 sticky top-0 z-50 bg-white shadow-lg">
+      <div className="flex mx-auto max-w-7xl flex-col lg:flex-row gap-3 lg:gap-5 items-end lg:items-center xl:justify-between ease-out duration-200 py-2 2xl:py-5">
+        {/* Logo and Search Section */}
+        <div className="flex flex-col w-full gap-3 lg:gap-5 xl:w-auto sm:flex-row xl:justify-between sm:items-center sm:gap-6">
+          <Link className="shrink-0 text-2xl font-bold text-blue-600 hover:text-blue-700 transition-colors" to="/">
+            SHOPNEST
+          </Link>
+          
+          {/* Search Form */}
+          <div className="max-w-[475px] w-full mx-auto">
+            <form className="w-full">
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 items-center w-full">
+                {/* Category Dropdown - Hidden on mobile, visible on medium screens and up */}
+                <div className="hidden md:block">
+                  <div className="dropdown-content custom-select rounded-full relative" style={{ width: 200 }}>
+                    <select className="w-full px-4 py-2 border border-gray-300 rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                      <option value="">All Categories</option>
+                      <option value="laptop-pc">Laptop & PC</option>
+                      <option value="watches">Watches</option>
+                      <option value="mobile-tablets">Mobile & Tablets</option>
+                      <option value="health-sports">Health & Sports</option>
+                      <option value="home-appliances">Home Appliances</option>
+                      <option value="games-videos">Games & Videos</option>
+                      <option value="televisions">Televisions</option>
+                    </select>
                   </div>
                 </div>
-                <div className="relative lg:min-w-[370px] w-full">
-                  <input
+                
+                {/* Search Input */}
+                <div className="relative w-full sm:min-w-[300px] lg:min-w-[370px] border border-gray-300 rounded-full focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-200 transition-all">
+                  <input 
+                    onChange={(e) => setSearchVal(e.target.value)} 
+                    value={searchVal}
                     id="search"
                     placeholder="I am shopping for..."
                     autoComplete="off"
-                    className="custom-search  w-full rounded-full bg-gray-1  border border-gray-3 h-[42px] py-2.5 pl-5 pr-10 outline-hidden ease-in duration-200"
+                    className="w-full rounded-full border-0 focus:border-gray-800 h-[42px] py-2.5 pl-5 pr-12 outline-none ease-in duration-200 text-sm"
                     type="search"
-                    defaultValue
                     name="search"
                   />
                   <button
                     type="submit"
                     id="search-btn"
                     aria-label="Search"
-                    className="absolute flex items-center h-[42px] justify-center duration-200 ease-in  -translate-y-1/2 right-5 top-1/2 hover:text-blue"
+                    className="absolute flex items-center h-[42px] justify-center duration-200 ease-in -translate-y-1/2 right-3 top-1/2 hover:text-blue-600"
                   >
                     <svg
-                      className="w-5 h-5 text-gray-6"
+                      className="w-5 h-5 text-gray-600"
                       width={24}
                       height={24}
                       viewBox="0 0 24 25"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
-                      transform="rotate(0 0 0)"
                     >
                       <path
                         fillRule="evenodd"
                         clipRule="evenodd"
                         d="M11.25 2.75C6.14154 2.75 2 6.89029 2 11.998C2 17.1056 6.14154 21.2459 11.25 21.2459C13.5335 21.2459 15.6238 20.4187 17.2373 19.0475L20.7182 22.5287C21.011 22.8216 21.4859 22.8217 21.7788 22.5288C22.0717 22.2359 22.0718 21.761 21.7789 21.4681L18.2983 17.9872C19.6714 16.3736 20.5 14.2826 20.5 11.998C20.5 6.89029 16.3585 2.75 11.25 2.75ZM3.5 11.998C3.5 7.71905 6.96962 4.25 11.25 4.25C15.5304 4.25 19 7.71905 19 11.998C19 16.2769 15.5304 19.7459 11.25 19.7459C6.96962 19.7459 3.5 16.2769 3.5 11.998Z"
-                        fill="#343C54"
+                        fill="currentColor"
                       />
                     </svg>
                   </button>
@@ -295,14 +247,18 @@ function Header() {
             </form>
           </div>
         </div>
-        <div className="flex w-full lg:w-auto items-center gap-7.5">
-          <div className="flex items-center justify-between w-full gap-8 lg:w-auto">
-            <div className="items-center gap-5 flex">
+
+        {/* User Actions Section */}
+        <div className="flex w-full lg:w-auto items-center gap-4 lg:gap-7.5">
+          <div className="flex items-center justify-between w-full gap-4 lg:gap-8 lg:w-auto">
+            <div className="flex items-center gap-4 lg:gap-5">
+              {/* Account - Hidden on mobile, visible on xl and up */}
+              {!userData?(
               <a
-                className=" items-center gap-2.5 hidden xl:flex"
+                className="items-center gap-2.5 hidden xl:flex hover:text-blue-600 transition-colors"
                 href="/signin"
               >
-                <div className="flex items-center justify-center w-9 h-9 border border-gray-3 rounded-full">
+                <div className="flex items-center justify-center w-8 h-8 lg:w-9 lg:h-9 border border-gray-300 rounded-full hover:border-blue-500 transition-colors">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width={18}
@@ -311,24 +267,61 @@ function Header() {
                     fill="none"
                   >
                     <path
-                      d="M10.5186 10.0869C13.8936 10.087 16.6296 12.8232 16.6299 16.1982V16.5107C16.6297 16.9248 16.2939 17.2607 15.8799 17.2607C15.466 17.2605 15.13 16.9247 15.1299 16.5107V16.1982C15.1296 13.6516 13.0652 11.587 10.5186 11.5869H7.48047C4.93384 11.587 2.86939 13.6516 2.86914 16.1982V16.5107C2.86899 16.9248 2.5332 17.2607 2.11914 17.2607C1.70502 17.2607 1.36929 16.9248 1.36914 16.5107V16.1982C1.36939 12.8232 4.10541 10.087 7.48047 10.0869H10.5186ZM8.99902 0.740234C11.2345 0.740301 13.0469 2.55263 13.0469 4.78809C13.0465 7.02326 11.2343 8.83587 8.99902 8.83594C6.76376 8.83589 4.9515 7.02328 4.95117 4.78809C4.95117 2.55261 6.76356 0.740277 8.99902 0.740234ZM8.99902 2.24023C7.59199 2.24028 6.45117 3.38104 6.45117 4.78809C6.4515 6.19485 7.59219 7.33589 8.99902 7.33594C10.4058 7.33587 11.5465 6.19484 11.5469 4.78809C11.5469 3.38105 10.406 2.2403 8.99902 2.24023Z"
+                      d="M10.5186 10.0869C13.8936 10.087 16.6296 12.8232 16.6299 16.1982V16.5107C16.6297 16.9248 16.2939 17.2607 15.8799 17.2607C15.466 16.2605 15.13 16.9247 15.1299 16.5107V16.1982C15.1296 13.6516 13.0652 11.587 10.5186 11.5869H7.48047C4.93384 11.587 2.86939 13.6516 2.86914 16.1982V16.5107C2.86899 16.9248 2.5332 17.2607 2.11914 17.2607C1.70502 17.2607 1.36929 16.9248 1.36914 16.5107V16.1982C1.36939 12.8232 4.10541 10.087 7.48047 10.0869H10.5186ZM8.99902 0.740234C11.2345 0.740301 13.0469 2.55263 13.0469 4.78809C13.0465 7.02326 11.2343 8.83587 8.99902 8.83594C6.76376 8.83589 4.9515 7.02328 4.95117 4.78809C4.95117 2.55261 6.76356 0.740277 8.99902 0.740234ZM8.99902 2.24023C7.59199 2.24028 6.45117 3.38104 6.45117 4.78809C6.4515 6.19485 7.59219 7.33589 8.99902 7.33594C10.4058 7.33587 11.5465 6.19484 11.5469 4.78809C11.5469 3.38105 10.406 2.2403 8.99902 2.24023Z"
                       fill="currentColor"
                     />
                   </svg>
                 </div>
                 <div className="group">
-                  <span className="block uppercase font-medium text-2xs text-dark-4">
+                  <span className="block uppercase font-medium text-xs text-gray-600">
                     account
                   </span>
-                  <p className="font-medium text-custom-sm text-dark hover:text-blue">
+                  <p className="font-medium text-sm text-gray-800 hover:text-blue-600">
                     Sign In / Register
                   </p>
                 </div>
-              </a>
-              <div className="flex items-center gap-2.5">
+              </a>):(
                 <a
-                  className="flex items-center gap-2.5 justify-center w-8 h-8"
+                className="items-center gap-2.5 hidden xl:flex hover:text-blue-600 transition-colors"
+                href="/signin"
+              >
+                  <img src={userData?.image} className="rounded-full w-8 h-8 lg:w-9 lg:h-9 border border-gray-300" />
+                <div className="group">
+                  <span className="block font-medium text-xs text-gray-600">
+                    {userData?.name}
+                  </span>
+                  <p className="font-medium text-sm text-gray-800 hover:text-blue-600">
+                    {userData?.email}
+                  </p>
+                </div>
+              </a>
+              )}
+              {/* Mobile Account Icon */}
+              <a
+                className="xl:hidden flex items-center justify-center w-8 h-8 border border-gray-300 rounded-full hover:border-blue-500 transition-colors"
+                href="/signin"
+                title="Account"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width={18}
+                  height={18}
+                  viewBox="0 0 18 18"
+                  fill="none"
+                >
+                  <path
+                    d="M10.5186 10.0869C13.8936 10.087 16.6296 12.8232 16.6299 16.1982V16.5107C16.6297 16.9248 16.2939 17.2607 15.8799 17.2607C15.466 16.2605 15.13 16.9247 15.1299 16.5107V16.1982C15.1296 13.6516 13.0652 11.587 10.5186 11.5869H7.48047C4.93384 11.587 2.86939 13.6516 2.86914 16.1982V16.5107C2.86899 16.9248 2.5332 17.2607 2.11914 17.2607C1.70502 17.2607 1.36929 16.9248 1.36914 16.5107V16.1982C1.36939 12.8232 4.10541 10.087 7.48047 10.0869H10.5186ZM8.99902 0.740234C11.2345 0.740301 13.0469 2.55263 13.0469 4.78809C13.0465 7.02326 11.2343 8.83587 8.99902 8.83594C6.76376 8.83589 4.9515 7.02328 4.95117 4.78809C4.95117 2.55261 6.76356 0.740277 8.99902 0.740234ZM8.99902 2.24023C7.59199 2.24028 6.45117 3.38104 6.45117 4.78809C6.4515 6.19485 7.59219 7.33589 8.99902 7.33594C10.4058 7.33587 11.5465 6.19484 11.5469 4.78809C11.5469 3.38105 10.406 2.2403 8.99902 2.24023Z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </a>
+
+              {/* Wishlist and Cart */}
+              <div className="flex items-center gap-3 lg:gap-2.5">
+                <a
+                  className="flex items-center gap-2.5 justify-center w-8 h-8 hover:text-red-500 transition-colors"
                   href="/wishlist"
+                  title="Wishlist"
                 >
                   <span className="relative inline-block">
                     <svg
@@ -340,18 +333,21 @@ function Header() {
                     >
                       <path
                         d="M2.72345 2.8023C0.769267 4.75648 0.769268 7.92483 2.72345 9.87901L9.44713 16.6028C10.0329 17.1886 10.9827 17.1886 11.5685 16.6028L18.2922 9.87912C20.2463 7.92494 20.2463 4.75659 18.2922 2.80241C16.338 0.848229 13.1696 0.84823 11.2155 2.80241L10.5079 3.51001L9.80015 2.8023C7.84597 0.848125 4.67762 0.848125 2.72345 2.8023Z"
-                        stroke="#1C274C"
+                        stroke="currentColor"
                         strokeWidth="1.5"
                         strokeLinecap="round"
                         strokeLinejoin="round"
                       />
                     </svg>
-                    <span className="flex items-center justify-center font-medium text-2xs absolute -right-2 -top-2.5 bg-red-600 w-4.5 h-4.5 rounded-full text-white">
+                    <span className="flex items-center justify-center font-medium text-xs absolute -right-2 -top-2 bg-red-600 w-4 h-4 rounded-full text-white">
                       0
                     </span>
                   </span>
                 </a>
-                <button className="flex items-center gap-2.5 w-8 h-8 justify-center">
+                <Link to="/cart" 
+                  className="flex items-center gap-2.5 w-8 h-8 justify-center hover:text-blue-600 transition-colors"
+                  title="Cart"
+                >
                   <span className="relative inline-block">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -368,27 +364,28 @@ function Header() {
                         strokeLinejoin="round"
                       />
                     </svg>
-                    <span className="flex items-center justify-center font-medium text-2xs absolute -right-2 -top-2.5 bg-red-600 w-4.5 h-4.5 rounded-full text-white">
-                      9
+                    <span className="flex items-center justify-center font-medium text-xs absolute -right-2 -top-2 bg-red-600 w-4 h-4 rounded-full text-white">
+                      {cartItems?.items.length}
                     </span>
                   </span>
-                </button>
+                </Link>
               </div>
             </div>
-           
+
+            {/* Mobile Menu Toggle */}
             <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
               id="Toggle"
-              aria-label="Toggler"
-              className=" xl:hidden w-10 h-10 bg-transparent rounded-lg inline-flex items-center cursor-pointer justify-center hover:bg-gray-2"
+              aria-label="Toggle menu"
+              className="xl:hidden w-10 h-10 bg-transparent rounded-lg inline-flex items-center cursor-pointer justify-center hover:bg-gray-100 transition-colors"
             >
               <svg
-                className="w-7 h-7"
+                className="w-6 h-6"
                 width={32}
                 height={32}
                 viewBox="0 0 25 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
-                transform="rotate(0 0 0)"
               >
                 <path
                   d="M3.5625 6C3.5625 5.58579 3.89829 5.25 4.3125 5.25H20.3125C20.7267 5.25 21.0625 5.58579 21.0625 6C21.0625 6.41421 20.7267 6.75 20.3125 6.75L4.3125 6.75C3.89829 6.75 3.5625 6.41422 3.5625 6Z"
@@ -407,8 +404,25 @@ function Header() {
           </div>
         </div>
       </div>
+
+      {/* Mobile Menu */}
+      {isMenuOpen && (
+        <div className="xl:hidden bg-white border-t border-gray-200 py-4 px-4 shadow-lg">
+          <div className="flex flex-col gap-4">
+            <a href="/categories" className="text-gray-700 hover:text-blue-600 font-medium py-2">
+              All Categories
+            </a>
+            <a href="/signin" className="text-gray-700 hover:text-blue-600 font-medium py-2 flex items-center gap-2">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              Sign In / Register
+            </a>
+          </div>
+        </div>
+      )}
     </div>
   );
-}
+} 
 
 export default Header;

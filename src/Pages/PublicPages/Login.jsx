@@ -32,8 +32,8 @@ function Login() {
 
     try {
       const response=await login(formData)
+      console.log(response);
       if(response.status===200){
-              // console.log(response);
       toast.success("Login successful")
       localStorage.setItem('token',response.data.token)
       localStorage.setItem('userId',response.data.user._id)
@@ -41,8 +41,8 @@ function Login() {
       window.dispatchEvent(new Event("authChange"));
       // navigate to home
       navigate("/");
+      // toast.error('Error in Login')
       }else{
-        toast.error('Error in Login')
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Login failed ❌")
@@ -53,7 +53,7 @@ function Login() {
 
   return (
 
-  <div className="h-[91.5vh] flex items-center justify-center px-5 py-5 bg-gray-200">
+  <div className="h-full flex items-center justify-center px-5 py-5 bg-gray-200">
     <div className="bg-gray-100 text-gray-500 rounded-3xl shadow-2xl w-full overflow-hidden" style={{maxWidth: 1000}}>
       <div className="md:flex w-full">
         <div className="hidden md:block w-1/2 bg-purple py-10 px-10 text-center">

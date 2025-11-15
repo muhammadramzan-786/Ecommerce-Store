@@ -1,15 +1,23 @@
-import React from 'react'
-import { Routes, Route, Navigate } from "react-router-dom";
-import Cart from "../Pages/PrivatePages/Ecommerce/Cart";
-import Checkout from "../Pages/PrivatePages/Ecommerce/Checkout";
-import Shop from "../Pages/PrivatePages/Ecommerce/Shop";
-import ProductDetails from "../Pages/PrivatePages/Ecommerce/ProductDetails";
+import React, { useEffect } from 'react'
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import Cart from "../Pages/PrivatePages/Cart";
+import Checkout from "../Pages/PrivatePages/Checkout";
+import Shop from "../Pages/PrivatePages/Shop";
+import ProductDetails from "../Pages/PrivatePages/ProductDetails";
 import Home from "../Pages/Home";
 import ProtectedRoute from './ProtectedRoute';
 import Layout from '../components/Layout';
 
 
 function PrivateRouter() {
+    const location=useLocation()
+  useEffect(()=>{
+    window.scrollTo({
+        top:0,
+        left:0,
+        behavior:"smooth"
+    })
+  },[location])
   return (
     <Routes>
       <Route element={<ProtectedRoute><Layout header={true} footer={true} /></ProtectedRoute>}>
@@ -17,7 +25,7 @@ function PrivateRouter() {
             <Route path='/shop' element={<Shop/>} />
             <Route path='/checkout' element={<Checkout/>} />
             <Route path='/checkout' element={<Checkout/>} />
-            <Route path='/product-details' element={<ProductDetails/>} />
+            <Route path='/product-details/:id' element={<ProductDetails/>} />
             <Route path='/cart' element={<Cart/>} />
       </Route>
 
