@@ -159,7 +159,7 @@ function Footer() {
               <p className="text-gray-600 dark:text-gray-400">Subscribe to our newsletter for the latest products and offers</p>
             </div>
             <div className="flex-1 w-full md:max-w-md">
-              <form className="flex gap-2">
+              <form className="flex gap-2 flex-wrap">
                 <input 
                   type="email" 
                   placeholder="Enter your email" 

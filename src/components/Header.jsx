@@ -254,9 +254,9 @@ function Header() {
             <div className="flex items-center gap-4 lg:gap-5">
               {/* Account - Hidden on mobile, visible on xl and up */}
               {!userData?(
-              <a
+              <Link
                 className="items-center gap-2.5 hidden xl:flex hover:text-blue-600 transition-colors"
-                href="/signin"
+                to="/login"
               >
                 <div className="flex items-center justify-center w-8 h-8 lg:w-9 lg:h-9 border border-gray-300 rounded-full hover:border-blue-500 transition-colors">
                   <svg
@@ -280,10 +280,10 @@ function Header() {
                     Sign In / Register
                   </p>
                 </div>
-              </a>):(
-                <a
+              </Link>):(
+                <Link
                 className="items-center gap-2.5 hidden xl:flex hover:text-blue-600 transition-colors"
-                href="/signin"
+                to="/profileLayout"
               >
                   <img src={userData?.image} className="rounded-full w-8 h-8 lg:w-9 lg:h-9 border border-gray-300" />
                 <div className="group">
@@ -294,7 +294,7 @@ function Header() {
                     {userData?.email}
                   </p>
                 </div>
-              </a>
+              </Link>
               )}
               {/* Mobile Account Icon */}
               <a
@@ -318,32 +318,6 @@ function Header() {
 
               {/* Wishlist and Cart */}
               <div className="flex items-center gap-3 lg:gap-2.5">
-                <a
-                  className="flex items-center gap-2.5 justify-center w-8 h-8 hover:text-red-500 transition-colors"
-                  href="/wishlist"
-                  title="Wishlist"
-                >
-                  <span className="relative inline-block">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width={21}
-                      height={18}
-                      viewBox="0 0 21 18"
-                      fill="none"
-                    >
-                      <path
-                        d="M2.72345 2.8023C0.769267 4.75648 0.769268 7.92483 2.72345 9.87901L9.44713 16.6028C10.0329 17.1886 10.9827 17.1886 11.5685 16.6028L18.2922 9.87912C20.2463 7.92494 20.2463 4.75659 18.2922 2.80241C16.338 0.848229 13.1696 0.84823 11.2155 2.80241L10.5079 3.51001L9.80015 2.8023C7.84597 0.848125 4.67762 0.848125 2.72345 2.8023Z"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    <span className="flex items-center justify-center font-medium text-xs absolute -right-2 -top-2 bg-red-600 w-4 h-4 rounded-full text-white">
-                      0
-                    </span>
-                  </span>
-                </a>
                 <Link to="/cart" 
                   className="flex items-center gap-2.5 w-8 h-8 justify-center hover:text-blue-600 transition-colors"
                   title="Cart"

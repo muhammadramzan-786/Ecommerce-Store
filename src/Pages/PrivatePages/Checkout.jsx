@@ -1,27 +1,50 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaLock, FaUser, FaMapMarkerAlt, FaCreditCard, FaCheck, FaArrowLeft, FaShieldAlt, FaTruck, FaUndo } from 'react-icons/fa';
 import { IoCartOutline } from 'react-icons/io5';
-import { useGetCart } from '../../hooks/useCart';
+import { useDeleteCartProduct, useGetCart } from '../../hooks/useCart';
+import { useUser } from "../../hooks/useUser";
+import Input from "../../components/Input";
+import { useAddOrder } from '../../hooks/useOrders';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
+
 function Checkout() {
   const [activeStep, setActiveStep] = useState(1);
   const [paymentMethod, setPaymentMethod] = useState('credit-card');
   const [saveShippingInfo, setSaveShippingInfo] = useState(true);
   const [savePaymentInfo, setSavePaymentInfo] = useState(false);
-const userId = localStorage.getItem("userId");
+  const [userId, setUserId] = useState(null);
+  const [loading,setLoading]=useState(false)
+  const navigate=useNavigate()
+useEffect(() => {
+  const id = localStorage.getItem("userId");
+  if(id) setUserId(id);
+}, []);
+
   const {data:orderItems}=useGetCart(userId)
-console.log(orderItems);
+  const {data:userData}=useUser(userId)
+// console.log(userData);
 
   const [shippingInfo, setShippingInfo] = useState({
-    email: '',
-    firstName: '',
-    lastName: '',
-    address: '',
-    apartment: '',
-    city: '',
-    state: '',
-    zipCode: '',
-    phone: ''
+    email: userData?.email,
+    name: userData?.name,
+    address: userData?.address,
+    city: userData?.city,
+    postalCode: userData?.postalCode,
+    phone: userData?.phone
   });
+  useEffect(() => {
+  if(userData){
+    setShippingInfo({
+      email: userData.email || "",
+      name: userData.name || "",
+      address: userData.address || "",
+      city: userData.city || "",
+      postalCode: userData.postalCode || "",
+      phone: userData.phone || ""
+    });
+  }
+}, [userData]);
 
   const [paymentInfo, setPaymentInfo] = useState({
     cardNumber: '',
@@ -62,11 +85,53 @@ console.log(orderItems);
     e.preventDefault();
     setActiveStep(3);
   };
+console.log(orderItems?.items);
 
-  const handlePlaceOrder = () => {
-    console.log('Order placed successfully!');
-    // Order placement logic here
+const deleteItem=useDeleteCartProduct()
+  const addOrder=useAddOrder()
+
+  const handlePlaceOrder = async () => {
+    setLoading(true)
+  const orderData = {
+    userId,
+    items: orderItems?.items.map(item => ({
+      product: item._id,
+      quantity: item.quantity,
+      price: item.discountPrice,
+    })),
+    shippingAddress: {
+      fullName: shippingInfo.name,
+      address: shippingInfo.address,
+      city: shippingInfo.city,
+      postalCode: shippingInfo.postalCode,
+      country: "Pakistan",
+    },
+    totalAmount: calculateTotal(),
+    paymentMethod
   };
+console.log("orderItems:", orderItems);
+console.log("orderData:", orderData);
+  try {
+    const res = await addOrder.mutateAsync(orderData);
+    toast.success("Order created!");
+    orderItems?.items.forEach((item)=>{
+      deleteItem.mutate({
+      userId:userId,
+      productId:item._id
+    })
+    })
+    setLoading(false)
+    navigate("/orders")
+    console.log(res);
+  } catch (err) {
+    console.log(err);
+    toast.error(err.response?.data?.message || "Order failed");
+    setLoading(false)
+  }finally{
+    setLoading(false)
+  }
+};
+
 
   const handleInputChange = (setter) => (e) => {
     const { name, value } = e.target;
@@ -87,7 +152,7 @@ console.log(orderItems);
         </div>
 
         {/* Progress Steps */}
-        <div className="mb-8">
+        <div className="mb-8 sticky top-15 z-40 bg-white py-2">
          <ol className="flex items-center w-full">
   {steps.map((step, index) => {
     const StepIcon = step.icon;
@@ -155,124 +220,83 @@ console.log(orderItems);
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Email Address *
                       </label>
-                      <input
+                      <Input
                         type="email"
                         name="email"
-                        value={shippingInfo.email}
+                        value={shippingInfo.email || ""}
                         onChange={handleInputChange(setShippingInfo)}
                         required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="your@email.com"
                       />
                     </div>
-                    <div className="md:col-span-2 grid grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                          First Name *
+                          Name *
                         </label>
-                        <input
+                        <Input
                           type="text"
                           name="firstName"
-                          value={shippingInfo.firstName}
+                          value={shippingInfo.name || ""}
                           onChange={handleInputChange(setShippingInfo)}
                           required
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         />
                       </div>
+                      
+                   
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Last Name *
-                        </label>
-                        <input
-                          type="text"
-                          name="lastName"
-                          value={shippingInfo.lastName}
-                          onChange={handleInputChange(setShippingInfo)}
-                          required
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        />
-                      </div>
-                    </div>
-                    <div className="md:col-span-2">
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
                         Street Address *
                       </label>
-                      <input
+                      <Input
                         type="text"
                         name="address"
-                        value={shippingInfo.address}
+                        value={shippingInfo.address || ""}
                         onChange={handleInputChange(setShippingInfo)}
                         required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="123 Main Street"
                       />
-                    </div>
-                    <div className="md:col-span-2">
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Apartment, Suite, etc. (Optional)
-                      </label>
-                      <input
-                        type="text"
-                        name="apartment"
-                        value={shippingInfo.apartment}
-                        onChange={handleInputChange(setShippingInfo)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
-                    </div>
+                      </div>
+                    
+                    
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         City *
                       </label>
-                      <input
+                      <Input
                         type="text"
                         name="city"
-                        value={shippingInfo.city}
+                        value={shippingInfo.city || ""}
                         onChange={handleInputChange(setShippingInfo)}
                         required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
+
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        State *
+                        postalCode *
                       </label>
-                      <input
-                        type="text"
-                        name="state"
-                        value={shippingInfo.state}
-                        onChange={handleInputChange(setShippingInfo)}
-                        required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        ZIP Code *
-                      </label>
-                      <input
+                      <Input
                         type="text"
                         name="zipCode"
-                        value={shippingInfo.zipCode}
+                        value={shippingInfo.postalCode || ""}
                         onChange={handleInputChange(setShippingInfo)}
                         required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Phone Number *
                       </label>
-                      <input
+                      <Input
                         type="tel"
                         name="phone"
-                        value={shippingInfo.phone}
+                        value={shippingInfo.phone || ""}
                         onChange={handleInputChange(setShippingInfo)}
                         required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="+91 1234567890"
                       />
                     </div>
-                  </div>
+                  </div>  
 
                   <div className="mt-6 flex items-center">
                     <input
@@ -484,8 +508,8 @@ console.log(orderItems);
                   <div>
                     <h3 className="text-lg font-medium text-gray-900 mb-3">Order Items</h3>
                     <div className="space-y-4">
-                      {orderItems?.map((item) => (
-                        <div key={item.id} className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
+                      {orderItems?.items.map((item) => (
+                        <div key={item._id} className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
                           <img
                             src={item.images[0]}
                             alt={item.name}
@@ -511,12 +535,13 @@ console.log(orderItems);
                     >
                       Back to Payment
                     </button>
-                    <button
+                    <button disabled={loading || orderItems?.items.length===0}
                       onClick={handlePlaceOrder}
-                      className="bg-green-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors flex items-center gap-2"
+                      className={`px-8 py-3 rounded-lg font-medium flex items-center gap-2 transition-colors
+                      ${orderItems?.items.length === 0 ? "bg-gray-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700 text-white"}`}
                     >
                       <FaLock className="text-sm" />
-                      Place Order
+                      {loading?"Order Placing":"Place Order"} 
                     </button>
                   </div>
                 </div>
@@ -526,7 +551,7 @@ console.log(orderItems);
 
           {/* Order Summary */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 sticky top-8">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 sticky top-34">
               <div className="p-6 border-b border-gray-200">
                 <h2 className="text-lg font-semibold text-gray-900">Order Summary</h2>
               </div>
@@ -535,7 +560,7 @@ console.log(orderItems);
                 {/* Order Items */}
                 <div className="space-y-4 mb-6">
                   {orderItems?.items.map((item) => (
-                    <div key={item.id} className="flex items-center gap-3">
+                    <div key={item._id} className="flex items-center gap-3">
                       <img
                         src={item.images[0]}
                         alt={item.name}

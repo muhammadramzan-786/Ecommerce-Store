@@ -1,34 +1,12 @@
 import React, { useState } from 'react';
 import { FaStar, FaHeart, FaRegHeart, FaShare, FaTruck, FaShieldAlt, FaUndo, FaCheck } from 'react-icons/fa';
 import { IoCartOutline } from 'react-icons/io5';
+import { FaTimes } from "react-icons/fa";
 import { useParams } from 'react-router-dom';
 import { useProducts, useSingleProduct } from '../../hooks/useProducts';
 import { useAddCart } from '../../hooks/useCart';
 import ProductCard from '../../components/ProductCard';
-
-  // const relatedProducts = [
-  //   {
-  //     id: 2,
-  //     name: "Wireless Earbuds",
-  //     price: 7999,
-  //     image: "https://images.unsplash.com/photo-1590658165737-15a047b8b5e0?w=300&h=300&fit=crop",
-  //     rating: 4.3
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "Gaming Headset",
-  //     price: 5999,
-  //     image: "https://images.unsplash.com/photo-1599669454699-248893623440?w=300&h=300&fit=crop",
-  //     rating: 4.7
-  //   },
-  //   {
-  //     id: 4,
-  //     name: "Portable Speaker",
-  //     price: 8999,
-  //     image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=300&h=300&fit=crop",
-  //     rating: 4.4
-  //   }
-  // ];
+import Button from "../../components/Button";
 
   const reviews = [
     {
@@ -54,15 +32,17 @@ function ProductDetails() {
   const [quantity, setQuantity] = useState(1);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [activeTab, setActiveTab] = useState('description');
+  const [isModal,setisModal]=useState(false)
+  const [singleProduct,setSingleProduct]=useState(null)
   
   const {id}=useParams()
-  const {data:singleProduct}=useSingleProduct(id)
+  const {data:product}=useSingleProduct(id)
 
   const userId = localStorage.getItem("userId");
   const addCart =useAddCart()
 
   const {loading:productLoading ,data:products}=useProducts()
-  const relatedProducts=products?.filter(item=>item?.category===singleProduct?.category && item.name!==singleProduct.name)
+  const relatedProducts=products?.filter(item=>item?.category===product?.category && item.name!==product.name)
 
   const handleQuantityChange = (change) => {
     setQuantity(prev => Math.max(1, prev + change));
@@ -73,13 +53,13 @@ function ProductDetails() {
     // Add to cart logic here
     addCart.mutate({
       userId:userId,
-      productId:id,
-      quantity:quantity
+      productId:singleProduct._id,
+      quantity:1
     })
   };
 
   const buyNow = () => {
-    console.log(`Buying ${quantity} ${singleProduct?.name}`);
+    console.log(`Buying ${quantity} ${product?.name}`);
     // Buy now logic here
   };
 
@@ -87,9 +67,10 @@ function ProductDetails() {
     setIsWishlisted(!isWishlisted);
   };
 
-  const discountPercentage = Math.round(((singleProduct?.price - singleProduct?.discountPrice)));
+  const discountPercentage = Math.round(((product?.price - product?.discountPrice)));
 
   return (
+    <>
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Breadcrumb */}
@@ -98,11 +79,11 @@ function ProductDetails() {
             <li><a href="/" className="hover:text-blue-600">Home</a></li>
             <li className="flex items-center">
               <span className="mx-2">/</span>
-              <a href="/categories" className="hover:text-blue-600">{singleProduct?.category}</a>
+              <a href="/categories" className="hover:text-blue-600">{product?.category}</a>
             </li>
             <li className="flex items-center">
               <span className="mx-2">/</span>
-              <span className="text-gray-900 font-medium">{singleProduct?.name}</span>
+              <span className="text-gray-900 font-medium">{product?.name}</span>
             </li>
           </ol>
         </nav>
@@ -114,15 +95,15 @@ function ProductDetails() {
               {/* Main Image */}
               <div className="aspect-square rounded-xl bg-gray-100 overflow-hidden">
                 <img
-                  src={singleProduct?.images[selectedImage]}
-                  alt={singleProduct?.name}
+                  src={product?.images[selectedImage]}
+                  alt={product?.name}
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                 />
               </div>
 
               {/* Thumbnail Images */}
               <div className="grid grid-cols-4 gap-3">
-                {singleProduct?.images.map((image, index) => (
+                {product?.images.map((image, index) => (
                   <button
                     key={index}
                     onClick={() => setSelectedImage(index)}
@@ -132,7 +113,7 @@ function ProductDetails() {
                   >
                     <img
                       src={image}
-                      alt={`${singleProduct?.name} view ${index + 1}`}
+                      alt={`${product?.name} view ${index + 1}`}
                       className="w-full h-full object-cover"
                     />
                   </button>
@@ -145,10 +126,10 @@ function ProductDetails() {
               {/* Brand and Name */}
               <div>
                 <span className="text-sm font-medium text-blue-600 uppercase tracking-wide">
-                  {singleProduct?.brand}
+                  {product?.brand}
                 </span>
                 <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mt-2">
-                  {singleProduct?.name}
+                  {product?.name}
                 </h1>
               </div>
 
@@ -160,7 +141,7 @@ function ProductDetails() {
                       <FaStar
                         key={index}
                         className={`text-lg ${
-                          index < Math.floor(singleProduct?.rating)
+                          index < Math.floor(product?.rating)
                             ? 'text-yellow-400 fill-current'
                             : 'text-gray-300'
                         }`}
@@ -168,11 +149,11 @@ function ProductDetails() {
                     ))}
                   </div>
                   <span className="text-sm font-medium text-gray-900">
-                    {/* {singleProduct.rating} */}
+                    {/* {product.rating} */}
                   </span>
                 </div>
                 <span className="text-sm text-gray-500">
-                  {/* ({singleProduct.reviewCount} reviews) */}
+                  {/* ({product.reviewCount} reviews) */}
                 </span>
                 <span className="text-sm text-green-600 font-medium flex items-center gap-1">
                   <FaCheck className="text-xs" />
@@ -183,12 +164,12 @@ function ProductDetails() {
               {/* Price */}
               <div className="flex items-center gap-4">
                 <span className="text-3xl font-bold text-gray-900">
-                  Rs. {singleProduct?.price.toLocaleString()}
+                  Rs. {product?.price.toLocaleString()}
                 </span>
-                {singleProduct?.discountPrice && (
+                {product?.discountPrice && (
                   <>
                     <span className="text-xl line-through text-gray-400">
-                      Rs. {singleProduct?.discountPrice.toLocaleString()}
+                      Rs. {product?.discountPrice.toLocaleString()}
                     </span>
                     <span className="px-2 py-1 bg-red-100 text-red-600 text-sm font-bold rounded">
                       {discountPercentage}% OFF
@@ -199,7 +180,7 @@ function ProductDetails() {
 
               {/* Description */}
               <p className="text-gray-600 leading-relaxed">
-                {singleProduct?.description}
+                {product?.description}
               </p>
 
               {/* Quantity and Actions */}
@@ -305,7 +286,7 @@ function ProductDetails() {
               {activeTab === 'description' && (
                 <div className="prose max-w-none">
                   <p className="text-gray-600 leading-relaxed">
-                    {singleProduct?.description}
+                    {product?.description}
                   </p>
                   <div className="mt-6 grid gap-4">
                     <h4 className="font-semibold text-gray-900">Key Features:</h4>
@@ -317,9 +298,9 @@ function ProductDetails() {
               {activeTab === 'specifications' && (
                 <div className="grid gap-4">
                   <div className="grid grid-cols-2 gap-4">
-                    <div><strong>Brand:</strong> {singleProduct?.brand}</div>
-                    <div><strong>SKU:</strong> {singleProduct?.sku}</div>
-                    <div><strong>Category:</strong> {singleProduct?.category}</div>
+                    <div><strong>Brand:</strong> {product?.brand}</div>
+                    <div><strong>SKU:</strong> {product?.sku}</div>
+                    <div><strong>Category:</strong> {product?.category}</div>
                     <div><strong>Battery Life:</strong> Up to 30 hours</div>
                     <div><strong>Connectivity:</strong> Bluetooth 5.0</div>
                     <div><strong>Noise Cancellation:</strong> Active</div>
@@ -377,12 +358,79 @@ function ProductDetails() {
             {relatedProducts?.length>0? relatedProducts.map((item,i)=>{
                           const {name, price, discountPrice, _id}=item
                           return <ProductCard image={item.images[0]} name={name} oldPrice={price} price={discountPrice} key={_id} productID={_id}
-                           addToCart={(id, q) => addToCart(id, q)} />
+                          onClick={()=>{setisModal(true);setSingleProduct(item);}} addToCart={(id, q) => addToCart(id, q)} />
                         }):(<div>No related Products</div>)}
           </div>
         </div>
       </div>
     </div>
+
+    <div
+      className={`fixed inset-0 bg-[#0000005e] flex items-center justify-center p-4 z-50 transition-all duration-300 ${
+        isModal ? "opacity-100 visible translate-0" : "opacity-0 invisible translate-y-64"
+      }`}
+    >
+      <div className={` bg-white rounded-xl shadow-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto hide-scrollbar relative `}>
+        {/* Header */}
+        <Button icon={FaTimes}
+            onClick={()=>{setisModal(false);setSingleProduct(null)}}
+            className="p-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors absolute right-2 top-2 z-100"
+          />
+
+        {/* Modal Body */}
+        <div className="relative z-80 flex w-full items-center overflow-hidden bg-white px-4 pt-14 pb-8 shadow-2xl sm:px-6 sm:pt-8 md:p-6 lg:p-8">
+          <div className="grid w-full grid-cols-1 items-start gap-x-6 gap-y-8 sm:grid-cols-12 lg:gap-x-8">
+            <img
+                  // alt={product._id}
+                  src={singleProduct?.images[0]}
+                  className="aspect-2/3 w-full rounded-lg bg-gray-100 object-cover sm:col-span-4 lg:col-span-5"
+                />
+                <div className="sm:col-span-8 lg:col-span-7">
+                  <h2 className="text-xl md:text-2xl font-semibold text-gray-900 sm:pr-12 leading-tight">{singleProduct?.name}</h2>
+                  <section >
+                    <h3 id="information-heading" className="sr-only">
+                      Product information
+                    </h3>
+                    <div className="flex items-baseline gap-3 mt-3">
+    <p className="text-xl md:text-2xl font-bold text-indigo-600">Rs. {singleProduct?.discountPrice}</p>
+    {singleProduct?.discountPrice && (
+      <p className="text-lg text-gray-400 line-through">Rs. {singleProduct?.price}</p>
+    )}
+  </div>
+                    <p className="text-gray-500 text-sm mt-1">
+    Brand: <span className="font-medium">{singleProduct?.brand || "No Brand"}</span> | 
+    Category: <span className="font-medium">{singleProduct?.category}</span>
+  </p>
+                    {/* Tags */}
+  <div className="flex flex-wrap gap-2 mt-3">
+    {singleProduct?.tags?.map((tag, i) => (
+      <span key={i} className="bg-gray-200 px-3 py-1 rounded-full text-sm text-gray-700">
+        #{tag}
+      </span>
+    ))}
+  </div>
+                    <p className={`mt-2 text-sm ${singleProduct?.inStock ? "text-green-600" : "text-red-600"}`}>
+    {singleProduct?.inStock ? "In Stock" : "Out of Stock"}
+  </p>
+    {/* Description */}
+  <p className="border-t mt-3">Description</p>
+  <div className="mt-1 max-h-40 overflow-y-auto text-gray-700 text-sm">
+    {singleProduct?.description}
+  </div>
+
+  {/* Actions */}
+  <div className="mt-6 flex gap-3">
+    <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-md transition" onClick={()=>addToCart(product._id,1)}>
+      {addCart.isPending ? "Adding..." : "Add to Cart"}
+    </button>
+  </div>
+                  </section>
+                </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </>
   );
 }
 
