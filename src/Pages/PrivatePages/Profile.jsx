@@ -15,7 +15,7 @@ function Profile() {
   const user = useUserStore((state) => state.user);
 
   useEffect(()=>{
-    console.log(user);
+    // console.log(user);
     setForm({
       name:user?.name,
       email: user?.email,

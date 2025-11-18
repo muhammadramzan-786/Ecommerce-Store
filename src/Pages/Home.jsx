@@ -15,6 +15,8 @@ import { useCategories } from "../hooks/useCategories";
 import { useProducts } from "../hooks/useProducts";
 import Button from "../components/Button";
 import { useAddCart } from "../hooks/useCart";
+import CategoryCard from "../components/CategoryCard";
+import { useProductsStore } from "../stores/productsStore";
 
 function Home() {
   const [isModal,setisModal]=useState(false)
@@ -22,7 +24,10 @@ function Home() {
   const [singleProduct,setSingleProduct]=useState(null)
 
   const {loading,data:categories}=useCategories()
-  const {loading:productLoading ,data:products}=useProducts()
+  // const {loading:productLoading ,data:products}=useProducts()
+  // const products=useProductsStore((state)=>state.products)
+  const {isLoading, error, products}=useProductsStore()
+// console.log(products);
 
   const userId = localStorage.getItem("userId");
   const addCart =useAddCart()
@@ -55,23 +60,13 @@ function Home() {
               loop={true}
               className="w-full h-full"
             >
-              {/* Slide 1 */}
-              {loading?(<div>loading ....</div>):
-              (categories?.map((category, i) => (
+              {(categories?.map((category, i) => (
                 <SwiperSlide>
                   <a key={i}
                     className="group flex flex-col items-center"
                     href="/categories/televisions"
                   >
-                    <div className="bg-[#e1e2e5] rounded-full flex items-center justify-center mb-4 w-[110px] h-[110px]" >
-                      <img src={category.image} alt="Category" loading="lazy" width={70} height={70} decoding="async" data-nimg={1} style={{ color: "transparent" }} 
-                      className="aspect-square object-cover "/>
-                    </div>
-                    <div className="flex justify-center">
-                      <h3 className="inline-block font-medium text-center text-dark bg-linear-to-r from-blue to-blue bg-[length:0px_1px] bg-left-bottom bg-no-repeat transition-[background-size] duration-500 hover:bg-[length:100%_3px] group-hover:bg-[length:100%_1px] group-hover:text-blue">
-                        {category.name}
-                      </h3>
-                    </div>
+                    <CategoryCard name={category.name} image={category.image} loading={loading} />
                   </a>
                 </SwiperSlide>
               )))}
@@ -271,11 +266,12 @@ function Home() {
             </a>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-x-7.5 gap-y-9">
-            {products?.length>0 && (products?.slice(0,visibleCount).map((item,i)=>{
+            {error? (<p>Error: {error.message || "Something went wrong"}</p>):
+             Array.isArray(products) &&products?.length>0 ? (products?.slice(0,visibleCount).map((item,i)=>{
               const {name, price, discountPrice, _id}=item
               return <ProductCard image={item.images[0]} name={name} oldPrice={price} price={discountPrice} key={_id} productID={_id}
-              onClick={()=>{setisModal(true);setSingleProduct(item);}} addToCart={(id, q) => addToCart(id, q)} />
-            }))}
+              onClick={()=>{setisModal(true);setSingleProduct(item);}} addToCart={(id, q) => addToCart(id, q)} loading={isLoading} />
+            })):(<p>No products found</p>)}
             
           </div>
           <button className="bg-[#4B3EC4] text-white py-1.5 px-5 rounded-full flex items-center gap-1 mx-auto mt-8 "

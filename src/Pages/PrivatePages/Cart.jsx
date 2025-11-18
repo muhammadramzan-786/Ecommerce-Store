@@ -4,6 +4,7 @@ import { IoCartOutline } from 'react-icons/io5';
 import { getCart } from '../../services/cart';
 import { useDeleteCartProduct, useGetCart } from '../../hooks/useCart';
 import { Link } from 'react-router-dom';
+import { useCartStore } from '../../stores/cartStore';
 
 function Cart() {
   // const [cartItems, setCartItems] = useState([
@@ -45,8 +46,7 @@ function Cart() {
   const [couponCode, setCouponCode] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const userId = localStorage.getItem("userId");
-  const {data:cartItems}=useGetCart(userId)
-  console.log(cartItems);
+  const cartItems=useCartStore((state)=>state.cart)
   
   const updateQuantity = (id, change) => {
     setCartItems(prevItems =>
@@ -197,7 +197,7 @@ function Cart() {
               {/* Cart Items List */}
               <div className="divide-y divide-gray-200">
                 {cartItems?.items?.map((item) => (
-                  <div key={item.id} className="p-6">
+                  <div key={item._id} className="p-6">
                     <div className="flex flex-col sm:flex-row gap-4">
                       {/* Product Image */}
                       <div className="flex-shrink-0">

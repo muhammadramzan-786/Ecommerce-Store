@@ -7,6 +7,8 @@ import Input from "../../components/Input";
 import { useAddOrder } from '../../hooks/useOrders';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { useUserStore } from '../../stores/userStore';
+import { useCartStore } from '../../stores/cartStore';
 
 function Checkout() {
   const [activeStep, setActiveStep] = useState(1);
@@ -21,8 +23,10 @@ useEffect(() => {
   if(id) setUserId(id);
 }, []);
 
-  const {data:orderItems}=useGetCart(userId)
-  const {data:userData}=useUser(userId)
+  // const {data:orderItems}=useGetCart(userId)
+  const orderItems=useCartStore((state)=>state.cart)
+  // const {data:userData}=useUser(userId)
+  const userData=useUserStore((state)=>state.user)
 // console.log(userData);
 
   const [shippingInfo, setShippingInfo] = useState({
@@ -559,7 +563,7 @@ console.log("orderData:", orderData);
               <div className="p-6">
                 {/* Order Items */}
                 <div className="space-y-4 mb-6">
-                  {orderItems?.items.map((item) => (
+                  {orderItems?.items?.map((item) => (
                     <div key={item._id} className="flex items-center gap-3">
                       <img
                         src={item.images[0]}

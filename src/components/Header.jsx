@@ -3,6 +3,8 @@ import Input from "./Input";
 import { Link } from "react-router-dom";
 import { useUser } from "../hooks/useUser";
 import { useGetCart } from "../hooks/useCart";
+import { useUserStore } from "../stores/userStore";
+import { useCartStore } from "../stores/cartStore";
 
 const profilPopup = [
   {
@@ -173,11 +175,9 @@ const profilPopup = [
 function Header() {
   const [searchVal, setSearchVal] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const userId=localStorage.getItem("userId")
-  const {data:userData}=useUser(userId)
-
-  const {data:cartItems}=useGetCart(userId)
+  const userData=useUserStore((state)=>state.user)
+// console.log(userData);
+  const cartItems=useCartStore((state)=>state.cart)
   
   return (
     <div className="w-full px-4 sm:px-6 xl:px-0 sticky top-0 z-50 bg-white shadow-lg">
@@ -339,7 +339,7 @@ function Header() {
                       />
                     </svg>
                     <span className="flex items-center justify-center font-medium text-xs absolute -right-2 -top-2 bg-red-600 w-4 h-4 rounded-full text-white">
-                      {cartItems?.items.length}
+                      {cartItems?.items?.length}
                     </span>
                   </span>
                 </Link>
