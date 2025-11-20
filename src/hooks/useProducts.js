@@ -12,7 +12,7 @@ export function useProducts() {
       const res=await getProducts()
       if(res.data){
         setProducts(res.data)
-        console.log(res.data);
+        // console.log(res.data);
       }else{
         setProducts([])
       }

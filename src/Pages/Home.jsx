@@ -17,17 +17,21 @@ import Button from "../components/Button";
 import { useAddCart } from "../hooks/useCart";
 import CategoryCard from "../components/CategoryCard";
 import { useProductsStore } from "../stores/productsStore";
+import { Link } from "react-router-dom";
+import { useCategoryStore } from "../stores/categoryStore";
 
 function Home() {
   const [isModal,setisModal]=useState(false)
   const [visibleCount, setVisibleCount] = useState(8);
   const [singleProduct,setSingleProduct]=useState(null)
 
-  const {loading,data:categories}=useCategories()
+  // const {loading,data:categories}=useCategories()
   // const {loading:productLoading ,data:products}=useProducts()
   // const products=useProductsStore((state)=>state.products)
   const {isLoading, error, products}=useProductsStore()
-// console.log(products);
+  const {loading,categories}=useCategoryStore()
+  // const loading=useCategoryStore((state)=>state.loading)
+// console.log(categories);
 
   const userId = localStorage.getItem("userId");
   const addCart =useAddCart()
@@ -46,7 +50,7 @@ function Home() {
     <>
       <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 xl:px-0">
               <section className="overflow-hidden mt-5">
-        <div className="w-full px-4 mx-auto max-w-7xl sm:px-6 xl:px-0 pb-15 border-gray-3">
+        <div className="w-full sm:px-4 mx-auto max-w-7xl sm:px-6 xl:px-0 pb-15 border-gray-3">
           <div className="swiper categories-carousel common-carousel">
 <h2 className="text-xl font-semibold xl:text-heading-5 text-dark mb-3">
                 Popular Categories
@@ -54,11 +58,19 @@ function Home() {
             <Swiper
               modules={[Navigation, Pagination, Autoplay]}
               spaceBetween={0}
-              slidesPerView={8}
+              // slidesPerView={8}
               // pagination={{ clickable: true }}
               autoplay={{ delay: 3000 }}
               loop={true}
               className="w-full h-full"
+              breakpoints={{
+    320: { slidesPerView: 2 },    // mobile
+    480: { slidesPerView: 3 },    // small screens
+    640: { slidesPerView: 4 },    // tablets
+    768: { slidesPerView: 5 },    // medium screens
+    1024: { slidesPerView: 6 },   // large tablets/laptops
+    1280: { slidesPerView: 8 },   // desktops
+  }}
             >
               {(categories?.map((category, i) => (
                 <SwiperSlide>
@@ -173,7 +185,7 @@ function Home() {
           </div>
       </div>
 
-      <div className="max-w-[1060px] w-full mx-auto px-4 sm:px-8 xl:px-0">
+      {/* <div className="max-w-[1060px] w-full mx-auto px-4 sm:px-8 xl:px-0">
         <div className="flex flex-wrap items-center gap-7.5 xl:gap-12.5 mt-10">
           <div className="flex items-center gap-4">
             <img
@@ -246,7 +258,7 @@ function Home() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
 
 
@@ -258,12 +270,12 @@ function Home() {
                 New Arrivals
               </h2>
             </div>
-            <a
+            <Link
               className="inline-flex font-medium text-custom-sm py-2.5 px-7 rounded-full border-gray-3 border bg-gray-1 text-dark ease-out duration-200 hover:bg-dark "
-              href="/shop-with-sidebar"
+              to="/shop"
             >
               View All
-            </a>
+            </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-x-7.5 gap-y-9">
             {error? (<p>Error: {error.message || "Something went wrong"}</p>):
@@ -281,8 +293,7 @@ function Home() {
       </section>
 
 
-    <div
-      className={`fixed inset-0 bg-[#0000005e] flex items-center justify-center p-4 z-50 transition-all duration-300 ${
+    <div className={`fixed inset-0 bg-[#0000005e] flex items-center justify-center p-4 z-50 transition-all duration-300 ${
         isModal ? "opacity-100 visible translate-0" : "opacity-0 invisible translate-y-64"
       }`}
     >

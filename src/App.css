@@ -3,6 +3,7 @@
 
 @theme {
   --color-purple: #4B3EC4;
+  --container-xsm: 28.125rem;
 }
 .swiper-horizontal{
   height: 100%;

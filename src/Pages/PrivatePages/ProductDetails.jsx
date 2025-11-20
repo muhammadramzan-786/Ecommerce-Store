@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { FaStar, FaHeart, FaRegHeart, FaShare, FaTruck, FaShieldAlt, FaUndo, FaCheck } from 'react-icons/fa';
 import { IoCartOutline } from 'react-icons/io5';
 import { FaTimes } from "react-icons/fa";
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useProducts, useSingleProduct } from '../../hooks/useProducts';
 import { useAddCart } from '../../hooks/useCart';
 import ProductCard from '../../components/ProductCard';
 import Button from "../../components/Button";
+import { useProductsStore } from '../../stores/productsStore';
 
   const reviews = [
     {
@@ -36,25 +37,26 @@ function ProductDetails() {
   const [singleProduct,setSingleProduct]=useState(null)
   
   const {id}=useParams()
-  const {data:product}=useSingleProduct(id)
-
+  // const {data:product}=useSingleProduct(id)
+  const {isLoading, error, products}=useProductsStore()
+  const singleProducts=products.filter((product)=>product._id===id)
+  const product=singleProducts[0]
   const userId = localStorage.getItem("userId");
   const addCart =useAddCart()
 
-  const {loading:productLoading ,data:products}=useProducts()
   const relatedProducts=products?.filter(item=>item?.category===product?.category && item.name!==product.name)
 
   const handleQuantityChange = (change) => {
     setQuantity(prev => Math.max(1, prev + change));
   };
 
-  const addToCart = () => {
+  const addToCart = (id,quantity) => {
     console.log(`Added ${quantity} ${product.name} to cart`);
     // Add to cart logic here
     addCart.mutate({
       userId:userId,
-      productId:singleProduct._id,
-      quantity:1
+      productId:id,
+      quantity:quantity
     })
   };
 
@@ -76,7 +78,7 @@ function ProductDetails() {
         {/* Breadcrumb */}
         <nav className="flex mb-8" aria-label="Breadcrumb">
           <ol className="flex items-center space-x-2 text-sm text-gray-500">
-            <li><a href="/" className="hover:text-blue-600">Home</a></li>
+            <li><Link to="/" className="hover:text-blue-600">Home</Link></li>
             <li className="flex items-center">
               <span className="mx-2">/</span>
               <a href="/categories" className="hover:text-blue-600">{product?.category}</a>
@@ -102,7 +104,7 @@ function ProductDetails() {
               </div>
 
               {/* Thumbnail Images */}
-              <div className="grid grid-cols-4 gap-3">
+              <div className="grid grid-cols-5 gap-3">
                 {product?.images.map((image, index) => (
                   <button
                     key={index}
@@ -179,9 +181,9 @@ function ProductDetails() {
               </div>
 
               {/* Description */}
-              <p className="text-gray-600 leading-relaxed">
+              {/* <p className="text-gray-600 leading-relaxed">
                 {product?.description}
-              </p>
+              </p> */}
 
               {/* Quantity and Actions */}
               <div className="space-y-4">
@@ -209,7 +211,7 @@ function ProductDetails() {
                 <div className="flex gap-3">
                   <button 
                   disabled={addCart.isPending}
-                    onClick={addToCart}
+                    onClick={()=>addToCart(product?._id, quantity)}
                     className="flex-1 bg-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
                   >
                     <IoCartOutline className="text-lg" />
@@ -221,19 +223,7 @@ function ProductDetails() {
                   >
                     Buy Now
                   </button>
-                  <button
-                    onClick={toggleWishlist}
-                    className="p-3 border border-gray-300 rounded-lg hover:border-gray-400 transition-colors"
-                  >
-                    {isWishlisted ? (
-                      <FaHeart className="text-red-500 text-lg" />
-                    ) : (
-                      <FaRegHeart className="text-gray-600 text-lg" />
-                    )}
-                  </button>
-                  <button className="p-3 border border-gray-300 rounded-lg hover:border-gray-400 transition-colors">
-                    <FaShare className="text-gray-600 text-lg" />
-                  </button>
+                  
                 </div>
               </div>
 
@@ -288,10 +278,7 @@ function ProductDetails() {
                   <p className="text-gray-600 leading-relaxed">
                     {product?.description}
                   </p>
-                  <div className="mt-6 grid gap-4">
-                    <h4 className="font-semibold text-gray-900">Key Features:</h4>
-                    
-                  </div>
+                  
                 </div>
               )}
 
@@ -299,11 +286,7 @@ function ProductDetails() {
                 <div className="grid gap-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div><strong>Brand:</strong> {product?.brand}</div>
-                    <div><strong>SKU:</strong> {product?.sku}</div>
                     <div><strong>Category:</strong> {product?.category}</div>
-                    <div><strong>Battery Life:</strong> Up to 30 hours</div>
-                    <div><strong>Connectivity:</strong> Bluetooth 5.0</div>
-                    <div><strong>Noise Cancellation:</strong> Active</div>
                   </div>
                 </div>
               )}

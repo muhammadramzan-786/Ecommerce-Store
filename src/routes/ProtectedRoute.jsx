@@ -3,6 +3,7 @@ import { Navigate } from 'react-router-dom'
 import { useUser } from '../hooks/useUser';
 import { useGetCart } from '../hooks/useCart';
 import { useProducts } from '../hooks/useProducts';
+import { useCategories } from "../hooks/useCategories";
 
 function ProtectedRoute({children }) {
   const [token, setToken] = useState(localStorage.getItem("token"));
@@ -27,7 +28,8 @@ function ProtectedRoute({children }) {
     useUser(userId)
     useGetCart(userId)
     const products=useProducts()
-    console.log(products);
+    const categories= useCategories()
+    // console.log(categories);
     
   return children 
 }

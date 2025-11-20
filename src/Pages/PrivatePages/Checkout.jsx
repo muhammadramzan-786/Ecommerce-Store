@@ -6,13 +6,13 @@ import { useUser } from "../../hooks/useUser";
 import Input from "../../components/Input";
 import { useAddOrder } from '../../hooks/useOrders';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useUserStore } from '../../stores/userStore';
 import { useCartStore } from '../../stores/cartStore';
 
 function Checkout() {
   const [activeStep, setActiveStep] = useState(1);
-  const [paymentMethod, setPaymentMethod] = useState('credit-card');
+  const [paymentMethod, setPaymentMethod] = useState('paypal');
   const [saveShippingInfo, setSaveShippingInfo] = useState(true);
   const [savePaymentInfo, setSavePaymentInfo] = useState(false);
   const [userId, setUserId] = useState(null);
@@ -147,10 +147,10 @@ console.log("orderData:", orderData);
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <button className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 transition-colors">
+          <Link to="/cart" className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 transition-colors">
             <FaArrowLeft className="text-sm" />
             Back to Cart
-          </button>
+          </Link>
           <h1 className="text-3xl font-bold text-gray-900">Checkout</h1>
           <p className="text-gray-600 mt-2">Complete your purchase securely</p>
         </div>
@@ -173,7 +173,7 @@ console.log("orderData:", orderData);
           ${index < steps.length - 1
             ? `
               after:content-[''] after:w-full after:h-1 
-              after:border-b after:border-4 after:inline-block after:rounded-full
+              after:border-b after:border-4 after:inline-block 
               ${isCompleted ? "after:border-blue-600" : "after:border-gray-300"}
             `
             : ""
@@ -341,9 +341,7 @@ console.log("orderData:", orderData);
                   {/* Payment Method Selection */}
                   <div className="space-y-4 mb-6">
                     {[
-                      { id: 'credit-card', name: 'Credit/Debit Card', icon: FaCreditCard },
                       { id: 'paypal', name: 'PayPal', icon: FaUser },
-                      { id: 'upi', name: 'UPI Payment', icon: FaUser }
                     ].map((method) => (
                       <div key={method.id} className="flex items-center">
                         <input
@@ -362,72 +360,7 @@ console.log("orderData:", orderData);
                     ))}
                   </div>
 
-                  {/* Credit Card Form */}
-                  {paymentMethod === 'credit-card' && (
-                    <div className="space-y-6">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Card Number *
-                        </label>
-                        <input
-                          type="text"
-                          name="cardNumber"
-                          value={paymentInfo.cardNumber}
-                          onChange={handleInputChange(setPaymentInfo)}
-                          required
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          placeholder="1234 5678 9012 3456"
-                          maxLength="19"
-                        />
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Expiry Date *
-                          </label>
-                          <input
-                            type="text"
-                            name="expiryDate"
-                            value={paymentInfo.expiryDate}
-                            onChange={handleInputChange(setPaymentInfo)}
-                            required
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                            placeholder="MM/YY"
-                            maxLength="5"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            CVV *
-                          </label>
-                          <input
-                            type="text"
-                            name="cvv"
-                            value={paymentInfo.cvv}
-                            onChange={handleInputChange(setPaymentInfo)}
-                            required
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                            placeholder="123"
-                            maxLength="3"
-                          />
-                        </div>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Name on Card *
-                        </label>
-                        <input
-                          type="text"
-                          name="nameOnCard"
-                          value={paymentInfo.nameOnCard}
-                          onChange={handleInputChange(setPaymentInfo)}
-                          required
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          placeholder="John Doe"
-                        />
-                      </div>
-                    </div>
-                  )}
+                 
 
                   {/* Save Payment Info */}
                   <div className="mt-6 flex items-center">
@@ -604,10 +537,7 @@ console.log("orderData:", orderData);
 
                 {/* Security Badges */}
                 <div className="mt-6 space-y-3">
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <FaLock className="text-green-500" />
-                    Secure SSL Encryption
-                  </div>
+                  
                   <div className="flex items-center gap-2 text-sm text-gray-600">
                     <FaShieldAlt className="text-blue-500" />
                     Buyer Protection
