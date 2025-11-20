@@ -33,7 +33,7 @@ if (loading) {
           className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-105"
         />
 
-        <div className="absolute left-0 bottom-0 translate-y-full w-full flex items-center justify-center gap-2.5 pb-5 ease-linear duration-200 group-hover:translate-y-0">
+        <div className="absolute left-0 bottom-0 md:translate-y-full w-full flex items-center justify-center gap-2.5 pb-5 ease-linear duration-200 md:group-hover:translate-y-0">
           <button className="flex items-center justify-center w-9 h-9 rounded-full shadow-1 ease-out duration-200 text-dark bg-white 
           hover:text-blue" onClick={onClick}>
             <FaEye />
