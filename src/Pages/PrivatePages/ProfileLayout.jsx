@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { FaArrowRight } from "react-icons/fa6";
 import { Link, NavLink, Outlet } from 'react-router-dom'
+import { FaTimes } from "react-icons/fa";
 
 const actions=[
     {
@@ -38,18 +39,36 @@ const actions=[
     },
 ]
 function ProfileLayout() {
+  const [showSidebar, setShowSidebar] = useState(false);
   return (
      <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-5 2xl:mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Account Information</h1>
           <p className="text-gray-600 mt-2">Manage your personal information and account settings</p>
         </div>
 
+        {/* Mobile Toggle Button */}
+<div className="md:hidden mb-4">
+  <button
+    onClick={() => setShowSidebar(true)}
+    className="px-4 py-2 bg-[#4B3EC4] text-white rounded-lg"
+  >
+    Open Menu
+  </button>
+</div>
         <div className="grid grid-cols-1 md:grid-cols-9 gap-8 relative">
             {/* Sidebar */}
-          <div className="w-full md:col-span-3 lg:col-span-2 border border-gray-200 rounded-xl mx-auto overflow-x-hidden md:sticky top-18 self-start bg-white">
+<div className={`w-64 md:col-span-3 lg:col-span-2 shadow-2xl md:shadow-none border border-gray-200 md:rounded-xl mx-auto h-full md:h-auto fixed top-15 sm:top-13 left-0 md:sticky md:top-18 self-start 
+  bg-white transform transition-transform duration-300 ${showSidebar ? "translate-x-0" : "-translate-x-full"}`}>
+    {/* Close Button for Mobile */}
+  <button
+    className={`md:hidden p-1 rounded-full bg-red-600 text-white font-bold absolute  ${showSidebar ? "-right-2" : "right-0"}`}
+    onClick={() => setShowSidebar(false)}
+  >
+    <FaTimes />
+  </button>
             <div className='px-4 pt-4'>
                 <img src='https://res.cloudinary.com/dzqdp2i1t/image/upload/v1762948919/samples/ecommerce/ezcrmom4jmlbzuqh7zsb.webp' className='w-full object-contain aspect-square mx-auto rounded-xl' />
                 <div className='mt-2'>
@@ -57,12 +76,12 @@ function ProfileLayout() {
                     <p>swoo@gmail.com</p>
                 </div>
             </div>
-            <div className="bg-white shadow-sm p-4 ">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+            <div className="bg-white px-4 pb-4 pt-2 ">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Quick Actions</h3>
               
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {actions.map((item,i)=>(
-                <NavLink key={i} to={item.link} end={item.exact} className={({isActive})=>`w-full flex items-center justify-between gap-3 p-3 text-left border border-[#4B3EC4]  
+                <NavLink key={i} to={item.link} end={item.exact} className={({isActive})=>`w-full flex items-center justify-between gap-3 p-2 2xl:p-3 text-left border border-[#4B3EC4]  
                 rounded-lg transition-colors ${isActive?"bg-[#4B3EC4] text-white":" text-[#4B3EC4] bg-white hover:bg-blue-100"}`}>
                   {/* {item.icon} */}
                   <span className="text-sm font-medium">{item.name}</span>
@@ -73,14 +92,14 @@ function ProfileLayout() {
               </div>
 
               {/* Save Button */}
-              <div className="mt-2 pt-4 border-t border-gray-200">
+              {/* <div className="mt-2 pt-4 border-t border-gray-200">
                 <button className="w-full bg-[#4B3EC4] text-white py-3 px-4 rounded-lg font-medium hover:bg-[#6352f3] transition-colors flex items-center justify-center gap-2">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   SAVE CHANGES
                 </button>
-              </div>
+              </div> */}
             </div>
 
            

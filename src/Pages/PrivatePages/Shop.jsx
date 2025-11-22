@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { useProductsStore } from '../../stores/productsStore'
 import ProductCard from '../../components/ProductCard'
 import Button from '../../components/Button'
-import { FaTimes } from "react-icons/fa";
+import { FaTimes, FaFilter } from "react-icons/fa";
 import { useAddCart } from '../../hooks/useCart';
 import { useCategoryStore } from '../../stores/categoryStore';
 
+
 function Shop() {
   const [singleProduct,setSingleProduct]=useState(null)
+  const [showFilter, setShowFilter] = useState(false);
   const [isModal,setisModal]=useState(false)
   const [selectedBrands, setSelectedBrands] = useState([]);
 const [selectedCategories, setSelectedCategories] = useState([]);
@@ -60,15 +62,31 @@ const [selectedCategories, setSelectedCategories] = useState([]);
   <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
     {/* Page Header */}
     <div className="mb-8">
-      <h1 className="text-3xl font-bold text-gray-900">All Products</h1>
+      <div className='flex justify-between'>
+        <h1 className="text-3xl font-bold text-gray-900">All Products</h1>
+              {/* Mobile Toggle Button */}
+        <div className="md:hidden mb-4">
+          <button onClick={() => setShowFilter(!showFilter)} className="px-4 py-2 bg-[#4B3EC4] text-white rounded-lg">
+            <FaFilter />
+          </button>
+        </div>
+      </div>
       <p className="text-gray-600 mt-2">Discover our amazing collection of products</p>
     </div>
 
-    <div className="flex flex-col lg:flex-row gap-8">
+    <div className="flex flex-col md:flex-row gap-8">
       {/* Filters Sidebar */}
-      <div className="lg:w-64 flex-shrink-0">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sticky top-18">
-          {/* Filters Header */}
+      <div className="lg:w-64 flex-shrink-0 ">
+        <div className={`bg-white max-h-screen md:rounded-xl border border-gray-300 shadow-2xl md:shadow-none px-4 sm:py-4 fixed z-10 md:sticky left-0 
+        top-13 md:top-18 transform transition-transform duration-300 ${showFilter ? "translate-x-0" : "-translate-x-full md:translate-x-0"} `}>
+              <button
+                className={`md:hidden p-1 rounded-full bg-red-600 text-white font-bold absolute top-2 ${showFilter ? "-right-2" : "right-0"}`}
+                onClick={() => setShowFilter(false)}
+              >
+                <FaTimes />
+              </button>
+          <div className='overflow-y-auto max-h-screen pb-13 md:pb-0 pt-4 md:pt-0'>
+            {/* Filters Header */}
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-gray-900">Filters</h2>
             <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">
@@ -128,7 +146,6 @@ const [selectedCategories, setSelectedCategories] = useState([]);
               ))}
             </div>
           </div>
-
          
           {/* Availability Filter */}
           <div className="mb-6">
@@ -152,16 +169,17 @@ const [selectedCategories, setSelectedCategories] = useState([]);
           </div>
 
           {/* Apply Filters Button */}
-          <button className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+          {/* <button className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 transition-colors">
             Apply Filters
-          </button>
+          </button> */}
+          </div>
         </div>
       </div>
 
       {/* Products Grid */}
       <div className="flex-1">
         {/* Products Header */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+        {/* <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <p className="text-sm text-gray-600">
@@ -170,7 +188,6 @@ const [selectedCategories, setSelectedCategories] = useState([]);
             </div>
             
             <div className="flex items-center gap-4">
-              {/* Sort By */}
               <div className="flex items-center gap-2">
                 <span className="text-sm text-gray-600">Sort by:</span>
                 <select className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500">
@@ -182,7 +199,6 @@ const [selectedCategories, setSelectedCategories] = useState([]);
                 </select>
               </div>
 
-              {/* View Toggle */}
               <div className="flex items-center border border-gray-300 rounded-lg">
                 <button className="p-2 border-r border-gray-300 hover:bg-gray-50">
                   <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -197,7 +213,7 @@ const [selectedCategories, setSelectedCategories] = useState([]);
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Products Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-x-7.5 gap-y-9">
@@ -212,7 +228,7 @@ const [selectedCategories, setSelectedCategories] = useState([]);
         </div>
 
         {/* Pagination */}
-        <div className="flex justify-center items-center gap-2 mt-12">
+        {/* <div className="flex justify-center items-center gap-2 mt-12">
           <button className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-600">
             Previous
           </button>
@@ -224,7 +240,7 @@ const [selectedCategories, setSelectedCategories] = useState([]);
           <button className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-600">
             Next
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   </div>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useUserStore } from '../../stores/userStore';
-import { useUser } from '../../hooks/useUser';
+import { useUpdateUser, useUser } from '../../hooks/useUser';
 import Input from '../../components/Input';
 
 function Profile() {
@@ -9,8 +9,8 @@ function Profile() {
     email: '',
     phone: '',
     city: '',
-
   });
+  
   // Zustand state
   const user = useUserStore((state) => state.user);
 
@@ -27,10 +27,19 @@ function Profile() {
 
   const handleChange=(e)=>{
     const {name, value}=e.target
-    console.log("name", name);
-    console.log("value", value);
+    // console.log("name", name);
+    // console.log("value", value);
     
     setForm({...form,[name]:value})
+  }
+
+  const updateUser=useUpdateUser()
+  const { isPending, isError, error, isSuccess } = updateUser;
+  const handleSubmit=(e)=>{
+    e.preventDefault()
+
+    updateUser.mutate({id:user._id,...form})
+        console.log(form);
   }
   return (
     <div className=" bg-white p-4 md:p-6 flex justify-center">
@@ -67,8 +76,8 @@ function Profile() {
         </div>
 
         {/* Save Button */}
-        <button className=" px-5 bg-[#4B3EC4] text-white py-3 rounded-lg font-medium hover:bg-[#6352f3] transition-colors" >
-          Save Changes
+        <button onClick={handleSubmit} className=" px-5 bg-[#4B3EC4] text-white py-3 rounded-lg font-medium hover:bg-[#6352f3] transition-colors" disabled={isPending}>
+          {isPending?"Saving":"Save Changes"}
         </button>
       </div>
     </div>

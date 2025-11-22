@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createCart, DeleteCartProduct, getCart } from "../services/cart";
+import { createCart, DeleteCartProduct, getCart, updateCart } from "../services/cart";
 import { useCartStore } from "../stores/cartStore";
 
 // -------------------------------
@@ -43,4 +43,13 @@ export function useDeleteCartProduct() {
     onSuccess: (_,vars) => qc.invalidateQueries(["cart",vars.userId]),
   });
 }
-
+// -------------------------------
+// UPDATE CART
+// -------------------------------
+export function useUpdateCart() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: updateCart,
+    onSuccess: (_,vars) => qc.invalidateQueries(["cart",vars.userId]),
+  });
+}

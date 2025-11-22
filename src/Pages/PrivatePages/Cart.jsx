@@ -1,64 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaPlus, FaMinus, FaTrash, FaHeart, FaShoppingBag, FaArrowLeft, FaLock, FaShieldAlt, FaTruck, FaUndo } from 'react-icons/fa';
 import { IoCartOutline } from 'react-icons/io5';
 import { getCart } from '../../services/cart';
-import { useDeleteCartProduct, useGetCart } from '../../hooks/useCart';
+import { useDeleteCartProduct, useGetCart, useUpdateCart } from '../../hooks/useCart';
 import { Link } from 'react-router-dom';
 import { useCartStore } from '../../stores/cartStore';
 
 function Cart() {
-  // const [cartItems, setCartItems] = useState([
-  //   {
-  //     id: 1,
-  //     name: "Wireless Bluetooth Headphones with Noise Cancellation",
-  //     brand: "Sony",
-  //     price: 12999,
-  //     originalPrice: 15999,
-  //     quantity: 1,
-  //     image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=300&fit=crop",
-  //     inStock: true,
-  //     maxQuantity: 5
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Smart Fitness Watch with Heart Rate Monitor",
-  //     brand: "FitPro",
-  //     price: 7999,
-  //     originalPrice: 9999,
-  //     quantity: 2,
-  //     image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&h=300&fit=crop",
-  //     inStock: true,
-  //     maxQuantity: 3
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "Wireless Fast Charger Pad",
-  //     brand: "ChargeMax",
-  //     price: 2499,
-  //     originalPrice: 2999,
-  //     quantity: 1,
-  //     image: "https://images.unsplash.com/photo-1609588044232-14a6e3b2a5d8?w=300&h=300&fit=crop",
-  //     inStock: false,
-  //     maxQuantity: 10
-  //   }
-  // ]);
-
-  const [couponCode, setCouponCode] = useState('');
   const userId = localStorage.getItem("userId");
   const cartItems=useCartStore((state)=>state.cart)
   
-  const updateQuantity = (id, change) => {
-    setCartItems(prevItems =>
-      prevItems.map(item => {
-        if (item.id === id) {
-          const newQuantity = item.quantity + change;
-          if (newQuantity >= 1 && newQuantity <= item.maxQuantity) {
-            return { ...item, quantity: newQuantity };
-          }
-        }
-        return item;
-      })
-    );
+  const updateCart=useUpdateCart()
+  // Destructure states
+const { isPending, isError, error, isSuccess } = updateCart;
+  const updateProductQuantity = (productId, quantity) => {
+    updateCart.mutate({
+      productId,
+      quantity,
+      userId
+    })          
   };
 
   const deleteItem=useDeleteCartProduct()
@@ -70,30 +30,8 @@ function Cart() {
     })
   };
 
-  const applyCoupon = () => {
-    const coupons = {
-      'WELCOME10': 10,
-      'SAVE20': 20,
-      'SUMMER25': 25
-    };
-
-    if (coupons[couponCode.toUpperCase()]) {
-      setAppliedCoupon({
-        code: couponCode.toUpperCase(),
-        discount: coupons[couponCode.toUpperCase()]
-      });
-    } else {
-      alert('Invalid coupon code');
-    }
-  };
-
   const calculateSubtotal = () => {
-    return cartItems?.items.reduce((total, item) => total + (item.discountPrice * item.quantity), 0);
-  };
-
-  const calculateDiscount = () => {
-    const originalTotal = cartItems?.items.reduce((total, item) => total + (item?.originalPrice * item?.quantity), 0);
-    return originalTotal - calculateSubtotal();
+    return cartItems?.items?.reduce((total, item) => total + (item.discountPrice * item.quantity), 0);
   };
 
   const calculateShipping = () => {
@@ -179,7 +117,7 @@ function Cart() {
                 <div className="flex justify-between items-center">
                   <h2 className="text-lg font-semibold text-gray-900">Cart Items</h2>
                   <span className="text-sm text-gray-500">
-                    {/* Total: {cartItems?.reduce((total, item) => total + item.quantity, 0)} items */}
+                    Total: {cartItems?.items.reduce((total, item) => total + item.quantity, 0)} items
                   </span>
                 </div>
               </div>
@@ -207,7 +145,7 @@ function Cart() {
                             </h3>
                             <p className="text-sm text-gray-500 mt-1">{item.brand}</p>
                           </div>
-                          <div className="text-right">
+                          <div className="text-right text-nowrap">
                             <span className="text-lg font-bold text-gray-900">
                               Rs. {(item.discountPrice * item.quantity).toLocaleString()}
                             </span>
@@ -238,23 +176,27 @@ function Cart() {
                             <span className="text-sm font-medium text-gray-700">Quantity:</span>
                             <div className="flex items-center border border-gray-300 rounded-lg">
                               <button
-                                onClick={() => updateQuantity(item.id, -1)}
-                                disabled={item.quantity <= 1}
+                                onClick={() => updateProductQuantity(item._id,item.quantity-1)}
+                                disabled={item.quantity <= 1 || isPending}
                                 className="px-3 py-1 text-gray-600 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                               >
-                                <FaMinus className="text-xs" />
+                                {/* <FaMinus className="text-xs" /> */}
+                               <FaMinus className="text-xs" />
                               </button>
                               <span className="px-3 py-1 border-x border-gray-300 font-medium min-w-12 text-center">
                                 {item.quantity}
                               </span>
                               <button
-                                onClick={() => updateQuantity(item.id, 1)}
-                                disabled={item.quantity >= item.maxQuantity}
+                                onClick={() => {
+                                  // updateQuantity(item._id, item.quantity+1);
+                                  updateProductQuantity(item._id, item.quantity+1)}}
+                                disabled={item.quantity >= item.maxQuantity || isPending}
                                 className="px-3 py-1 text-gray-600 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                               >
                                 <FaPlus className="text-xs" />
                               </button>
                             </div>
+                            {isError && <p className="text-red-500">{error?.message}</p>}
                           </div>
 
                           {/* Action Buttons */}
@@ -333,15 +275,8 @@ function Cart() {
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Subtotal</span>
                     {/* <span className="text-gray-900">Rs. {calculateSubtotal().toLocaleString()}</span> */}
-                    <span className="text-gray-900">Rs. {cartItems?.items.reduce((total, item) => total + (item?.discountPrice * item?.quantity), 0)}</span>
+                    <span className="text-gray-900">Rs. {cartItems?.items?.reduce((total, item) => total + (item?.discountPrice * item?.quantity), 0)}</span>
                   </div>
-
-                  {calculateDiscount() > 0 && (
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Discount</span>
-                      <span className="text-green-600">-Rs. {calculateDiscount().toLocaleString()}</span>
-                    </div>
-                  )}
 
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Shipping</span>

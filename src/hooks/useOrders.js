@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createOrder, getOrders } from "../services/orders";
+import { createOrder, deleteOrder, getOrders } from "../services/orders";
 
 export function useGetOrders(id) {
     return useQuery({
@@ -16,5 +16,13 @@ export function useAddOrder() {
   return useMutation({
     mutationFn: createOrder,
     onSuccess: (_,vars) => qc.invalidateQueries(["orders",vars.userId]),
+  });
+}
+
+export function useDeleteOrder() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: deleteOrder,
+    onSuccess: (_,vars) => qc.invalidateQueries(["orders",vars.orderId]),
   });
 }

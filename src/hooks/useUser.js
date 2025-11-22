@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import { getUser } from "../api/auth";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getUser, updateUser } from "../api/auth";
 import { useUserStore } from "../stores/userStore";
 
 export function useUser(id) {
@@ -17,5 +17,13 @@ export function useUser(id) {
     },
     enabled: !!id,
     initialData: {},
+  });
+}
+
+export function useUpdateUser() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: updateUser,
+    onSuccess: (_,vars) => qc.invalidateQueries(["user",vars.id]),
   });
 }
