@@ -35,17 +35,17 @@ if (loading) {
 
         <div className="absolute left-0 bottom-0 md:translate-y-full w-full flex items-center justify-center gap-2.5 pb-5 ease-linear duration-200 md:group-hover:translate-y-0">
           <button className="flex items-center justify-center w-9 h-9 rounded-full shadow-1 ease-out duration-200 text-dark bg-white 
-          hover:text-blue" onClick={onClick}>
+          hover:text-[#4B3EC4]" onClick={onClick}>
             <FaEye />
           </button>
           <button className="flex items-center justify-center w-9 h-9 rounded-full shadow-1 ease-out duration-200 text-dark bg-white 
-          hover:text-blue" onClick={()=>addToCart(productID,1)}>
+          hover:text-[#4B3EC4]" onClick={()=>addToCart(productID,1)}>
             <FaCartShopping />
           </button>
         </div>
       </div>
       <div className="p-4">
-        <h3 className="text-sm font-semibold text-gray-800 hover:text-blue-600 transition-colors truncate">
+        <h3 className="text-sm font-semibold text-gray-800 hover:text-[#4B3EC4] transition-colors truncate">
           <Link to={`/product-details/${productID}`}>{name}</Link>
         </h3>
         <div className="flex items-center gap-2 mt-1">

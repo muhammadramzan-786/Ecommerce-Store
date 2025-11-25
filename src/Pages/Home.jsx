@@ -19,6 +19,7 @@ import CategoryCard from "../components/CategoryCard";
 import { useProductsStore } from "../stores/productsStore";
 import { Link } from "react-router-dom";
 import { useCategoryStore } from "../stores/categoryStore";
+import ProductModal from "../components/ProductModal ";
 
 function Home() {
   const [isModal,setisModal]=useState(false)
@@ -50,11 +51,19 @@ function Home() {
     <>
       <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 xl:px-0">
               <section className="overflow-hidden mt-5">
-        <div className="w-full sm:px-4 mx-auto max-w-7xl sm:px-6 xl:px-0 pb-15 border-gray-3">
+        <div className="w-full sm:px-4 mx-auto max-w-7xl xl:px-0 pb-15 border-gray-3">
           <div className="swiper categories-carousel common-carousel">
-<h2 className="text-xl font-semibold xl:text-heading-5 text-dark mb-3">
+            <div className="flex items-center justify-between mb-7">
+              <h2 className="text-xl font-semibold xl:text-heading-5 text-dark mb-3">
                 Popular Categories
               </h2>
+              <Link
+              className="inline-flex font-medium text-custom-sm py-2.5 px-7 rounded-full border-gray-3 border bg-gray-1 text-dark ease-out duration-200 hover:bg-dark "
+              to="/category"
+            >
+              View All
+            </Link>
+            </div>
             <Swiper
               modules={[Navigation, Pagination, Autoplay]}
               spaceBetween={0}
@@ -74,12 +83,12 @@ function Home() {
             >
               {(categories?.map((category, i) => (
                 <SwiperSlide>
-                  <a key={i}
+                  <Link key={i}
                     className="group flex flex-col items-center"
-                    href="/categories/televisions"
+                    to={`/category/${category.name}`}
                   >
                     <CategoryCard name={category.name} image={category.image} loading={loading} />
-                  </a>
+                  </Link>
                 </SwiperSlide>
               )))}
             </Swiper>
@@ -185,83 +194,6 @@ function Home() {
           </div>
       </div>
 
-      {/* <div className="max-w-[1060px] w-full mx-auto px-4 sm:px-8 xl:px-0">
-        <div className="flex flex-wrap items-center gap-7.5 xl:gap-12.5 mt-10">
-          <div className="flex items-center gap-4">
-            <img
-              alt="icons"
-              loading="lazy"
-              width={40}
-              height={41}
-              decoding="async"
-              data-nimg={1}
-              src="/images/icons/icon-01.svg"
-              style={{ color: "transparent" }}
-            />
-            <div>
-              <h3 className="font-medium text-lg text-dark">Free Shipping</h3>
-              <p className="text-sm text-gray-600">For all orders $200</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <img
-              alt="icons"
-              loading="lazy"
-              width={40}
-              height={41}
-              decoding="async"
-              data-nimg={1}
-              src="/images/icons/icon-02.svg"
-              style={{ color: "transparent" }}
-            />
-            <div>
-              <h3 className="font-medium text-lg text-dark">
-                1 &amp; 1 Returns
-              </h3>
-              <p className="text-sm text-gray-600">Cancellation after 1 day</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <img
-              alt="icons"
-              loading="lazy"
-              width={40}
-              height={41}
-              decoding="async"
-              data-nimg={1}
-              src="/images/icons/icon-03.svg"
-              style={{ color: "transparent" }}
-            />
-            <div>
-              <h3 className="font-medium text-lg text-dark">
-                100% Secure Payments
-              </h3>
-              <p className="text-sm text-gray-600">Gurantee secure payments</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <img
-              alt="icons"
-              loading="lazy"
-              width={40}
-              height={41}
-              decoding="async"
-              data-nimg={1}
-              src="/images/icons/icon-04.svg"
-              style={{ color: "transparent" }}
-            />
-            <div>
-              <h3 className="font-medium text-lg text-dark">
-                24/7 Dedicated Support
-              </h3>
-              <p className="text-sm text-gray-600">Anywhere &amp; anytime</p>
-            </div>
-          </div>
-        </div>
-      </div> */}
-
-
-
       <section className="overflow-hidden pt-15 bg-[#FFFFFF]">
         <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 xl:px-0 ">
           <div className="mb-7 flex items-center justify-between">
@@ -292,70 +224,9 @@ function Home() {
         </div>
       </section>
 
-
-    <div className={`fixed inset-0 bg-[#0000005e] flex items-center justify-center p-4 z-50 transition-all duration-300 ${
-        isModal ? "opacity-100 visible translate-0" : "opacity-0 invisible translate-y-64"
-      }`}
-    >
-      <div className={` bg-white rounded-xl shadow-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto hide-scrollbar relative `}>
-        {/* Header */}
-        <Button icon={FaTimes}
-            onClick={()=>{setisModal(false);setSingleProduct(null)}}
-            className="p-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors absolute right-2 top-2 z-100"
-          />
-
-        {/* Modal Body */}
-        <div className="relative z-80 flex w-full items-center overflow-hidden bg-white px-4 pt-14 pb-8 shadow-2xl sm:px-6 sm:pt-8 md:p-6 lg:p-8">
-          <div className="grid w-full grid-cols-1 items-start gap-x-6 gap-y-8 sm:grid-cols-12 lg:gap-x-8">
-            <img
-                  // alt={singleProduct._id}
-                  src={singleProduct?.images[0]}
-                  className="aspect-2/3 w-full rounded-lg bg-gray-100 object-cover sm:col-span-4 lg:col-span-5"
-                />
-                <div className="sm:col-span-8 lg:col-span-7">
-                  <h2 className="text-xl md:text-2xl font-semibold text-gray-900 sm:pr-12 leading-tight">{singleProduct?.name}</h2>
-                  <section >
-                    <h3 id="information-heading" className="sr-only">
-                      Product information
-                    </h3>
-                    <div className="flex items-baseline gap-3 mt-3">
-    <p className="text-xl md:text-2xl font-bold text-indigo-600">Rs. {singleProduct?.discountPrice}</p>
-    {singleProduct?.discountPrice && (
-      <p className="text-lg text-gray-400 line-through">Rs. {singleProduct?.price}</p>
-    )}
-  </div>
-                    <p className="text-gray-500 text-sm mt-1">
-    Brand: <span className="font-medium">{singleProduct?.brand || "No Brand"}</span> | 
-    Category: <span className="font-medium">{singleProduct?.category}</span>
-  </p>
-                    {/* Tags */}
-  <div className="flex flex-wrap gap-2 mt-3">
-    {singleProduct?.tags?.map((tag, i) => (
-      <span key={i} className="bg-gray-200 px-3 py-1 rounded-full text-sm text-gray-700">
-        #{tag}
-      </span>
-    ))}
-  </div>
-                    <p className={`mt-2 text-sm ${singleProduct?.inStock ? "text-green-600" : "text-red-600"}`}>
-    {singleProduct?.inStock ? "In Stock" : "Out of Stock"}
-  </p>
-                    {/* Description */}
-  <div className="mt-4 max-h-40 overflow-y-auto border-t pt-3 text-gray-700 text-sm">
-    {singleProduct?.description}
-  </div>
-
-  {/* Actions */}
-  <div className="mt-6 flex gap-3">
-    <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-md transition" onClick={()=>addToCart(singleProduct._id,1)}>
-      {addCart.isPending ? "Adding..." : "Add to Cart"}
-    </button>
-  </div>
-                  </section>
-                </div>
-          </div>
-        </div>
-      </div>
-    </div>
+      <ProductModal isModal={isModal} image={singleProduct?.images[0]} name={singleProduct?.name} discountPrice={singleProduct?.discountPrice} price={singleProduct?.price}
+      brand={singleProduct?.brand} category={singleProduct?.category} tags={singleProduct?.tags} inStock={singleProduct?.inStock} id={singleProduct?._id}
+      description={singleProduct?.description} addToCart={(id, q)=>addToCart(id, q)} isPending={addCart?.isPending} closeModal={()=>{setisModal(false);setSingleProduct(null)}} />
     </>
   );
 }

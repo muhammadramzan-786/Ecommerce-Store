@@ -6,9 +6,10 @@ import { useUser } from "../../hooks/useUser";
 import Input from "../../components/Input";
 import { useAddOrder } from '../../hooks/useOrders';
 import { toast } from 'react-toastify';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useUserStore } from '../../stores/userStore';
 import { useCartStore } from '../../stores/cartStore';
+import { useProductsStore } from '../../stores/productsStore';
 
 function Checkout() {
   const [activeStep, setActiveStep] = useState(1);
@@ -18,6 +19,16 @@ function Checkout() {
   const [userId, setUserId] = useState(null);
   const [loading,setLoading]=useState(false)
   const navigate=useNavigate()
+
+  const location=useLocation()
+  const byNow=location.state.buyNow || null
+  const productId=location?.state?.productID
+  const quantity=location?.state?.quantity
+    const {isLoading, error, products}=useProductsStore()
+    const buyNowProduct=products?.filter(item=>item?._id===productId)
+  console.log(buyNowProduct);
+  
+  
 useEffect(() => {
   const id = localStorage.getItem("userId");
   if(id) setUserId(id);
@@ -28,6 +39,8 @@ useEffect(() => {
   // const {data:userData}=useUser(userId)
   const userData=useUserStore((state)=>state.user)
 // console.log(userData);
+const finalItems = byNow ? buyNowProduct : orderItems?.items || [];
+console.log(finalItems);
 
   const [shippingInfo, setShippingInfo] = useState({
     email: userData?.email,
@@ -64,8 +77,10 @@ useEffect(() => {
   ];
 
   const calculateSubtotal = () => {
-    if(!orderItems?.items) return 0
-    return orderItems?.items.reduce((total, item) => total + (item?.discountPrice * item?.quantity), 0);
+    if(!finalItems) return 0
+    const result=finalItems?.reduce((total, item) => total + (item?.discountPrice * (byNow?quantity:item?.quantity)), 0);
+    console.log(result);
+    return result
   };
 
   const calculateShipping = () => {
@@ -89,18 +104,18 @@ useEffect(() => {
     e.preventDefault();
     setActiveStep(3);
   };
-console.log(orderItems?.items);
 
 const deleteItem=useDeleteCartProduct()
   const addOrder=useAddOrder()
 
   const handlePlaceOrder = async () => {
     setLoading(true)
+    
   const orderData = {
     userId,
-    items: orderItems?.items.map(item => ({
+    items: finalItems?.map(item => ({
       product: item._id,
-      quantity: item.quantity,
+      quantity: byNow?quantity:item.quantity,
       price: item.discountPrice,
     })),
     shippingAddress: {
@@ -113,19 +128,18 @@ const deleteItem=useDeleteCartProduct()
     totalAmount: calculateTotal(),
     paymentMethod
   };
-console.log("orderItems:", orderItems);
-console.log("orderData:", orderData);
+
   try {
     const res = await addOrder.mutateAsync(orderData);
     toast.success("Order created!");
-    orderItems?.items.forEach((item)=>{
+    finalItems.forEach((item)=>{
       deleteItem.mutate({
       userId:userId,
       productId:item._id
     })
     })
     setLoading(false)
-    navigate("/orders")
+    navigate("/profileLayout/orders")
     console.log(res);
   } catch (err) {
     console.log(err);
@@ -156,7 +170,7 @@ console.log("orderData:", orderData);
         </div>
 
         {/* Progress Steps */}
-        <div className="mb-8 sticky top-15 z-40 bg-white py-2">
+        <div className="mb-8 sticky top-17 z-40 bg-white p-2 border border-gray-200 rounded-xl">
          <ol className="flex items-center w-full">
   {steps.map((step, index) => {
     const StepIcon = step.icon;
@@ -174,7 +188,7 @@ console.log("orderData:", orderData);
             ? `
               after:content-[''] after:w-full after:h-1 
               after:border-b after:border-4 after:inline-block 
-              ${isCompleted ? "after:border-blue-600" : "after:border-gray-300"}
+              ${isCompleted ? "after:border-[#4B3EC4]" : "after:border-gray-300"}
             `
             : ""
           }
@@ -183,7 +197,7 @@ console.log("orderData:", orderData);
         <span
           className={`
             flex items-center justify-center w-10 h-10 rounded-full lg:h-12 lg:w-12 shrink-0
-            ${isCompleted ? "bg-blue-600" : isActive?"border-2 border-blue-600": "bg-gray-200"}
+            ${isCompleted ? "bg-[#4B3EC4]" : isActive?"border-2 border-[#4B3EC4]": "bg-gray-200"}
           `}
         >
           <StepIcon
@@ -193,7 +207,7 @@ console.log("orderData:", orderData);
                 isCompleted
                   ? "text-blue-100"   // Completed icon
                   : isActive
-                  ? "text-blue-600"  // Active icon
+                  ? "text-[#4B3EC4] "  // Active icon
                   : "text-gray-500"   // Pending icon
               }
             `}
@@ -214,7 +228,7 @@ console.log("orderData:", orderData);
               <div className="bg-white rounded-xl shadow-sm border border-gray-200">
                 <div className="p-6 border-b border-gray-200">
                   <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
-                    <FaUser className="text-blue-600" />
+                    <FaUser className="text-[#4B3EC4]" />
                     Shipping Information
                   </h2>
                 </div>
@@ -246,7 +260,6 @@ console.log("orderData:", orderData);
                         />
                       </div>
                       
-                   
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                         Street Address *
@@ -260,7 +273,6 @@ console.log("orderData:", orderData);
                         placeholder="123 Main Street"
                       />
                       </div>
-                    
                     
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -318,7 +330,7 @@ console.log("orderData:", orderData);
                   <div className="mt-8 flex justify-end">
                     <button
                       type="submit"
-                      className="bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center gap-2"
+                      className="bg-[#4B3EC4] text-white px-8 py-3 rounded-lg font-medium hover:opacity-90 transition-colors flex items-center gap-2"
                     >
                       Continue to Payment
                       <FaCreditCard className="text-sm" />
@@ -333,7 +345,7 @@ console.log("orderData:", orderData);
               <div className="bg-white rounded-xl shadow-sm border border-gray-200">
                 <div className="p-6 border-b border-gray-200">
                   <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
-                    <FaCreditCard className="text-blue-600" />
+                    <FaCreditCard className="text-[#4B3EC4]" />
                     Payment Method
                   </h2>
                 </div>
@@ -350,7 +362,7 @@ console.log("orderData:", orderData);
                           name="paymentMethod"
                           checked={paymentMethod === method.id}
                           onChange={() => setPaymentMethod(method.id)}
-                          className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                          className="w-4 h-4 text-[#4B3EC4] border-gray-300 focus:ring-[#4B3EC4] accent-[#4B3EC4]"
                         />
                         <label htmlFor={method.id} className="ml-3 flex items-center gap-2 text-sm font-medium text-gray-700">
                           <method.icon className="text-gray-400" />
@@ -358,22 +370,6 @@ console.log("orderData:", orderData);
                         </label>
                       </div>
                     ))}
-                  </div>
-
-                 
-
-                  {/* Save Payment Info */}
-                  <div className="mt-6 flex items-center">
-                    <input
-                      type="checkbox"
-                      id="savePayment"
-                      checked={savePaymentInfo}
-                      onChange={(e) => setSavePaymentInfo(e.target.checked)}
-                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                    />
-                    <label htmlFor="savePayment" className="ml-2 text-sm text-gray-700">
-                      Save payment information for faster checkout
-                    </label>
                   </div>
 
                   <div className="mt-8 flex justify-between">
@@ -386,7 +382,7 @@ console.log("orderData:", orderData);
                     </button>
                     <button
                       type="submit"
-                      className="bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center gap-2"
+                      className="bg-[#4B3EC4] text-white px-8 py-3 rounded-lg font-medium hover:opacity-90 transition-colors flex items-center gap-2"
                     >
                       Review Order
                       <FaCheck className="text-sm" />
@@ -401,7 +397,7 @@ console.log("orderData:", orderData);
               <div className="bg-white rounded-xl shadow-sm border border-gray-200">
                 <div className="p-6 border-b border-gray-200">
                   <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
-                    <FaCheck className="text-blue-600" />
+                    <FaCheck className="text-[#4B3EC4]" />
                     Order Review
                   </h2>
                 </div>
@@ -418,7 +414,7 @@ console.log("orderData:", orderData);
                     </div>
                     <button
                       onClick={() => setActiveStep(1)}
-                      className="mt-2 text-blue-600 hover:text-blue-700 text-sm font-medium"
+                      className="mt-2 text-[#4B3EC4] hover:opacity-90 text-sm font-medium"
                     >
                       Edit shipping information
                     </button>
@@ -435,7 +431,7 @@ console.log("orderData:", orderData);
                     </div>
                     <button
                       onClick={() => setActiveStep(2)}
-                      className="mt-2 text-blue-600 hover:text-blue-700 text-sm font-medium"
+                      className="mt-2 text-[#4B3EC4] hover:opacity-90 text-sm font-medium"
                     >
                       Edit payment method
                     </button>
@@ -445,7 +441,7 @@ console.log("orderData:", orderData);
                   <div>
                     <h3 className="text-lg font-medium text-gray-900 mb-3">Order Items</h3>
                     <div className="space-y-4">
-                      {orderItems?.items.map((item) => (
+                      {finalItems?.map((item) => (
                         <div key={item._id} className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
                           <img
                             src={item.images[0]}
@@ -455,10 +451,10 @@ console.log("orderData:", orderData);
                           <div className="flex-1">
                             <h4 className="font-medium text-gray-900">{item.name}</h4>
                             <p className="text-sm text-gray-600">{item.brand} • {item.color}</p>
-                            <p className="text-sm text-gray-600">Qty: {item.quantity}</p>
+                            <p className="text-sm text-gray-600">Qty: {byNow?quantity:item.quantity}</p>
                           </div>
                           <div className="text-right">
-                            <p className="font-medium text-gray-900">Rs. {(item.discountPrice * item.quantity).toLocaleString()}</p>
+                            <p className="font-medium text-gray-900">Rs. {(item.discountPrice).toLocaleString()}</p>
                           </div>
                         </div>
                       ))}
@@ -472,10 +468,10 @@ console.log("orderData:", orderData);
                     >
                       Back to Payment
                     </button>
-                    <button disabled={loading || orderItems?.items.length===0}
+                    <button disabled={loading || finalItems?.length===0}
                       onClick={handlePlaceOrder}
                       className={`px-8 py-3 rounded-lg font-medium flex items-center gap-2 transition-colors
-                      ${orderItems?.items.length === 0 ? "bg-gray-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700 text-white"}`}
+                      ${finalItems?.length === 0 ? "bg-gray-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700 text-white"}`}
                     >
                       <FaLock className="text-sm" />
                       {loading?"Order Placing":"Place Order"} 
@@ -488,7 +484,7 @@ console.log("orderData:", orderData);
 
           {/* Order Summary */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 sticky top-34">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 sticky top-38">
               <div className="p-6 border-b border-gray-200">
                 <h2 className="text-lg font-semibold text-gray-900">Order Summary</h2>
               </div>
@@ -496,7 +492,7 @@ console.log("orderData:", orderData);
               <div className="p-6">
                 {/* Order Items */}
                 <div className="space-y-4 mb-6">
-                  {orderItems?.items?.map((item) => (
+                  {finalItems?.map((item) => (
                     <div key={item._id} className="flex items-center gap-3">
                       <img
                         src={item.images[0]}
@@ -505,10 +501,10 @@ console.log("orderData:", orderData);
                       />
                       <div className="flex-1 min-w-0">
                         <h4 className="text-sm font-medium text-gray-900 truncate">{item.name}</h4>
-                        <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
+                        <p className="text-xs text-gray-500">Qty: {byNow?quantity:item.quantity}</p>
                       </div>
                       <span className="text-sm font-medium text-gray-900">
-                        Rs. {(item.discountPrice * item.quantity).toLocaleString()}
+                        Rs. {(item.discountPrice ).toLocaleString()}
                       </span>
                     </div>
                   ))}
@@ -539,7 +535,7 @@ console.log("orderData:", orderData);
                 <div className="mt-6 space-y-3">
                   
                   <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <FaShieldAlt className="text-blue-500" />
+                    <FaShieldAlt className="text-[#4B3EC4]" />
                     Buyer Protection
                   </div>
                   <div className="flex items-center gap-2 text-sm text-gray-600">

@@ -39,6 +39,7 @@ function ProductDetails() {
   const {id}=useParams()
   // const {data:product}=useSingleProduct(id)
   const {isLoading, error, products}=useProductsStore()
+
   const singleProducts=products.filter((product)=>product._id===id)
   const product=singleProducts[0]
   const userId = localStorage.getItem("userId");
@@ -78,10 +79,10 @@ function ProductDetails() {
         {/* Breadcrumb */}
         <nav className="flex mb-8" aria-label="Breadcrumb">
           <ol className="flex items-center space-x-2 text-sm text-gray-500">
-            <li><Link to="/" className="hover:text-blue-600">Home</Link></li>
+            <li><Link to="/" className="hover:text-[#4B3EC4]">Home</Link></li>
             <li className="flex items-center">
               <span className="mx-2">/</span>
-              <a href="/categories" className="hover:text-blue-600">{product?.category}</a>
+              <a href="/categories" className="hover:text-[#4B3EC4]">{product?.category}</a>
             </li>
             <li className="flex items-center">
               <span className="mx-2">/</span>
@@ -91,7 +92,7 @@ function ProductDetails() {
         </nav>
 
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-2 sm:p-8">
             {/* Product Images */}
             <div className="space-y-4">
               {/* Main Image */}
@@ -110,7 +111,7 @@ function ProductDetails() {
                     key={index}
                     onClick={() => setSelectedImage(index)}
                     className={`aspect-square rounded-lg overflow-hidden border-2 transition-all ${
-                      selectedImage === index ? 'border-blue-600' : 'border-gray-200'
+                      selectedImage === index ? 'border-[#4B3EC4]' : 'border-gray-200'
                     }`}
                   >
                     <img
@@ -127,7 +128,7 @@ function ProductDetails() {
             <div className="space-y-6">
               {/* Brand and Name */}
               <div>
-                <span className="text-sm font-medium text-blue-600 uppercase tracking-wide">
+                <span className="text-sm font-medium text-[#4B3EC4] uppercase tracking-wide">
                   {product?.brand}
                 </span>
                 <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mt-2">
@@ -208,21 +209,21 @@ function ProductDetails() {
                   </div>
                 </div>
 
-                <div className="flex gap-3">
+                <div className="flex gap-3 flex-col xsm:flex-row">
                   <button 
                   disabled={addCart.isPending}
                     onClick={()=>addToCart(product?._id, quantity)}
-                    className="flex-1 bg-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+                    className="flex-1 bg-[#4B3EC4] text-white py-3 px-6 rounded-lg font-medium hover:opacity-90 transition-colors flex items-center justify-center gap-2"
                   >
                     <IoCartOutline className="text-lg" />
                     {addCart.isPending ? "Adding..." : "Add to Cart"}
                   </button>
-                  <button
+                  <Link to="/checkout" state={{ buyNow:true, productID:product?._id, quantity:quantity }}
                     onClick={buyNow}
-                    className="flex-1 bg-gray-900 text-white py-3 px-6 rounded-lg font-medium hover:bg-gray-800 transition-colors"
+                    className="flex-1 bg-gray-900 text-white text-center py-3 px-6 rounded-lg font-medium hover:bg-gray-800 transition-colors"
                   >
                     Buy Now
-                  </button>
+                  </Link>
                   
                 </div>
               </div>
@@ -230,21 +231,21 @@ function ProductDetails() {
               {/* Additional Info */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-gray-200">
                 <div className="flex items-center gap-3 text-sm text-gray-600">
-                  <FaTruck className="text-blue-600 text-lg" />
+                  <FaTruck className="text-[#4B3EC4] text-lg" />
                   <div>
                     <div className="font-medium">Free Shipping</div>
                     <div>On orders over Rs. 999</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 text-sm text-gray-600">
-                  <FaUndo className="text-blue-600 text-lg" />
+                  <FaUndo className="text-[#4B3EC4] text-lg" />
                   <div>
                     <div className="font-medium">30-Day Returns</div>
                     <div>No questions asked</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 text-sm text-gray-600">
-                  <FaShieldAlt className="text-blue-600 text-lg" />
+                  <FaShieldAlt className="text-[#4B3EC4] text-lg" />
                   <div>
                     <div className="font-medium">2-Year Warranty</div>
                     <div>Manufacturer warranty</div>
@@ -263,7 +264,7 @@ function ProductDetails() {
                   onClick={() => setActiveTab(tab)}
                   className={`px-6 py-4 font-medium text-sm capitalize transition-colors ${
                     activeTab === tab
-                      ? 'text-blue-600 border-b-2 border-blue-600'
+                      ? 'text-[#4B3EC4] border-b-2 border-[#4B3EC4]'
                       : 'text-gray-500 hover:text-gray-700'
                   }`}
                 >
@@ -375,7 +376,7 @@ function ProductDetails() {
                       Product information
                     </h3>
                     <div className="flex items-baseline gap-3 mt-3">
-    <p className="text-xl md:text-2xl font-bold text-indigo-600">Rs. {singleProduct?.discountPrice}</p>
+    <p className="text-xl md:text-2xl font-bold text-[#4B3EC4]">Rs. {singleProduct?.discountPrice}</p>
     {singleProduct?.discountPrice && (
       <p className="text-lg text-gray-400 line-through">Rs. {singleProduct?.price}</p>
     )}
@@ -403,7 +404,7 @@ function ProductDetails() {
 
   {/* Actions */}
   <div className="mt-6 flex gap-3">
-    <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-md transition" onClick={()=>addToCart(product._id,1)}>
+    <button className="bg-[#4B3EC4] hover:opacity-90 text-white px-6 py-2 rounded-md transition" onClick={()=>addToCart(product._id,1)}>
       {addCart.isPending ? "Adding..." : "Add to Cart"}
     </button>
   </div>

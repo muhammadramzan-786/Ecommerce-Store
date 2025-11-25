@@ -5,10 +5,12 @@ import Button from '../../components/Button'
 import { FaTimes, FaFilter } from "react-icons/fa";
 import { useAddCart } from '../../hooks/useCart';
 import { useCategoryStore } from '../../stores/categoryStore';
+import Input from '../../components/Input';
 
 
 function Shop() {
   const [singleProduct,setSingleProduct]=useState(null)
+  const [searchVal, setSearchVal] = useState('');
   const [showFilter, setShowFilter] = useState(false);
   const [isModal,setisModal]=useState(false)
   const [selectedBrands, setSelectedBrands] = useState([]);
@@ -51,10 +53,16 @@ const [selectedCategories, setSelectedCategories] = useState([]);
      const filteredProducts=products.filter(product=>{
       const brandMatch=selectedBrands.length===0 || selectedBrands.includes(product.brand)
       const categoryMatch =selectedCategories.length===0 || selectedCategories.includes(product.category)
+      const searchValMatch=product.name.toLowerCase().includes(searchVal.toLowerCase())
 
-      return brandMatch && categoryMatch
+      return brandMatch && categoryMatch && searchValMatch
      })
-     console.log(filteredProducts);
+     
+     const clearFilter=()=>{
+      setSearchVal("")
+      setSelectedCategories([])
+      setSelectedBrands([])
+     }
      
   return (
     <>
@@ -74,11 +82,11 @@ const [selectedCategories, setSelectedCategories] = useState([]);
       <p className="text-gray-600 mt-2">Discover our amazing collection of products</p>
     </div>
 
-    <div className="flex flex-col md:flex-row gap-8">
+    <div className="flex flex-col md:flex-row gap-5">
       {/* Filters Sidebar */}
       <div className="lg:w-64 flex-shrink-0 ">
         <div className={`bg-white max-h-screen md:rounded-xl border border-gray-300 shadow-2xl md:shadow-none px-4 sm:py-4 fixed z-10 md:sticky left-0 
-        top-13 md:top-18 transform transition-transform duration-300 ${showFilter ? "translate-x-0" : "-translate-x-full md:translate-x-0"} `}>
+        top-12 sm:top-15 md:top-18 transform transition-transform duration-300 ${showFilter ? "translate-x-0" : "-translate-x-full md:translate-x-0"} `}>
               <button
                 className={`md:hidden p-1 rounded-full bg-red-600 text-white font-bold absolute top-2 ${showFilter ? "-right-2" : "right-0"}`}
                 onClick={() => setShowFilter(false)}
@@ -89,27 +97,26 @@ const [selectedCategories, setSelectedCategories] = useState([]);
             {/* Filters Header */}
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-gray-900">Filters</h2>
-            <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">
+            <button className="text-sm text-blue-600 hover:text-blue-700 font-medium" onClick={clearFilter}>
               Clear All
             </button>
           </div>
 
           {/* Search Filter */}
-          <div className="mb-4">
+          <div className="mb-4 px-1">
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Search Products
             </label>
-            <input
+            <Input onChange={(e)=>setSearchVal(e.target.value)}
               type="text"
               placeholder="Type to search..."
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
 
           {/* Category Filter */}
           <div className="mb-4">
             <h3 className="text-sm font-medium text-gray-900 mb-3">Categories</h3>
-            <div className="space-y-1 max-h-52 overflow-y-auto">
+            <div className="space-y-0.5 max-h-48 overflow-y-auto">
               {categories?.map((category) => (
                 <label key={category._id} className="flex items-center cursor-pointer relative gap-3" >
   <input type="checkbox" className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 
@@ -127,9 +134,9 @@ const [selectedCategories, setSelectedCategories] = useState([]);
           </div>
 
           {/* Brand Filter */}
-          <div className="mb-6">
+          <div className="">
             <h3 className="text-sm font-medium text-gray-900 mb-3">Brand</h3>
-            <div className="space-y-1 max-h-40 overflow-y-auto">
+            <div className="space-y-0.5 max-h-40 overflow-y-auto">
               {brands?.map((brand) => (
 
                 <label key={brand} className="flex items-center cursor-pointer relative gap-3" >
@@ -148,7 +155,7 @@ const [selectedCategories, setSelectedCategories] = useState([]);
           </div>
          
           {/* Availability Filter */}
-          <div className="mb-6">
+          {/* <div className="mb-6">
             <h3 className="text-sm font-medium text-gray-900 mb-3">Availability</h3>
             <div className="space-y-2">
               <label className="flex items-center">
@@ -166,7 +173,7 @@ const [selectedCategories, setSelectedCategories] = useState([]);
                 <span className="ml-2 text-sm text-gray-700">Out of Stock</span>
               </label>
             </div>
-          </div>
+          </div> */}
 
           {/* Apply Filters Button */}
           {/* <button className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 transition-colors">

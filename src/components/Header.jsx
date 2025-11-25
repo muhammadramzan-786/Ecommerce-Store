@@ -177,6 +177,7 @@ function Header() {
   const [searchVal, setSearchVal] = useState('');
   const userData=useUserStore((state)=>state.user)
   const [showDropdown, setShowDropdown]=useState(false)
+  const [searchDropdown, setSearchDropdown]=useState(false)
   const containerRef=useRef(null)
 // console.log(userData);
 const {isLoading, error, products}=useProductsStore()
@@ -196,14 +197,33 @@ const {isLoading, error, products}=useProductsStore()
 
   return (
     <div className="w-full px-4 sm:px-6 xl:px-0 sticky top-0 z-50 bg-white shadow-lg @container">
-      <div className="flex mx-auto max-w-7xl flex-col @xsm:flex-row gap-2 lg:gap-5 items-end lg:items-center xl:justify-between ease-out duration-200 py-2 2xl:py-5">
+      <div className="flex mx-auto max-w-7xl flex-col @xsm:flex-row gap-2 lg:gap-5 md:items-end lg:items-center xl:justify-between ease-out duration-200 py-2 2xl:py-5">
         {/* Logo and Search Section */}
         <div className="flex w-full gap-3 lg:gap-5 flex-row justify-between sm:items-center sm:gap-6">
-          <Link className="shrink-0 text-xl sm:text-2xl font-bold text-blue-600 hover:text-blue-700 transition-colors" to="/">
+          <Link className="shrink-0 text-xl sm:text-2xl font-bold text-[#4B3EC4]  transition-colors" to="/">
             SHOPNEST
           </Link>
 
           <div className="sm:hidden flex items-center justify-end gap-1 xl:gap-5 w-full @xsm:w-auto">
+                  <button type="submit" onClick={()=>setSearchDropdown(!searchDropdown)} id="search-btn" aria-label="Search" className="border border-gray-300 p-1.5 rounded-full">
+                    {searchDropdown ? (
+                      // Close Icon
+                      <svg className="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                          d="M6 6L18 18M6 18L18 6" />
+                      </svg>
+                    ) : (
+                      // Search Icon
+                      <svg className="w-5 h-5 text-gray-600" viewBox="0 0 24 25" fill="none">
+                        <path
+                          fillRule="evenodd"
+                          clipRule="evenodd"
+                          d="M11.25 2.75C6.14154 2.75 2 6.89029 2 11.998C2 17.1056 6.14154 21.2459 11.25 21.2459C13.5335 21.2459 15.6238 20.4187 17.2373 19.0475L20.7182 22.5287C21.011 22.8216 21.4859 22.8217 21.7788 22.5288C22.0717 22.2359 22.0718 21.761 21.7789 21.4681L18.2983 17.9872C19.6714 16.3736 20.5 14.2826 20.5 11.998C20.5 6.89029 16.3585 2.75 11.25 2.75ZM3.5 11.998C3.5 7.71905 6.96962 4.25 11.25 4.25C15.5304 4.25 19 7.71905 19 11.998C19 16.2769 15.5304 19.7459 11.25 19.7459C6.96962 19.7459 3.5 16.2769 3.5 11.998Z"
+                          fill="currentColor"
+                        />
+                      </svg>
+                    )}
+                  </button>
               {/* Account - Hidden on mobile, visible on xl and up */}
               {!userData?(
               <Link to="/login" className="items-center gap-2.5 hidden xl:flex hover:text-blue-600 transition-colors" >
@@ -230,23 +250,20 @@ const {isLoading, error, products}=useProductsStore()
                   </p>
                 </div>
               </Link>):(
-                <Link to="/profileLayout" className="items-center gap-2.5 flex hover:text-blue-600 transition-colors w-8 h-8 lg:w-auto lg:h-auto" >
+                <Link to="/profileLayout" className="items-center gap-2.5 flex hover:text-[#4B3EC4] transition-colors w-8 h-8 lg:w-auto lg:h-auto" >
                   <img src={userData?.image} className="rounded-full w-8 h-8 lg:w-9 lg:h-9 border border-gray-300 flex-shrink-0 object-cover" />
                 <div className="group hidden xl:inline-block">
                   <span className="block font-medium text-xs text-gray-600">
                     {userData?.name}
                   </span>
-                  <p className="font-medium text-sm text-gray-800 hover:text-blue-600">
+                  <p className="font-medium text-sm text-gray-800 ">
                     {userData?.email}
                   </p>
                 </div>
               </Link>
               )}              
               {/* Cart */}
-                <Link to="/cart" 
-                  className="flex items-center gap-2.5 w-8 h-8 justify-center hover:text-blue-600 transition-colors"
-                  title="Cart"
-                >
+                <Link to="/cart" className="flex items-center gap-2.5 w-8 h-8 justify-center hover:text-[#4B3EC4] transition-colors" title="Cart">
                   <span className="relative inline-block">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -331,7 +348,7 @@ const {isLoading, error, products}=useProductsStore()
 
               {/* Product Info */}
               <div className="flex-1 min-w-0">
-                <h4 className="text-sm font-medium text-gray-900 truncate group-hover:text-blue-600 transition-colors">
+                <h4 className="text-sm font-medium text-gray-900 truncate group-hover:text-[#4B3EC4] transition-colors">
                   {item.name}
                 </h4>
                 
@@ -412,7 +429,7 @@ const {isLoading, error, products}=useProductsStore()
           // Clear search or show all products
           console.log('View all products');
         }}
-        className="inline-flex items-center px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+        className="inline-flex items-center px-4 py-2 text-sm font-medium text-[#4B3EC4] bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
       >
         View all products
         <svg
@@ -443,8 +460,8 @@ const {isLoading, error, products}=useProductsStore()
           <div className="hidden sm:flex items-center gap-1 xl:gap-5 w-full @xsm:w-auto">
               {/* Account - Hidden on mobile, visible on xl and up */}
               {!userData?(
-              <Link to="/login" className="items-center gap-2.5 hidden xl:flex hover:text-blue-600 transition-colors" >
-                <div className="flex items-center justify-center w-8 h-8 lg:w-9 lg:h-9 border border-gray-300 rounded-full hover:border-blue-500 transition-colors">
+              <Link to="/login" className="items-center gap-2.5 hidden xl:flex hover:text-[#4B3EC4] transition-colors" >
+                <div className="flex items-center justify-center w-8 h-8 lg:w-9 lg:h-9 border border-gray-300 rounded-full transition-colors">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width={18}
@@ -462,18 +479,18 @@ const {isLoading, error, products}=useProductsStore()
                   <span className="block uppercase font-medium text-xs text-gray-600">
                     account
                   </span>
-                  <p className="font-medium text-sm text-gray-800 hover:text-blue-600">
+                  <p className="font-medium text-sm text-gray-800 hover:text-[#4B3EC4]">
                     Sign In / Register
                   </p>
                 </div>
               </Link>):(
-                <Link to="/profileLayout" className="items-center gap-2.5 flex hover:text-blue-600 transition-colors w-8 h-8 lg:w-auto lg:h-auto" >
+                <Link to="/profileLayout" className="items-center gap-2.5 flex  transition-colors w-8 h-8 lg:w-auto lg:h-auto" >
                   <img src={userData?.image} className="rounded-full w-8 h-8 lg:w-9 lg:h-9 border border-gray-300 flex-shrink-0 object-cover" />
-                <div className="group hidden xl:inline-block">
-                  <span className="block font-medium text-xs text-gray-600">
+                <div className="group hidden xl:inline-block group">
+                  <span className="block font-medium text-xs text-gray-600 group-hover:text-[#4B3EC4]">
                     {userData?.name}
                   </span>
-                  <p className="font-medium text-sm text-gray-800 hover:text-blue-600">
+                  <p className="font-medium text-sm text-gray-800 group-hover:text-[#4B3EC4]">
                     {userData?.email}
                   </p>
                 </div>
@@ -481,7 +498,7 @@ const {isLoading, error, products}=useProductsStore()
               )}              
               {/* Cart */}
                 <Link to="/cart" 
-                  className="flex items-center gap-2.5 w-8 h-8 justify-center hover:text-blue-600 transition-colors"
+                  className="flex items-center gap-2.5 w-8 h-8 justify-center hover:text-[#4B3EC4] transition-colors"
                   title="Cart"
                 >
                   <span className="relative inline-block">
@@ -507,13 +524,13 @@ const {isLoading, error, products}=useProductsStore()
                 </Link>
             </div>
 
-            <div className="relative mx-auto w-full inline-block sm:hidden" ref={containerRef}>
-                <div className="relative min-w-[200px] max-w-[475px] w-full sm:min-w-[300px] lg:min-w-[370px] border border-gray-300 rounded-full focus-within:border-gray-900 focus-within:ring-1 transition-all">
+            <div className={`absolute top-12 left-0 p-1 bg-white mx-auto w-full transform transition-transform duration-300 ${searchDropdown?"translate-x-0":" -translate-x-full md:translate-x-0"} sm:hidden`} ref={containerRef}>
+                <div className="relative min-w-[200px] mx-auto max-w-[475px] w-full sm:min-w-[300px] lg:min-w-[370px] border border-gray-300 rounded-full focus-within:border-gray-900 focus-within:ring-1 transition-all">
                   <input onFocus={()=>setShowDropdown(true)} onChange={(e) => setSearchVal(e.target.value)} value={searchVal} id="search" placeholder="Search Products" autoComplete="off"
                     className="w-full rounded-full border-0 focus:border-gray-800 h-[35px] sm:h-[42px] sm:py-2.5 pl-5 pr-12 outline-none ease-in duration-200 text-sm" type="search" name="search"
                   />
                   <button type="submit" id="search-btn" aria-label="Search"
-                    className="absolute flex items-center h-[42px] justify-center duration-200 ease-in -translate-y-1/2 right-3 top-1/2 hover:text-blue-600"
+                    className="absolute flex items-center h-[42px] justify-center duration-200 ease-in -translate-y-1/2 right-3 top-1/2 hover:text-[#4B3EC4]"
                   >
                     <svg
                       className="w-5 h-5 text-gray-600"
@@ -568,7 +585,7 @@ const {isLoading, error, products}=useProductsStore()
 
               {/* Product Info */}
               <div className="flex-1 min-w-0">
-                <h4 className="text-sm font-medium text-gray-900 truncate group-hover:text-blue-600 transition-colors">
+                <h4 className="text-sm font-medium text-gray-900 truncate group-hover:text-[#4B3EC4] transition-colors">
                   {item.name}
                 </h4>
                 
@@ -649,7 +666,7 @@ const {isLoading, error, products}=useProductsStore()
           // Clear search or show all products
           console.log('View all products');
         }}
-        className="inline-flex items-center px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+        className="inline-flex items-center px-4 py-2 text-sm font-medium text-[#4B3EC4] bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
       >
         View all products
         <svg
@@ -668,9 +685,9 @@ const {isLoading, error, products}=useProductsStore()
       </button>
     </div>
   )}
-</div>
-}     
-        </div>
+              </div>
+                }     
+           </div>
       </div>
     </div>
   );

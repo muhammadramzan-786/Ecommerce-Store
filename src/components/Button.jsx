@@ -8,7 +8,7 @@ export default function Button({
   loading = false,
   disabled = false,
   type = "button",
-  className = "bg-gray-950 hover:bg-gray-800 text-white px-4 py-2.5",
+  className = "bg-[#4B3EC4] hover:opacity-90 text-white px-4 py-2.5",
 }) {
 
   return (

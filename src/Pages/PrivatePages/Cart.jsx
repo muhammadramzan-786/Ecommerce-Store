@@ -140,7 +140,7 @@ const { isPending, isError, error, isSuccess } = updateCart;
                       <div className="flex-1 min-w-0">
                         <div className="flex justify-between">
                           <div>
-                            <h3 className="text-lg font-medium text-gray-900 hover:text-blue-600 transition-colors">
+                            <h3 className="text-lg font-medium text-gray-900 hover:text-[#4B3EC4] transition-colors">
                               <Link to={`/product-details/${item._id}`}>{item.name}</Link>
                             </h3>
                             <p className="text-sm text-gray-500 mt-1">{item.brand}</p>
@@ -235,9 +235,7 @@ const { isPending, isError, error, isSuccess } = updateCart;
                     <FaArrowLeft className="text-sm" />
                     Continue Shopping
                   </button>
-                  <div className="text-sm text-gray-600">
-                    Need help? <a href="/contact" className="text-blue-600 hover:underline">Contact Support</a>
-                  </div>
+                  
                 </div>
               </div>
             </div>
@@ -250,7 +248,7 @@ const { isPending, isError, error, isSuccess } = updateCart;
                 <div className="text-sm text-gray-600">256-bit SSL encryption</div>
               </div>
               <div className="bg-white p-4 rounded-lg border border-gray-200 text-center">
-                <FaShieldAlt className="text-blue-500 text-xl mx-auto mb-2" />
+                <FaShieldAlt className="text-[#4B3EC4] text-xl mx-auto mb-2" />
                 <div className="font-medium text-gray-900">Buyer Protection</div>
                 <div className="text-sm text-gray-600">Full refund policy</div>
               </div>
@@ -295,7 +293,7 @@ const { isPending, isError, error, isSuccess } = updateCart;
 
               
                 {/* Checkout Button */}
-                <Link to="/checkout" className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
+                <Link to="/checkout" state={{ buyNow:false, productID:"", quantity:"" }} className="w-full bg-[#4B3EC4] text-white py-3 px-6 rounded-lg font-medium hover:opacity-90 transition-colors flex items-center justify-center gap-2">
                   <FaLock className="text-sm" />
                   Proceed to Checkout
                 </Link>

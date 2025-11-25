@@ -9,6 +9,7 @@ function Profile() {
     email: '',
     phone: '',
     city: '',
+    password:""
   });
   
   // Zustand state
@@ -42,8 +43,8 @@ function Profile() {
         console.log(form);
   }
   return (
-    <div className=" bg-white p-4 md:p-6 flex justify-center">
-      <div className="w-full ">
+    <div className=" bg-white p-4 md:p-6  w-full">
+
         
         <h2 className="text-xl font-semibold text-gray-800 mb-6">
           Profile Information
@@ -75,11 +76,16 @@ function Profile() {
         </div>
         </div>
 
+        {/* Passwod */}
+        <div className="mb-4 w-full">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+          <Input type="password" value={form?.password || ""} onChange={handleChange} placeholder="Enter your password" name="password" />
+        </div>
         {/* Save Button */}
         <button onClick={handleSubmit} className=" px-5 bg-[#4B3EC4] text-white py-3 rounded-lg font-medium hover:bg-[#6352f3] transition-colors" disabled={isPending}>
           {isPending?"Saving":"Save Changes"}
         </button>
-      </div>
+
     </div>
   );
 }

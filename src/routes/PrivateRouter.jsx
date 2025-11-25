@@ -1,15 +1,6 @@
 import React, { lazy, Suspense, useEffect } from 'react'
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
-// import Cart from "../Pages/PrivatePages/Cart";
-// import Checkout from "../Pages/PrivatePages/Checkout";
-// import Shop from "../Pages/PrivatePages/Shop";
-// import ProductDetails from "../Pages/PrivatePages/ProductDetails";
-// import Home from "../Pages/Home";
-// import ProtectedRoute from './ProtectedRoute';
-// import Layout from '../components/Layout';
-// import Orders from '../Pages/PrivatePages/Orders';
-// import Profile from '../Pages/PrivatePages/Profile';
-// import ProfileLayout from '../Pages/PrivatePages/ProfileLayout';
+import ContactUs from '../Pages/ContactUs';
 
 const ProfileLayout=lazy(()=>import("../Pages/PrivatePages/ProfileLayout"))
 const Profile=lazy(()=>import("../Pages/PrivatePages/Profile"))
@@ -21,6 +12,8 @@ const ProductDetails=lazy(()=>import("../Pages/PrivatePages/ProductDetails"))
 const Shop=lazy(()=>import("../Pages/PrivatePages/Shop"))
 const Checkout=lazy(()=>import("../Pages/PrivatePages/Checkout"))
 const Cart=lazy(()=>import("../Pages/PrivatePages/Cart"))
+const Category=lazy(()=>import("../Pages/PrivatePages/Category"))
+const ChangePassword=lazy(()=>import("../Pages/PrivatePages/ChangePassword"))
 
 function PrivateRouter() {
     const location=useLocation()
@@ -38,13 +31,16 @@ function PrivateRouter() {
             <Route path='/' element={<Home/>} />
             <Route path='/shop' element={<Shop/>} />
             <Route path='/checkout' element={<Checkout/>} />
-            <Route path='/checkout' element={<Checkout/>} />
             <Route path='/product-details/:id' element={<ProductDetails/>} />
             <Route path='/cart' element={<Cart/>} />
+            <Route path='/contactUs' element={<ContactUs/>} />
+            <Route path='/category/:name' element={<Category/>} />
+            
             
             <Route path='/profileLayout' element={<ProfileLayout/>} >
               <Route index element={<Profile/>} />
               <Route path='orders' element={<Orders/>} />
+              <Route path='changePassword' element={<ChangePassword/>} />
             </Route>
       </Route>
 
