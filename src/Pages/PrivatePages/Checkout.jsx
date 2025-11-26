@@ -10,6 +10,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useUserStore } from '../../stores/userStore';
 import { useCartStore } from '../../stores/cartStore';
 import { useProductsStore } from '../../stores/productsStore';
+import Button from '../../components/Button';
 
 function Checkout() {
   const [activeStep, setActiveStep] = useState(1);
@@ -328,13 +329,10 @@ const deleteItem=useDeleteCartProduct()
                   </div>
 
                   <div className="mt-8 flex justify-end">
-                    <button
+                    <Button icon={FaCreditCard} text='Continue to Payment'
                       type="submit"
                       className="bg-[#4B3EC4] text-white px-8 py-3 rounded-lg font-medium hover:opacity-90 transition-colors flex items-center gap-2"
-                    >
-                      Continue to Payment
-                      <FaCreditCard className="text-sm" />
-                    </button>
+                    />
                   </div>
                 </form>
               </div>
@@ -373,20 +371,13 @@ const deleteItem=useDeleteCartProduct()
                   </div>
 
                   <div className="mt-8 flex justify-between">
-                    <button
-                      type="button"
-                      onClick={() => setActiveStep(1)}
+                    <Button text='Back to Shipping' type="button" onClick={() => setActiveStep(1)}
                       className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
-                    >
-                      Back to Shipping
-                    </button>
-                    <button
-                      type="submit"
+                    />
+                    <Button icon={FaCheck} text='Review Order' type="submit"
                       className="bg-[#4B3EC4] text-white px-8 py-3 rounded-lg font-medium hover:opacity-90 transition-colors flex items-center gap-2"
-                    >
-                      Review Order
-                      <FaCheck className="text-sm" />
-                    </button>
+                    />
+
                   </div>
                 </form>
               </div>
@@ -412,12 +403,7 @@ const deleteItem=useDeleteCartProduct()
                       <p className="text-gray-600">{shippingInfo.phone}</p>
                       <p className="text-gray-600">{shippingInfo.email}</p>
                     </div>
-                    <button
-                      onClick={() => setActiveStep(1)}
-                      className="mt-2 text-[#4B3EC4] hover:opacity-90 text-sm font-medium"
-                    >
-                      Edit shipping information
-                    </button>
+                    <Button text='Edit shipping information' onClick={() => setActiveStep(1)} className="mt-2 text-[#4B3EC4] hover:opacity-90 text-sm font-medium"/>
                   </div>
 
                   {/* Payment Information Review */}
@@ -429,12 +415,7 @@ const deleteItem=useDeleteCartProduct()
                         <p className="text-gray-600">**** **** **** {paymentInfo.cardNumber.slice(-4)}</p>
                       )}
                     </div>
-                    <button
-                      onClick={() => setActiveStep(2)}
-                      className="mt-2 text-[#4B3EC4] hover:opacity-90 text-sm font-medium"
-                    >
-                      Edit payment method
-                    </button>
+                    <Button text='Edit payment method' onClick={() => setActiveStep(2)} className="mt-2 text-[#4B3EC4] hover:opacity-90 text-sm font-medium" />
                   </div>
 
                   {/* Order Items Review */}
@@ -462,20 +443,13 @@ const deleteItem=useDeleteCartProduct()
                   </div>
 
                   <div className="mt-8 flex justify-between">
-                    <button
-                      onClick={() => setActiveStep(2)}
-                      className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
-                    >
-                      Back to Payment
-                    </button>
-                    <button disabled={loading || finalItems?.length===0}
+                    <Button text='Back to Payment' onClick={() => setActiveStep(2)}
+                      className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"/>
+                    <Button icon={FaLock} text={loading?"Order Placing":"Place Order"} disabled={loading || finalItems?.length===0}
                       onClick={handlePlaceOrder}
                       className={`px-8 py-3 rounded-lg font-medium flex items-center gap-2 transition-colors
                       ${finalItems?.length === 0 ? "bg-gray-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700 text-white"}`}
-                    >
-                      <FaLock className="text-sm" />
-                      {loading?"Order Placing":"Place Order"} 
-                    </button>
+                    />
                   </div>
                 </div>
               </div>

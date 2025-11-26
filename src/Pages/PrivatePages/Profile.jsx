@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useUserStore } from '../../stores/userStore';
 import { useUpdateUser, useUser } from '../../hooks/useUser';
 import Input from '../../components/Input';
+import Button from '../../components/Button';
 
 function Profile() {
     const [form, setForm] = useState({
@@ -82,9 +83,7 @@ function Profile() {
           <Input type="password" value={form?.password || ""} onChange={handleChange} placeholder="Enter your password" name="password" />
         </div>
         {/* Save Button */}
-        <button onClick={handleSubmit} className=" px-5 bg-[#4B3EC4] text-white py-3 rounded-lg font-medium hover:bg-[#6352f3] transition-colors" disabled={isPending}>
-          {isPending?"Saving":"Save Changes"}
-        </button>
+        <Button text={isPending?"Saving":"Save Changes"} onClick={handleSubmit} className=" px-5 bg-[#4B3EC4] text-white py-3 rounded-lg font-medium hover:bg-[#6352f3] transition-colors" disabled={isPending} />
 
     </div>
   );

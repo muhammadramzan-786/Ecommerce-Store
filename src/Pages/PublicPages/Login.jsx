@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { login } from '../../api/auth';
 import { toast } from 'react-toastify';
+import { useLogin } from '../../hooks/useLogin';
 
 function Login() {
     const [showHidePass,setShowHidePass]=useState(false)
@@ -11,7 +12,7 @@ function Login() {
     email:'test@gmail.com',
     password:'test'
   })
-    const [loading, setLoading] = useState(false);
+    // const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
 
@@ -21,35 +22,12 @@ function Login() {
       ...prev,[name]:value
     }))
   }
-
-  const loginFormSubmit=async(e)=>{
-    e.preventDefault()
-    setLoading(true)
-    if (formData.email==='' || formData.password==="") {
-      alert('Please fill all fields')
-      return
-    }
-
-    try {
-      const response=await login(formData)
-      console.log(response);
-      if(response.status===200){
-      toast.success("Login successful")
-      localStorage.setItem('token',response.data.token)
-      localStorage.setItem('userId',response.data.user._id)
-            // yahan custom event trigger kar do
-      window.dispatchEvent(new Event("authChange"));
-      // navigate to home
-      navigate("/");
-      // toast.error('Error in Login')
-      }else{
-      }
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Login failed ❌")
-    }finally{
-      setLoading(false)
-    }
-  }
+   const { handleLogin, loading }=useLogin()
+const loginFormSubmit = (e) => {
+  e.preventDefault();
+  handleLogin(formData);
+  navigate("/");
+}
 
   return (
 

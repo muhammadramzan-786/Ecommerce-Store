@@ -5,9 +5,13 @@ import { getCart } from '../../services/cart';
 import { useDeleteCartProduct, useGetCart, useUpdateCart } from '../../hooks/useCart';
 import { Link } from 'react-router-dom';
 import { useCartStore } from '../../stores/cartStore';
+import Button from '../../components/Button';
+import { useAuthStore } from '../../hooks/useAuthStore';
+import LoginModal from '../../components/LoginModal';
 
 function Cart() {
-  const userId = localStorage.getItem("userId");
+  const token=useAuthStore(state=>state.token)
+  const userId=useAuthStore(state=>state.userId)
   const cartItems=useCartStore((state)=>state.cart)
   
   const updateCart=useUpdateCart()
@@ -48,6 +52,11 @@ const { isPending, isError, error, isSuccess } = updateCart;
     // Navigate to products page
   };
 
+      const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+
+  // Modal close ka function
+  const closeModal = () => setIsLoginModalOpen(false);
+
   if (cartItems?.length === 0) {
     return (
       <div className="min-h-screen bg-gray-50 py-12">
@@ -62,18 +71,10 @@ const { isPending, isError, error, isSuccess } = updateCart;
             <p className="text-gray-600 mb-8 max-w-md mx-auto">
               Looks like you haven't added any items to your cart yet. Start shopping to discover amazing products!
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button
+              <button icon={FaArrowLeft} text='Continue Shopping'
                 onClick={continueShopping}
                 className="bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
-              >
-                <FaArrowLeft className="text-sm" />
-                Continue Shopping
-              </button>
-              <button className="border border-gray-300 text-gray-700 px-8 py-3 rounded-lg font-medium hover:bg-gray-50 transition-colors">
-                View Wishlist
-              </button>
-            </div>
+              />
             
             {/* Popular Categories */}
             <div className="mt-12">
@@ -175,39 +176,34 @@ const { isPending, isError, error, isSuccess } = updateCart;
                           <div className="flex items-center gap-3">
                             <span className="text-sm font-medium text-gray-700">Quantity:</span>
                             <div className="flex items-center border border-gray-300 rounded-lg">
-                              <button
+                              <Button icon={FaMinus}
                                 onClick={() => updateProductQuantity(item._id,item.quantity-1)}
                                 disabled={item.quantity <= 1 || isPending}
                                 className="px-3 py-1 text-gray-600 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                              >
-                                {/* <FaMinus className="text-xs" /> */}
-                               <FaMinus className="text-xs" />
-                              </button>
+                              />
+
                               <span className="px-3 py-1 border-x border-gray-300 font-medium min-w-12 text-center">
                                 {item.quantity}
                               </span>
-                              <button
+                              <Button icon={FaPlus}
                                 onClick={() => {
                                   // updateQuantity(item._id, item.quantity+1);
                                   updateProductQuantity(item._id, item.quantity+1)}}
                                 disabled={item.quantity >= item.maxQuantity || isPending}
                                 className="px-3 py-1 text-gray-600 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                              >
-                                <FaPlus className="text-xs" />
-                              </button>
+                              />
                             </div>
                             {isError && <p className="text-red-500">{error?.message}</p>}
                           </div>
 
                           {/* Action Buttons */}
                           <div className="flex items-center gap-2">
-                            <button
+                            <Button icon={FaTrash}
                               onClick={() => removeItem(item._id)}
                               className="p-2 text-gray-400 hover:text-red-500 transition-colors"
                               title="Remove Item"
-                            >
-                              <FaTrash />
-                            </button>
+                            />
+
                           </div>
                         </div>
 
@@ -227,16 +223,12 @@ const { isPending, isError, error, isSuccess } = updateCart;
 
               {/* Cart Footer */}
               <div className="p-6 bg-gray-50 border-t border-gray-200">
-                <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-                  <button
+
+                  <Button icon={FaArrowLeft} text='Continue Shopping'
                     onClick={continueShopping}
                     className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
-                  >
-                    <FaArrowLeft className="text-sm" />
-                    Continue Shopping
-                  </button>
-                  
-                </div>
+                  /> 
+
               </div>
             </div>
 
@@ -293,7 +285,14 @@ const { isPending, isError, error, isSuccess } = updateCart;
 
               
                 {/* Checkout Button */}
-                <Link to="/checkout" state={{ buyNow:false, productID:"", quantity:"" }} className="w-full bg-[#4B3EC4] text-white py-3 px-6 rounded-lg font-medium hover:opacity-90 transition-colors flex items-center justify-center gap-2">
+                <Link to={token && userId ? "/checkout" : "#"} state={{ buyNow:false, productID:"", quantity:"" }} className="w-full bg-[#4B3EC4] text-white py-3 
+                px-6 rounded-lg font-medium hover:opacity-90 transition-colors flex items-center justify-center gap-2" onClick={(e) => {
+    if (!token || !userId) {
+      e.preventDefault();
+      // open login modal
+      setIsLoginModalOpen(true);
+    }
+  }}>
                   <FaLock className="text-sm" />
                   Proceed to Checkout
                 </Link>
@@ -312,6 +311,11 @@ const { isPending, isError, error, isSuccess } = updateCart;
           </div>
         </div>
       </div>
+
+                  <LoginModal
+        isModal={isLoginModalOpen}
+        closeModal={closeModal}
+      />
     </div>
   );
 }

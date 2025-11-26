@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { FaCartShopping } from "react-icons/fa6";
 import { FaEye } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import LoginModal from "./LoginModal";
 
 export default function ProductCard({ image, name, oldPrice, price, onClick, productID, addToCart, loading }) {
 if (loading) {
@@ -22,7 +23,14 @@ if (loading) {
       </div>
   );
 }
+const token = localStorage.getItem("token");
+  const userId=localStorage.getItem("userId")
+      const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+
+  // Modal close ka function
+  const closeModal = () => setIsLoginModalOpen(false);
   return (
+    <>
     <div className="group relative bg-white border border-[#9999999c] rounded-xl hover:shadow-lg transition-shadow duration-300 overflow-hidden">
       <div className="relative overflow-hidden flex items-center justify-center bg-[#F6F7FB]">
         <img
@@ -39,7 +47,7 @@ if (loading) {
             <FaEye />
           </button>
           <button className="flex items-center justify-center w-9 h-9 rounded-full shadow-1 ease-out duration-200 text-dark bg-white 
-          hover:text-[#4B3EC4]" onClick={()=>addToCart(productID,1)}>
+          hover:text-[#4B3EC4]" onClick={()=>{userId && token ? addToCart(productID,1):setIsLoginModalOpen(true)}} >
             <FaCartShopping />
           </button>
         </div>
@@ -56,5 +64,11 @@ if (loading) {
         </div>
       </div>
     </div>
+
+            <LoginModal
+        isModal={isLoginModalOpen}
+        closeModal={closeModal}
+      />
+      </>
   );
 }

@@ -8,7 +8,7 @@ export default function Button({
   loading = false,
   disabled = false,
   type = "button",
-  className = "bg-[#4B3EC4] hover:opacity-90 text-white px-4 py-2.5",
+  className = "bg-[#4B3EC4] hover:opacity-90 text-white px-4 py-2.5 w-full",
 }) {
 
   return (
@@ -19,11 +19,8 @@ export default function Button({
       className={`space-x-2 rounded-lg flex items-center justify-center
         ${disabled || loading ? "opacity-60 cursor-not-allowed" : ""} whitespace-nowrap ${className}`}
     >
-     
-        <>
           {Icon && <Icon />}
-        </>
-      
+
       {text && <span>{text}</span>}
     </button>
   );

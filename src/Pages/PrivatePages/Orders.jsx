@@ -59,7 +59,7 @@ function Orders() {
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
                     <div className="flex flex-wrap gap-2">
                         {["All orders", "Pending", "Processing", "Shipped", "Delivered", "Cancelled"].map((status) => (
-                            <button
+                            <Button text={`${status} ${status==="All orders"? orders.length:orders.filter(item=> item.status === status).length}`}
                                 key={status}
                                 onClick={() => setOrderStatus(status)}
                                 className={`px-4 py-2 rounded-lg font-medium transition-colors ${
@@ -67,9 +67,8 @@ function Orders() {
                                         ? "bg-[#4B3EC4] text-white"
                                         : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                                 }`}
-                            >
-                                {status} {status==="All orders"? orders.length:orders.filter(item=> item.status === status).length}
-                            </button>
+                            />
+
                         ))}
                     </div>
                 </div>
@@ -142,14 +141,14 @@ function Orders() {
                                             {order.status}
                                         </span>
                                         {order.status==="Cancelled" ?"":(
-                                          <button type="button" className="w-full rounded-lg border border-red-700 px-3 py-2 text-center text-sm font-medium 
+                                          <Button text='Cancel order' type="button" className="w-full rounded-lg border border-red-700 px-3 py-2 text-center text-sm font-medium 
                                         text-red-700 hover:bg-red-700 hover:text-white focus:outline-none focus:ring-4 focus:ring-red-300 lg:w-auto"
-                                        onClick={(e) => { e.stopPropagation();hanleDeleteOrder(order._id)}}>Cancel order</button>
+                                        onClick={(e) => { e.stopPropagation();hanleDeleteOrder(order._id)}} />
                                         )}
                                         
-                                        <button className="w-full inline-flex justify-center rounded-lg  border border-gray-200 bg-white px-3 py-2 text-sm font-medium 
+                                        <Button text='View details' className="w-full inline-flex justify-center rounded-lg  border border-gray-200 bg-white px-3 py-2 text-sm font-medium 
                                       text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 "
-                                        onClick={()=>{setOrderDetail(item);setisModal(true)}}>View details</button>
+                                        onClick={()=>{setOrderDetail(item);setisModal(true)}} />
                                     </div>
                                 </div>
                             </div>

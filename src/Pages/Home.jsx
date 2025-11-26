@@ -20,6 +20,7 @@ import { useProductsStore } from "../stores/productsStore";
 import { Link } from "react-router-dom";
 import { useCategoryStore } from "../stores/categoryStore";
 import ProductModal from "../components/ProductModal ";
+import LoginModal from "../components/LoginModal";
 
 function Home() {
   const [isModal,setisModal]=useState(false)
@@ -31,22 +32,24 @@ function Home() {
   // const products=useProductsStore((state)=>state.products)
   const {isLoading, error, products}=useProductsStore()
   const {loading,categories}=useCategoryStore()
+
   // const loading=useCategoryStore((state)=>state.loading)
 // console.log(categories);
 
   const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("token");
   const addCart =useAddCart()
     const addToCart = (productId,quantity) => {
-      console.log(productId ,quantity);
-      
-    // Add to cart logic here
-    addCart.mutate({
-      userId:userId,
-      productId:productId,
-      quantity:quantity
-    })
+      if(token && userId){
+        addCart.mutate({
+          userId:userId,
+          productId:productId,
+          quantity:quantity
+        })
+      } 
   };
   
+
   return (
     <>
       <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 xl:px-0">
@@ -214,7 +217,7 @@ function Home() {
              Array.isArray(products) &&products?.length>0 ? (products?.slice(0,visibleCount).map((item,i)=>{
               const {name, price, discountPrice, _id}=item
               return <ProductCard image={item.images[0]} name={name} oldPrice={price} price={discountPrice} key={_id} productID={_id}
-              onClick={()=>{setisModal(true);setSingleProduct(item);}} addToCart={(id, q) => addToCart(id, q)} loading={isLoading} />
+              onClick={()=>{setisModal(true);setSingleProduct(item); }} addToCart={(id, q) => {addToCart(id, q);}} loading={isLoading} />
             })):(<p>No products found</p>)}
             
           </div>
@@ -227,6 +230,9 @@ function Home() {
       <ProductModal isModal={isModal} image={singleProduct?.images[0]} name={singleProduct?.name} discountPrice={singleProduct?.discountPrice} price={singleProduct?.price}
       brand={singleProduct?.brand} category={singleProduct?.category} tags={singleProduct?.tags} inStock={singleProduct?.inStock} id={singleProduct?._id}
       description={singleProduct?.description} addToCart={(id, q)=>addToCart(id, q)} isPending={addCart?.isPending} closeModal={()=>{setisModal(false);setSingleProduct(null)}} />
+    
+
+
     </>
   );
 }
