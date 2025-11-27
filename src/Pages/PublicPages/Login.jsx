@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import loginImg from '../../assets/images/loginImg.png'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { login } from '../../api/auth';
 import { toast } from 'react-toastify';
 import { useLogin } from '../../hooks/useLogin';
+import AppLink from '../../components/AppLink';
 
 function Login() {
     const [showHidePass,setShowHidePass]=useState(false)
@@ -40,11 +41,11 @@ const loginFormSubmit = (e) => {
               <p className="text-purple-200 mt-2">
                 Don't have an account? Register now!
               </p>
-              <Link to="/signup" 
+              <AppLink  to="/signup" 
                 className="mt-4 px-6 py-2 inline-block bg-white text-purple-700 rounded-full font-semibold hover:bg-purple-50 transition-all"
               >
                 Register
-              </Link>
+              </AppLink >
         </div>
         <div className="w-full md:w-1/2 py-10 px-5 md:px-10">
           <div className="text-center mb-10">
@@ -81,7 +82,7 @@ const loginFormSubmit = (e) => {
             <div className="flex -mx-3 mb-5">
                   <div className="w-full px-3 flex justify-between items-center">
                     
-                    <a href="#" className="text-purple-600 text-sm hover:underline">Forgot password?</a>
+                    <AppLink to="/forgotPassword" className="text-purple-600 text-sm hover:underline">Forgot password?</AppLink>
                   </div>
                 </div>
               <div className="w-full mb-5">
@@ -101,13 +102,13 @@ const loginFormSubmit = (e) => {
           <div className="text-center mt-6">
                 <p className="text-gray-600">
                   Don't have an account?
-                  {" "}<Link to="/signup"
+                  {" "}<AppLink to="/signup"
                     type="button"
                     
                     className="text-purple-600 font-semibold hover:underline focus:outline-none"
                   >
                     Register
-                  </Link>
+                  </AppLink>
                 </p>
               </div>
         </div>

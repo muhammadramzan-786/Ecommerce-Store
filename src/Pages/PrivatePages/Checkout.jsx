@@ -6,11 +6,12 @@ import { useUser } from "../../hooks/useUser";
 import Input from "../../components/Input";
 import { useAddOrder } from '../../hooks/useOrders';
 import { toast } from 'react-toastify';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useUserStore } from '../../stores/userStore';
 import { useCartStore } from '../../stores/cartStore';
 import { useProductsStore } from '../../stores/productsStore';
 import Button from '../../components/Button';
+import AppLink from '../../components/AppLink';
 
 function Checkout() {
   const [activeStep, setActiveStep] = useState(1);
@@ -22,26 +23,20 @@ function Checkout() {
   const navigate=useNavigate()
 
   const location=useLocation()
-  const byNow=location.state.buyNow || null
+  const byNow=location.state?.buyNow || false
   const productId=location?.state?.productID
   const quantity=location?.state?.quantity
     const {isLoading, error, products}=useProductsStore()
-    const buyNowProduct=products?.filter(item=>item?._id===productId)
-  console.log(buyNowProduct);
-  
+    const buyNowProduct=products?.filter(item=>item?._id===productId)  
   
 useEffect(() => {
   const id = localStorage.getItem("userId");
   if(id) setUserId(id);
 }, []);
 
-  // const {data:orderItems}=useGetCart(userId)
   const orderItems=useCartStore((state)=>state.cart)
-  // const {data:userData}=useUser(userId)
   const userData=useUserStore((state)=>state.user)
-// console.log(userData);
 const finalItems = byNow ? buyNowProduct : orderItems?.items || [];
-console.log(finalItems);
 
   const [shippingInfo, setShippingInfo] = useState({
     email: userData?.email,
@@ -80,7 +75,6 @@ console.log(finalItems);
   const calculateSubtotal = () => {
     if(!finalItems) return 0
     const result=finalItems?.reduce((total, item) => total + (item?.discountPrice * (byNow?quantity:item?.quantity)), 0);
-    console.log(result);
     return result
   };
 
@@ -141,16 +135,13 @@ const deleteItem=useDeleteCartProduct()
     })
     setLoading(false)
     navigate("/profileLayout/orders")
-    console.log(res);
   } catch (err) {
-    console.log(err);
     toast.error(err.response?.data?.message || "Order failed");
     setLoading(false)
   }finally{
     setLoading(false)
   }
 };
-
 
   const handleInputChange = (setter) => (e) => {
     const { name, value } = e.target;
@@ -162,10 +153,10 @@ const deleteItem=useDeleteCartProduct()
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <Link to="/cart" className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 transition-colors">
+          <AppLink to="/cart" className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 transition-colors">
             <FaArrowLeft className="text-sm" />
             Back to Cart
-          </Link>
+          </AppLink>
           <h1 className="text-3xl font-bold text-gray-900">Checkout</h1>
           <p className="text-gray-600 mt-2">Complete your purchase securely</p>
         </div>
@@ -315,19 +306,6 @@ const deleteItem=useDeleteCartProduct()
                     </div>
                   </div>  
 
-                  <div className="mt-6 flex items-center">
-                    <input
-                      type="checkbox"
-                      id="saveShipping"
-                      checked={saveShippingInfo}
-                      onChange={(e) => setSaveShippingInfo(e.target.checked)}
-                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                    />
-                    <label htmlFor="saveShipping" className="ml-2 text-sm text-gray-700">
-                      Save this information for next time
-                    </label>
-                  </div>
-
                   <div className="mt-8 flex justify-end">
                     <Button icon={FaCreditCard} text='Continue to Payment'
                       type="submit"
@@ -351,7 +329,10 @@ const deleteItem=useDeleteCartProduct()
                   {/* Payment Method Selection */}
                   <div className="space-y-4 mb-6">
                     {[
-                      { id: 'paypal', name: 'PayPal', icon: FaUser },
+                      { id: 'CashOnDelivery', name: 'Cash on Delivery' },
+                      { id: 'JazzCash', name: 'JazzCash' },
+                      { id: 'EasyPaisa', name: 'EasyPaisa' },
+                      { id: 'paypal', name: 'PayPal' },
                     ].map((method) => (
                       <div key={method.id} className="flex items-center">
                         <input
@@ -363,7 +344,6 @@ const deleteItem=useDeleteCartProduct()
                           className="w-4 h-4 text-[#4B3EC4] border-gray-300 focus:ring-[#4B3EC4] accent-[#4B3EC4]"
                         />
                         <label htmlFor={method.id} className="ml-3 flex items-center gap-2 text-sm font-medium text-gray-700">
-                          <method.icon className="text-gray-400" />
                           {method.name}
                         </label>
                       </div>

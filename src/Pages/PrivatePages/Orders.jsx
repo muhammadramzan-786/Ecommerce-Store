@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { useDeleteOrder, useGetOrders } from '../../hooks/useOrders'
-import { Link } from 'react-router-dom'
 import Button from '../../components/Button'
 import { FaTimes } from "react-icons/fa";
 import { useProductsStore } from '../../stores/productsStore';
+import OrderCard from '../../components/OrderCard';
+import AppLink from '../../components/AppLink';
 
 function Orders() {
     const [orderStatus, setOrderStatus] = useState("All orders")
@@ -12,8 +13,10 @@ function Orders() {
     const [orderDetail, setOrderDetail] = useState(null)
 
     const userId = localStorage.getItem("userId");
-    const { isLoading, error, products } = useProductsStore()
-    const { data } = useGetOrders(userId)
+    const {  error, products } = useProductsStore()
+    const { data, isLoading } = useGetOrders(userId)
+
+    
     
     const productsIds = orderDetail?.items?.map((item) => item.product)
     const filteredProducts = products?.filter(product => productsIds?.includes(product._id))
@@ -77,81 +80,12 @@ function Orders() {
                 <div className="space-y-4">
                     {filteredOrders?.length > 0 ? (
                         filteredOrders.map((order) => (
-                            <div
-                                key={order._id}
-                                className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow cursor-pointer"
-                                onClick={() => {
-                                    setOrderDetail(order)
-                                    setisModal(true)
-                                }}
-                            >
-                                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                                    {/* Order Info */}
-                                    <div className="flex-1">
-                                        <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-3">
-                                            <div>
-                                                <p className="text-sm text-gray-500">Order ID</p>
-                                                <p className="font-medium text-gray-900">{order._id}</p>
-                                            </div>
-                                            <div>
-                                                <p className="text-sm text-gray-500">Date</p>
-                                                <p className="font-medium text-gray-900">
-                                                    {dateFormatter.format(new Date(order.createdAt))}
-                                                </p>
-                                            </div>
-                                            <div>
-                                                <p className="text-sm text-gray-500">Total</p>
-                                                <p className="font-medium text-gray-900">
-                                                    Rs. {order.totalAmount?.toLocaleString()}
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        {/* Items Preview */}
-                                        <div className="flex items-center gap-2 mb-3">
-                                            <div className="flex -space-x-2">
-                                                {order.items?.slice(0, 3).map((item, index) => (
-                                                    <div
-                                                        key={index}
-                                                        className="w-8 h-8 bg-gray-200 rounded-full border-2 border-white flex items-center justify-center text-xs font-medium text-gray-600"
-                                                    >
-                                                        {item.quantity}
-                                                    </div>
-                                                ))}
-                                                {order.items?.length > 3 && (
-                                                    <div className="w-8 h-8 bg-gray-300 rounded-full border-2 border-white flex items-center justify-center text-xs font-medium text-gray-600">
-                                                        +{order.items.length - 3}
-                                                    </div>
-                                                )}
-                                            </div>
-                                            <span className="text-sm text-gray-600">
-                                                {order.items?.length} item{order.items?.length !== 1 ? 's' : ''}
-                                            </span>
-                                        </div>
-
-                                        {/* Shipping Address */}
-                                        <p className="text-sm text-gray-600">
-                                            Shipping to: {order.shippingAddress?.fullName}, {order.shippingAddress?.city}
-                                        </p>
-                                    </div>
-
-                                    {/* Status and Action */}
-                                    <div className="flex flex-col sm:flex-row lg:flex-col items-start sm:items-center lg:items-end gap-3">
-                                        <span className={`px-3 py-1 rounded-full text-sm font-medium ${statusColors[order.status] || "bg-gray-100 text-gray-800"}`}>
-                                            {order.status}
-                                        </span>
-                                        {order.status==="Cancelled" ?"":(
-                                          <Button text='Cancel order' type="button" className="w-full rounded-lg border border-red-700 px-3 py-2 text-center text-sm font-medium 
-                                        text-red-700 hover:bg-red-700 hover:text-white focus:outline-none focus:ring-4 focus:ring-red-300 lg:w-auto"
-                                        onClick={(e) => { e.stopPropagation();hanleDeleteOrder(order._id)}} />
-                                        )}
-                                        
-                                        <Button text='View details' className="w-full inline-flex justify-center rounded-lg  border border-gray-200 bg-white px-3 py-2 text-sm font-medium 
-                                      text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 "
-                                        onClick={()=>{setOrderDetail(item);setisModal(true)}} />
-                                    </div>
-                                </div>
-                            </div>
+                           <OrderCard key={order._id} order={order} onCancel={hanleDeleteOrder} loading={isLoading} statusColors={statusColors}
+                             onOpen={(order) => {
+                               setOrderDetail(order)
+                               setisModal(true)
+                             }}
+                           />
                         ))
                     ) : (
                         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
@@ -167,12 +101,12 @@ function Orders() {
                                     : `No ${orderStatus.toLowerCase()} orders found.`
                                 }
                             </p>
-                            <Link
+                            <AppLink
                                 to="/shop"
                                 className="inline-flex items-center px-6 py-3 bg-[#4B3EC4] text-white font-medium rounded-lg hover:opacity-90 transition-colors"
                             >
                                 Start Shopping
-                            </Link>
+                            </AppLink>
                         </div>
                     )}
                 </div>
@@ -258,9 +192,9 @@ function Orders() {
                                                 />
                                                 <div className="flex-1">
                                                     <h4 className="font-medium text-gray-900 hover:text-blue-600 transition-colors">
-                                                        <Link to={`/product-details/${product._id}`}>
+                                                        <AppLink to={`/product-details/${product._id}`}>
                                                             {product.name}
-                                                        </Link>
+                                                        </AppLink>
                                                     </h4>
                                                     <p className="text-sm text-gray-600">{product.brand}</p>
                                                 </div>

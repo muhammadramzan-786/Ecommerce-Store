@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import Input from "./Input";
-import { Link, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useUser } from "../hooks/useUser";
 import { useGetCart } from "../hooks/useCart";
 import { useUserStore } from "../stores/userStore";
@@ -10,6 +10,7 @@ import Button from "./Button";
 import SearchDropdown from "./SearchDropdown";
 import { FaArrowRightFromBracket } from "react-icons/fa6";
 import { useAuthStore } from "../hooks/useAuthStore";
+import AppLink from "./AppLink";
 
 function Header() {
   const [searchVal, setSearchVal] = useState('');
@@ -44,14 +45,23 @@ const {isLoading, error, products}=useProductsStore()
                   <FaArrowRightFromBracket />
                 </button>)
 
+                        const location=useLocation()
+      useEffect(()=>{
+        window.scrollTo({
+            top:0,
+            left:0,
+            behavior:"smooth"
+        })
+      },[location])
+
   return (
     <div className="w-full px-4 sm:px-6 xl:px-0 sticky top-0 z-50 bg-white shadow-lg @container">
       <div className="flex mx-auto max-w-7xl flex-col @xsm:flex-row gap-2 lg:gap-5 md:items-end lg:items-center xl:justify-between ease-out duration-200 py-2 2xl:py-5">
         {/* Logo and Search Section */}
         <div className="flex w-full gap-3 lg:gap-5 flex-row justify-between sm:items-center sm:gap-6">
-          <Link className="shrink-0 text-xl sm:text-2xl font-bold text-[#4B3EC4]  transition-colors" to="/">
+          <AppLink className="shrink-0 text-xl sm:text-2xl font-bold text-[#4B3EC4]  transition-colors" to="/">
             SHOPNEST
-          </Link>
+          </AppLink>
 
           <div className="sm:hidden flex items-center justify-end gap-1 xl:gap-5 w-full @xsm:w-auto">
                   <Button type="submit" onClick={()=>setSearchDropdown(!searchDropdown)} id="search-btn" aria-label="Search" className="border border-gray-300 p-1.5 rounded-full"
@@ -75,7 +85,7 @@ const {isLoading, error, products}=useProductsStore()
 
               {/* Account - Hidden on mobile, visible on xl and up */}
               {!userData?(
-              <Link to="/login" className="items-center gap-2.5 hidden xl:flex hover:text-blue-600 transition-colors" >
+              <AppLink to="/login" className="items-center gap-2.5 hidden xl:flex hover:text-blue-600 transition-colors" >
                 <div className="flex items-center justify-center w-8 h-8 lg:w-9 lg:h-9 border border-gray-300 rounded-full hover:border-blue-500 transition-colors">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -98,8 +108,8 @@ const {isLoading, error, products}=useProductsStore()
                     Sign In / Register
                   </p>
                 </div>
-              </Link>):(
-                <Link to="/profileLayout" className="items-center gap-2.5 flex hover:text-[#4B3EC4] transition-colors w-8 h-8 lg:w-auto lg:h-auto" >
+              </AppLink>):(
+                <AppLink to="/profileLayout" className="items-center gap-2.5 flex hover:text-[#4B3EC4] transition-colors w-8 h-8 lg:w-auto lg:h-auto" >
                   <img src={userData?.image} className="rounded-full w-8 h-8 lg:w-9 lg:h-9 border border-gray-300 flex-shrink-0 object-cover" />
                 <div className="group hidden xl:inline-block">
                   <span className="block font-medium text-xs text-gray-600">
@@ -109,10 +119,10 @@ const {isLoading, error, products}=useProductsStore()
                     {userData?.email}
                   </p>
                 </div>
-              </Link>
+              </AppLink>
               )}              
               {/* Cart */}
-                <Link to="/cart" className="flex items-center gap-2.5 w-8 h-8 justify-center hover:text-[#4B3EC4] transition-colors" title="Cart">
+                <AppLink to="/cart" className="flex items-center gap-2.5 w-8 h-8 justify-center hover:text-[#4B3EC4] transition-colors" title="Cart">
                   <span className="relative inline-block">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -133,7 +143,7 @@ const {isLoading, error, products}=useProductsStore()
                       {cartItems?.items?.length || 0}
                     </span>
                   </span>
-                </Link>
+                </AppLink>
                 {logOutBtn}
             </div>
 
@@ -171,7 +181,7 @@ const {isLoading, error, products}=useProductsStore()
           <div className="hidden sm:flex items-center gap-1 xl:gap-5 w-full @xsm:w-auto">
               {/* Account - Hidden on mobile, visible on xl and up */}
 
-              <Link to={!userData? "/login" :"/profileLayout"} className="items-center gap-2.5 hidden xl:flex hover:text-[#4B3EC4] transition-colors" >
+              <AppLink to={!userData? "/login" :"/profileLayout"} className="items-center gap-2.5 hidden xl:flex hover:text-[#4B3EC4] transition-colors" >
                 {!userData? (
                   <>
                   <div className="flex items-center justify-center w-8 h-8 lg:w-9 lg:h-9 border border-gray-300 rounded-full transition-colors">
@@ -211,9 +221,9 @@ const {isLoading, error, products}=useProductsStore()
                   </>
                 )}
                 
-              </Link>     
+              </AppLink>     
               {/* Cart */}
-                <Link to="/cart" 
+                <AppLink to="/cart" 
                   className="flex items-center gap-2.5 w-8 h-8 justify-center hover:text-[#4B3EC4] transition-colors"
                   title="Cart"
                 >
@@ -237,7 +247,7 @@ const {isLoading, error, products}=useProductsStore()
                       {cartItems?.items?.length || 0}
                     </span>
                   </span>
-                </Link>
+                </AppLink>
                 {logOutBtn}
             </div>
             <div className={`absolute top-12 left-0 p-1 bg-white mx-auto w-full transform transition-transform duration-300 ${searchDropdown?"translate-x-0":" -translate-x-full md:translate-x-0"} sm:hidden`} ref={containerRef}>

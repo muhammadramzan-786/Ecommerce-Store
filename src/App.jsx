@@ -13,7 +13,7 @@ function App() {
   return <>
   <QueryClientProvider client={queryClient}>
       <MainRoute /> 
-  <ToastContainer position="bottom-right"  // 👈 side se popup
+  <ToastContainer position="top-center"  // 👈 side se popup
         autoClose={3000}      // 3 second me close
         hideProgressBar={false} newestOnTop={false} closeOnClick pauseOnHover draggable />
   </QueryClientProvider>

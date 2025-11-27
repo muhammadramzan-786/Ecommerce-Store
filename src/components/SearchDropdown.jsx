@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
 import Button from "./Button";
+import AppLink from "./AppLink";
 
 export default function SearchDropdown({ showDropdown, filteredProducts }) {
   if (!showDropdown) return null;
@@ -21,7 +21,7 @@ export default function SearchDropdown({ showDropdown, filteredProducts }) {
           {/* Product List */}
           <div className="divide-y flex flex-col gap-1.5 divide-gray-100">
             {filteredProducts.map((item, index) => (
-              <Link
+              <AppLink
                 to={`/product-details/${item._id}`}
                 key={item._id || index}
                 className="hover:bg-blue-50 transition-colors duration-200 cursor-pointer rounded-lg group"
@@ -77,7 +77,7 @@ export default function SearchDropdown({ showDropdown, filteredProducts }) {
                     />
                   </svg>
                 </div>
-              </Link>
+              </AppLink>
             ))}
           </div>
 

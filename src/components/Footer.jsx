@@ -1,6 +1,6 @@
 import React from 'react'
-import { Link } from 'react-router-dom';
 import { useCategoryStore } from '../stores/categoryStore';
+import AppLink from './AppLink';
 
 function Footer() {
   const currentYear = new Date().getFullYear();
@@ -78,7 +78,7 @@ const {loading,categories}=useCategoryStore()
             <ul className="text-gray-600 dark:text-gray-400 font-medium space-y-3">
               {categories.length>0 && (categories?.slice(0,5).map((category)=>(
                 <li key={category._id}>
-                <Link to={`/category/${category.name}`} className="hover:text-white transition-colors">{category.name}</Link>
+                <AppLink to={`/category/${category.name}`} className="hover:text-white transition-colors">{category.name}</AppLink>
               </li>
               )))}
             </ul>
@@ -91,10 +91,10 @@ const {loading,categories}=useCategoryStore()
               <h2 className="mb-6 text-lg font-semibold text-gray-900 uppercase dark:text-white">Customer Service</h2>
             <ul className="text-gray-600 dark:text-gray-400 font-medium space-y-3">
               <li>
-                <Link to="/contactUs" className="hover:text-white transition-colors">Contact Us</Link>
+                <AppLink to="/contactUs" className="hover:text-white transition-colors">Contact Us</AppLink>
               </li>
               <li>
-                <Link to="/profileLayout/orders" className="hover:text-white transition-colors">Track Your Order</Link>
+                <AppLink to="/profileLayout/orders" className="hover:text-white transition-colors">Track Your Order</AppLink>
               </li>
 
             </ul>
@@ -106,9 +106,14 @@ const {loading,categories}=useCategoryStore()
         {/* Bottom Bar */}
         <div className="px-4 py-6 border-t border-gray-200 dark:border-gray-700">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="text-gray-500 dark:text-gray-400 text-sm">
-              © {currentYear} ShopNest. All rights reserved.
-            </div>
+
+            {/* Left Side */}
+    <div className="text-gray-500 dark:text-gray-400 text-sm flex flex-col sm:flex-row md:items-center gap-1 whitespace-nowrap">
+      <span>© {currentYear} ShopNest. All rights reserved.</span>
+      <span className=" text-gray-400 ">
+        | Developed by <a href='https://muhammadramzan.vercel.app/' target='_blank' className="font-semibold text-gray-600 dark:text-gray-300 hover:underline">Muhammad Ramzan</a>
+      </span>
+    </div>
            
             <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
               <span>Secure payments with</span>

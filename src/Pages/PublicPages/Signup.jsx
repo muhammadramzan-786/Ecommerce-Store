@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import loginImg from '../../assets/images/loginImg.png'
-import { Link,useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { signup ,login} from '../../api/auth';
 import { toast } from 'react-toastify';
+import { useLogin } from '../../hooks/useLogin';
+import AppLink from '../../components/AppLink';
 
 function Signup() {
   const [showHidePass,setShowHidePass]=useState(false)
@@ -22,11 +24,8 @@ const [loading, setLoading] = useState(false);
         ...prev,[name]:value
       }))
     }
-  
-    useEffect(()=>{
-      console.log(formData);
-      
-    },[formData])
+
+    const { handleLogin }=useLogin()
 
     const signUp=async(e)=>{
       e.preventDefault()
@@ -41,19 +40,11 @@ const [loading, setLoading] = useState(false);
         // console.log(response);
         
         if(response.status===201){
-          const loginResponse =await login({
+         handleLogin({
             email:formData.email,
             password:formData.password
           })
-          if(loginResponse .status===200){
-            localStorage.setItem('token',loginResponse .data.token)
-            localStorage.setItem('userId',loginResponse .data.user._id)
-            window.dispatchEvent(new Event("authChange"));
-            toast.success("Signup successful")
-            // navigate to home
             navigate("/");
-          }
-                
         }else{
                 toast.error('Error in Signup')
         }
@@ -74,11 +65,11 @@ const [loading, setLoading] = useState(false);
               <p className="text-purple-200 mt-2">
                 Already have an account?
               </p>
-              <Link to="/login" 
+              <AppLink to="/login" 
                 className="mt-4 px-6 py-2 inline-block bg-white text-purple-700 rounded-full font-semibold hover:bg-purple-50 transition-all"
               >
                 Login
-              </Link>
+              </AppLink>
             </div>
             <div className="w-full md:w-1/2 py-10 px-5 md:px-10">
               <div className="text-center mb-10">
@@ -130,13 +121,13 @@ const [loading, setLoading] = useState(false);
                 <div className="text-center mt-6">
                 <p className="text-gray-600">
                   Already have an account?
-                   {' '}<Link to="/login"
+                   {' '}<AppLink to="/login"
                     type="button"
                     
                     className="text-purple-600 font-semibold hover:underline focus:outline-none"
                   >
                     Login
-                  </Link>
+                  </AppLink>
                 </p>
               </div>
               </form>

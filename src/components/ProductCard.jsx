@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { FaCartShopping } from "react-icons/fa6";
 import { FaEye } from "react-icons/fa";
-import { Link } from "react-router-dom";
 import LoginModal from "./LoginModal";
+import AppLink from "./AppLink";
 
 export default function ProductCard({ image, name, oldPrice, price, onClick, productID, addToCart, loading }) {
 if (loading) {
@@ -54,7 +54,7 @@ const token = localStorage.getItem("token");
       </div>
       <div className="p-4">
         <h3 className="text-sm font-semibold text-gray-800 hover:text-[#4B3EC4] transition-colors truncate">
-          <Link to={`/product-details/${productID}`}>{name}</Link>
+          <AppLink to={`/product-details/${productID}`}>{name}</AppLink>
         </h3>
         <div className="flex items-center gap-2 mt-1">
           <span className="text-lg font-bold text-gray-900">RS.{price}</span>

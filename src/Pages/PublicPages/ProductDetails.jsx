@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { FaStar, FaHeart, FaRegHeart, FaShare, FaTruck, FaShieldAlt, FaUndo, FaCheck } from 'react-icons/fa';
 import { IoCartOutline } from 'react-icons/io5';
 import { FaTimes } from "react-icons/fa";
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useProducts, useSingleProduct } from '../../hooks/useProducts';
 import { useAddCart } from '../../hooks/useCart';
 import ProductCard from '../../components/ProductCard';
 import Button from "../../components/Button";
 import { useProductsStore } from '../../stores/productsStore';
 import ProductModal from '../../components/ProductModal ';
+import AppLink from '../../components/AppLink';
 
   const reviews = [
     {
@@ -80,7 +81,7 @@ function ProductDetails() {
         {/* Breadcrumb */}
         <nav className="flex mb-8" aria-label="Breadcrumb">
           <ol className="flex items-center space-x-2 text-sm text-gray-500">
-            <li><Link to="/" className="hover:text-[#4B3EC4]">Home</Link></li>
+            <li><AppLink to="/" className="hover:text-[#4B3EC4]">Home</AppLink></li>
             <li className="flex items-center">
               <span className="mx-2">/</span>
               <a href="/categories" className="hover:text-[#4B3EC4]">{product?.category}</a>
@@ -190,12 +191,12 @@ function ProductDetails() {
 
                 <div className="flex gap-3 flex-col xsm:flex-row">
                   <Button icon={IoCartOutline} text={addCart.isPending ? "Adding..." : "Add to Cart"} disabled={addCart.isPending} onClick={()=>addToCart(product?._id, quantity)} />
-                  <Link to="/checkout" state={{ buyNow:true, productID:product?._id, quantity:quantity }}
+                  <AppLink to="/checkout" state={{ buyNow:true, productID:product?._id, quantity:quantity }}
                     onClick={buyNow}
                     className="flex-1 bg-gray-900 text-white text-center py-3 px-6 rounded-lg font-medium hover:bg-gray-800 transition-colors"
                   >
                     Buy Now
-                  </Link>
+                  </AppLink>
                   
                 </div>
               </div>

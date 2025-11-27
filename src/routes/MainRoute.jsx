@@ -10,7 +10,7 @@ const Profile=lazy(()=>import("../Pages/PrivatePages/Profile"))
 const Orders=lazy(()=>import("../Pages/PrivatePages/Orders"))
 const Layout=lazy(()=>import("../components/Layout"))
 const ProtectedRoute=lazy(()=>import("./ProtectedRoute"))
-const Home=lazy(()=>import("../Pages/Home"))
+const Home=lazy(()=>import("../Pages/PublicPages/Home"))
 const ProductDetails=lazy(()=>import("../Pages/PublicPages/ProductDetails"))
 const Shop=lazy(()=>import("../Pages/PublicPages/Shop"))
 const Checkout=lazy(()=>import("../Pages/PrivatePages/Checkout"))
@@ -20,7 +20,7 @@ const ChangePassword=lazy(()=>import("../Pages/PrivatePages/ChangePassword"))
 import Login from "../Pages/PublicPages/Login";
 import Signup from "../Pages/PublicPages/Signup";
 import ForgotPassword from "../Pages/PublicPages/ForgotPassword";
-import ContactUs from '../Pages/ContactUs';
+import ContactUs from '../Pages/PublicPages/ContactUs';
 import { useUser } from '../hooks/useUser';
 import { useGetCart } from '../hooks/useCart';
 import { useProducts } from '../hooks/useProducts';
@@ -71,6 +71,7 @@ function MainRoute() {
           <Route path="/cart" element={<Cart />} />
           <Route path="/contactUs" element={<ContactUs />} />
           <Route path="/category/:name" element={<Category />} />
+          <Route path="/forgotPassword" element={<ForgotPassword />} />
         </Route>
 
         {/* Private Pages */}

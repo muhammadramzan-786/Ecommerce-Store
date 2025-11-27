@@ -3,11 +3,11 @@ import { FaPlus, FaMinus, FaTrash, FaHeart, FaShoppingBag, FaArrowLeft, FaLock, 
 import { IoCartOutline } from 'react-icons/io5';
 import { getCart } from '../../services/cart';
 import { useDeleteCartProduct, useGetCart, useUpdateCart } from '../../hooks/useCart';
-import { Link } from 'react-router-dom';
 import { useCartStore } from '../../stores/cartStore';
 import Button from '../../components/Button';
 import { useAuthStore } from '../../hooks/useAuthStore';
 import LoginModal from '../../components/LoginModal';
+import AppLink from '../../components/AppLink';
 
 function Cart() {
   const token=useAuthStore(state=>state.token)
@@ -142,7 +142,7 @@ const { isPending, isError, error, isSuccess } = updateCart;
                         <div className="flex justify-between">
                           <div>
                             <h3 className="text-lg font-medium text-gray-900 hover:text-[#4B3EC4] transition-colors">
-                              <Link to={`/product-details/${item._id}`}>{item.name}</Link>
+                              <AppLink  to={`/product-details/${item._id}`}>{item.name}</AppLink >
                             </h3>
                             <p className="text-sm text-gray-500 mt-1">{item.brand}</p>
                           </div>
@@ -285,7 +285,7 @@ const { isPending, isError, error, isSuccess } = updateCart;
 
               
                 {/* Checkout Button */}
-                <Link to={token && userId ? "/checkout" : "#"} state={{ buyNow:false, productID:"", quantity:"" }} className="w-full bg-[#4B3EC4] text-white py-3 
+                <AppLink  to={token && userId ? "/checkout" : "#"} state={{ buyNow:false, productID:"", quantity:"" }} className="w-full bg-[#4B3EC4] text-white py-3 
                 px-6 rounded-lg font-medium hover:opacity-90 transition-colors flex items-center justify-center gap-2" onClick={(e) => {
     if (!token || !userId) {
       e.preventDefault();
@@ -295,7 +295,7 @@ const { isPending, isError, error, isSuccess } = updateCart;
   }}>
                   <FaLock className="text-sm" />
                   Proceed to Checkout
-                </Link>
+                </AppLink >
 
                 {/* Additional Info */}
                 <div className="text-center text-sm text-gray-600">

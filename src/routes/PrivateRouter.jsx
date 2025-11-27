@@ -16,14 +16,14 @@ const Category=lazy(()=>import("../Pages/PublicPages/Category"))
 const ChangePassword=lazy(()=>import("../Pages/PrivatePages/ChangePassword"))
 
 function PrivateRouter() {
-    const location=useLocation()
-  useEffect(()=>{
-    window.scrollTo({
-        top:0,
-        left:0,
-        behavior:"smooth"
-    })
-  },[location])
+  //   const location=useLocation()
+  // useEffect(()=>{
+  //   window.scrollTo({
+  //       top:0,
+  //       left:0,
+  //       behavior:"smooth"
+  //   })
+  // },[location])
   return (
     <Suspense fallback={<div>Loading ....</div>}>
     <Routes>

@@ -11,8 +11,9 @@ import "swiper/css";
 import "swiper/css/navigation"; // agar navigation chahiye
 import "swiper/css/pagination"; // agar dots chahiye
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Input from '../../components/Input';
+import AppLink from '../../components/AppLink';
 
 function Category() {
   const {name}=useParams()
@@ -64,12 +65,12 @@ function Category() {
             >
               {(categories?.map((category, i) => (
                 <SwiperSlide>
-                  <Link key={i}
+                  <AppLink  key={i}
                     className="group flex flex-col items-center"
                     to={`/category/${category.name}`}
                   >
                     <CategoryCard name={category.name} image={category.image} loading={loading} />
-                  </Link>
+                  </AppLink >
                 </SwiperSlide>
               )))}
             </Swiper>
