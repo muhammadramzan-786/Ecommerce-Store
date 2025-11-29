@@ -7,10 +7,15 @@ import { useAuthStore } from "./useAuthStore";
 
 export function useLogin() {
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(""); // <-- error state
   const navigate = useNavigate();
-  const setAuth=useAuthStore((state)=>state.setAuth)
+  const setAuth = useAuthStore((state) => state.setAuth);
+
   const handleLogin = async (formData, closeModal) => {
+    setError(""); // clear previous errors
+
     if (!formData.email || !formData.password) {
+      setError("Please fill all fields");
       toast.error("Please fill all fields");
       return;
     }
@@ -22,25 +27,28 @@ export function useLogin() {
 
       if (response.status === 200) {
         const { user, token } = response.data;
-        // LocalStorage
-        setAuth({token, userId:user._id})
 
+        // Save auth to Zustand store
+        setAuth({ token, userId: user._id });
+        // Save user info to userStore
         useUserStore.getState().setUser(user);
-
         toast.success("Login successful");
-        // Notify App
+        // Notify app about auth change
         window.dispatchEvent(new Event("authChange"));
-        // Close Modal (if modal is open)
+
+        // Close modal if exists
         if (closeModal) closeModal();
-        // Navigate
-        
+        return true;
       }
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Login failed ❌");
+    } catch (err) {
+      const msg = err.response?.data?.message || "Login failed ❌";
+      setError(msg); // <-- set error state
+      toast.error(msg);
+      return false;
     } finally {
       setLoading(false);
     }
   };
 
-  return { handleLogin, loading };
+  return { handleLogin, loading, error }; // <-- return error state
 }

@@ -4,7 +4,7 @@ import { createContact, getContact } from "../services/contact";
 export function useGetContact(){
     return useQuery({
         queryKey:["contact"],
-        queryFn:async ()=> (await getContact()).data
+        queryFn:async ()=> (await getContact()).data,
     })
 }
 

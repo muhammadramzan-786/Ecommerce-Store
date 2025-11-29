@@ -15,10 +15,10 @@ import AppLink from "./AppLink";
 function Header() {
   const [searchVal, setSearchVal] = useState('');
   const userData=useUserStore((state)=>state.user)
+  const userLoading=useUserStore((state)=>state.loading)
   const [showDropdown, setShowDropdown]=useState(false)
   const [searchDropdown, setSearchDropdown]=useState(false)
   const containerRef=useRef(null)
-// console.log(userData);
 const {isLoading, error, products}=useProductsStore()
   const cartItems=useCartStore((state)=>state.cart)
 
@@ -59,7 +59,7 @@ const {isLoading, error, products}=useProductsStore()
       <div className="flex mx-auto max-w-7xl flex-col @xsm:flex-row gap-2 lg:gap-5 md:items-end lg:items-center xl:justify-between ease-out duration-200 py-2 2xl:py-5">
         {/* Logo and Search Section */}
         <div className="flex w-full gap-3 lg:gap-5 flex-row justify-between sm:items-center sm:gap-6">
-          <AppLink className="shrink-0 text-xl sm:text-2xl font-bold text-[#4B3EC4]  transition-colors" to="/">
+          <AppLink className="shrink-0 text-xl sm:text-2xl font-semibold text-[#4B3EC4] transition-colors" to="/">
             SHOPNEST
           </AppLink>
 
@@ -84,7 +84,13 @@ const {isLoading, error, products}=useProductsStore()
                     )} />
 
               {/* Account - Hidden on mobile, visible on xl and up */}
-              {!userData?(
+              
+              { userLoading ? (
+    // Loader -------------👇
+    <div className="flex items-center justify-center w-9 h-9">
+      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+    </div>
+  ) :!userData?(
               <AppLink to="/login" className="items-center gap-2.5 hidden xl:flex hover:text-blue-600 transition-colors" >
                 <div className="flex items-center justify-center w-8 h-8 lg:w-9 lg:h-9 border border-gray-300 rounded-full hover:border-blue-500 transition-colors">
                   <svg
@@ -181,7 +187,13 @@ const {isLoading, error, products}=useProductsStore()
           <div className="hidden sm:flex items-center gap-1 xl:gap-5 w-full @xsm:w-auto">
               {/* Account - Hidden on mobile, visible on xl and up */}
 
-              <AppLink to={!userData? "/login" :"/profileLayout"} className="items-center gap-2.5 hidden xl:flex hover:text-[#4B3EC4] transition-colors" >
+              <AppLink to={!userData? "/login" :"/profileLayout"} className="relative hidden xl:flex items-center gap-2.5 hover:text-[#4B3EC4] transition-colors" >
+              {userLoading && (
+    // Loader -------------👇
+    <div className="absolute top-0 flex items-center justify-center w-full h-full bg-[#00000066]">
+      <div className="w-4 h-4 border-2 border-white border-t-transparent  rounded-full animate-spin"></div>
+    </div>
+  )}
                 {!userData? (
                   <>
                   <div className="flex items-center justify-center w-8 h-8 lg:w-9 lg:h-9 border border-gray-300 rounded-full transition-colors">

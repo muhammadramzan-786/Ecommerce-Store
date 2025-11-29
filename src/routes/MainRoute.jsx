@@ -26,6 +26,7 @@ import { useGetCart } from '../hooks/useCart';
 import { useProducts } from '../hooks/useProducts';
 import { useCategories } from '../hooks/useCategories';
 import { useAuthStore } from '../hooks/useAuthStore';
+import ResetPassword from '../Pages/PublicPages/ResetPassword';
 // function MainRoute() {
 //   const [token, setToken] = useState(localStorage.getItem("token"));
 
@@ -71,7 +72,7 @@ function MainRoute() {
           <Route path="/cart" element={<Cart />} />
           <Route path="/contactUs" element={<ContactUs />} />
           <Route path="/category/:name" element={<Category />} />
-          <Route path="/forgotPassword" element={<ForgotPassword />} />
+          
         </Route>
 
         {/* Private Pages */}
@@ -89,6 +90,8 @@ function MainRoute() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/forgotPassword" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
         </Route>
 
         {/* 404 */}

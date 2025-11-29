@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import Button from './Button'
 import { FaTimes } from "react-icons/fa";
 import { useLogin } from '../hooks/useLogin';
-import { useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash, FaUser, FaLock, FaEnvelope } from "react-icons/fa";
 import { useAuthStore } from '../hooks/useAuthStore';
 import { useGetCart } from '../hooks/useCart';
+import Input from './Input';
+import AppLink from './AppLink';
 
 function LoginModal({ isModal, closeModal }) {
   const [showHidePass, setShowHidePass] = useState(false)
@@ -16,6 +16,7 @@ function LoginModal({ isModal, closeModal }) {
     email: 'test@gmail.com',
     password: 'test'
   })
+
   const handleInputChange = (e) => {
     const { name, value } = e.target
     setFormData(prev => ({
@@ -24,19 +25,16 @@ function LoginModal({ isModal, closeModal }) {
   }
 
   useEffect(()=>{
-        if(userId){
-        console.log("in");
-        
+        if(userId){        
         refetch()
     }
   },[userId])
+
   const { handleLogin, loading } = useLogin()
 
   const loginFormSubmit = (e) => {
     e.preventDefault();
-    handleLogin(formData, closeModal);
-
-    
+    handleLogin(formData, closeModal);    
   }
 
   return (
@@ -81,20 +79,14 @@ function LoginModal({ isModal, closeModal }) {
                   <FaEnvelope className="w-4 h-4 mr-2 text-purple-600" />
                   Email Address
                 </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <FaUser className="text-gray-400" />
-                  </div>
-                  <input 
+                  <Input 
                     type="email" 
                     id="email" 
                     onChange={handleInputChange} 
                     name="email" 
                     defaultValue="test@gmail.com" 
-                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 placeholder-gray-400"
-                    placeholder="johnsmith@example.com" 
+                    placeholder="example@example.com" 
                   />
-                </div>
               </div>
 
               {/* Password Field */}
@@ -104,16 +96,12 @@ function LoginModal({ isModal, closeModal }) {
                   Password
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <FaLock className="text-gray-400" />
-                  </div>
-                  <input 
+                  <Input 
                     type={showHidePass ? "text" : "password"} 
                     defaultValue="test"
                     id="password" 
                     name="password" 
                     onChange={handleInputChange}
-                    className="w-full pl-10 pr-12 py-3 rounded-xl border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 placeholder-gray-400"
                     placeholder="Enter your password"
                   />
                   <button
@@ -128,9 +116,9 @@ function LoginModal({ isModal, closeModal }) {
 
               {/* Forgot Password */}
               <div className="flex justify-end">
-                <a href="#" className="text-sm text-purple-600 hover:text-purple-700 font-medium transition-colors hover:underline">
+                <AppLink to="/forgotPassword" className="text-sm text-purple-600 hover:text-purple-700 font-medium transition-colors hover:underline">
                   Forgot password?
-                </a>
+                </AppLink>
               </div>
 
               {/* Submit Button */}
@@ -167,9 +155,9 @@ function LoginModal({ isModal, closeModal }) {
             <div className="text-center mt-5 pt-5 border-t border-gray-200">
               <p className="text-sm text-gray-600">
                 Don't have an account?{" "}
-                <a href="#" className="text-purple-600 hover:text-purple-700 font-semibold transition-colors hover:underline">
+                <AppLink to="/signup" className="text-purple-600 hover:text-purple-700 font-semibold transition-colors hover:underline">
                   Sign up
-                </a>
+                </AppLink>
               </p>
             </div>
           </div>

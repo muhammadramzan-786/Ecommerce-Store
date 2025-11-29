@@ -111,11 +111,11 @@ export default function SearchDropdown({ showDropdown, filteredProducts }) {
             We couldn't find any products matching your search.
           </p>
 
-          <Button
+          {/* <Button
             className="inline-flex items-center px-4 py-2 text-sm font-medium text-[#4B3EC4] bg-blue-50 rounded-lg hover:bg-blue-100"
             onClick={() => console.log("View all products")}
             text={`View all products <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/></svg>`}
-          />
+          /> */}
         </div>
       )}
     </div>

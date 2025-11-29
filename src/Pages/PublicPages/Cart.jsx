@@ -71,11 +71,11 @@ const { isPending, isError, error, isSuccess } = updateCart;
             <p className="text-gray-600 mb-8 max-w-md mx-auto">
               Looks like you haven't added any items to your cart yet. Start shopping to discover amazing products!
             </p>
-              <button icon={FaArrowLeft} text='Continue Shopping'
-                onClick={continueShopping}
-                className="bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
-              />
-            
+            <AppLink to="/" onClick={continueShopping}
+                className="group flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+              >
+                <FaArrowLeft className="text-sm group-hover:-translate-x-1 transition-transform" /> Continue Shopping
+            </AppLink>
             {/* Popular Categories */}
             <div className="mt-12">
               <h3 className="text-xl font-semibold text-gray-900 mb-6">Popular Categories</h3>
@@ -223,12 +223,11 @@ const { isPending, isError, error, isSuccess } = updateCart;
 
               {/* Cart Footer */}
               <div className="p-6 bg-gray-50 border-t border-gray-200">
-
-                  <Button icon={FaArrowLeft} text='Continue Shopping'
-                    onClick={continueShopping}
-                    className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
-                  /> 
-
+            <AppLink to="/" onClick={continueShopping}
+                className="group flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+              >
+                <FaArrowLeft className="text-sm group-hover:-translate-x-1 transition-transform" /> Continue Shopping
+            </AppLink>
               </div>
             </div>
 

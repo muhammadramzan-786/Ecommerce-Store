@@ -46,6 +46,7 @@ function Home() {
   return (
     <>
       <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 xl:px-0">
+        
       <section className="overflow-hidden mt-5">
         <div className="w-full sm:px-4 mx-auto max-w-7xl xl:px-0 pb-15 border-gray-3">
           <div className="swiper categories-carousel common-carousel">
