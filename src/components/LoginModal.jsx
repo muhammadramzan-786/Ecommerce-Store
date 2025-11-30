@@ -57,7 +57,7 @@ useEffect(()=>{
       )}
       {/* Modal Container */}
       <div className={`relative w-full max-w-md transform transition-all duration-500 ${
-        isModal ? "scale-100 translate-y-0" : "scale-95 translate-y-8"
+        isModal ? "scale-100 translate-y-0" : "scale-0 translate-y-8"
       }`}>
         
         {/* Close Button */}
