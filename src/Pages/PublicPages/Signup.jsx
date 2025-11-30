@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import loginImg from '../../assets/images/loginImg.png'
 import { useNavigate } from 'react-router-dom'
 import { FaEye, FaEyeSlash, FaUser, FaEnvelope, FaLock, FaArrowRight, FaGoogle, FaFacebook, FaCheck } from "react-icons/fa";
+import { FcGoogle } from "react-icons/fc";
 import { signup } from '../../api/auth';
 import { toast } from 'react-toastify';
 import { useLogin } from '../../hooks/useLogin';
@@ -10,6 +11,7 @@ import Input from "../../components/Input";
 import { signInWithPopup } from "firebase/auth";
 import { useSignUp } from '../../hooks/useUser';
 import { auth, googleProvider } from "../../firebase";
+import { useGoogleAuth } from '../../hooks/useGoogleAuth';
 
 function Signup() {
   const [showHidePass, setShowHidePass] = useState(false)
@@ -57,40 +59,40 @@ function Signup() {
   });
 };
 
-     const googleLogin = async () => {
-       try {
-         const result = await signInWithPopup(auth, googleProvider);
-            const user = result.user;
+    //  const googleLogin = async () => {
+    //    try {
+    //      const result = await signInWithPopup(auth, googleProvider);
+    //         const user = result.user;
 
-           // Google user data
-           const data = {
-             name: user.displayName,
-             email: user.email,
-             password: user.uid, // Google unique ID as password
-             image: user.photoURL
-           };
+    //        // Google user data
+    //        const data = {
+    //          name: user.displayName,
+    //          email: user.email,
+    //          password: user.uid, // Google unique ID as password
+    //          image: user.photoURL
+    //        };
           
-          mutate(data, {
-            onSuccess:async  () => {
-            const success = await handleLogin({
-             email: user.email,
-             password: user.uid
-            });
+    //       mutate(data, {
+    //         onSuccess:async  () => {
+    //         const success = await handleLogin({
+    //          email: user.email,
+    //          password: user.uid
+    //         });
         
-            if (success) {
-                navigate("/");
-            }
-            },
-          });
-         console.log(result.user);
-       } catch (err) {
-         console.log(err);
-       }
-     };
-
+    //         if (success) {
+    //             navigate("/");
+    //         }
+    //         },
+    //       });
+    //      console.log(result.user);
+    //    } catch (err) {
+    //      console.log(err);
+    //    }
+    //  };
+const { googleLogin, siUpLoading, userExLoading, loginLoading:lgLoading } = useGoogleAuth()
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-green-50  to-emerald-100">
-      {loginLoading && (
+      {(loginLoading || siUpLoading || userExLoading || lgLoading) && (
         <div className='fixed inset-0 z-40 bg-[#0000007a] h-screen w-screen flex items-center justify-center'>
           <div className="w-10 h-10 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
         </div>
@@ -209,7 +211,7 @@ function Signup() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-gradient-to-r from-purple-600 to-indigo-700 text-white py-4 px-4 rounded-lg font-semibold hover:from-purple-700 hover:to-indigo-800 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
+                  className="w-full bg-gradient-to-r from-purple-600 to-indigo-700 text-white py-3 px-4 rounded-lg font-semibold hover:from-purple-700 hover:to-indigo-800 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
                 >
                   {loading ? (
                     <div className="flex items-center justify-center gap-2">
@@ -232,21 +234,21 @@ function Signup() {
                 </div>
 
                 {/* Social Sign Up Buttons */}
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4">
                   <button onClick={googleLogin}
                     type="button"
-                    className="flex items-center justify-center gap-2 py-3 px-4 border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-200 transition-colors font-medium"
+                    className="flex items-center justify-center gap-2 py-3 px-4 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-200 transition-colors font-medium"
                   >
-                    <FaGoogle className="text-red-500" />
+                    <FcGoogle className="text-red-500 text-2xl" />
                     Google
                   </button>
-                  <button
+                  {/* <button
                     type="button"
                     className="flex items-center justify-center gap-2 py-3 px-4 border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-200 transition-colors font-medium"
                   >
                     <FaFacebook className="text-blue-600" />
                     Facebook
-                  </button>
+                  </button> */}
                 </div>
               </form>
 
@@ -256,7 +258,7 @@ function Signup() {
                   Already have an account?{" "}
                   <AppLink 
                     to="/login"
-                    className="text-green-600 font-semibold hover:text-green-700 transition-colors hover:underline"
+                    className="text-[#4B3EC4] font-semibold hover:opacity-90 transition-colors hover:underline"
                   >
                     Sign in
                   </AppLink>

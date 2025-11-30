@@ -41,10 +41,11 @@ export function useResetPassword() {
 }
 
 export function useUserExist() {
-      return useQuery({
-          queryKey:["user"],
-          queryFn:async ()=> (await userExist()).data,
-      })
+    const qc = useQueryClient();
+    return useMutation({
+        mutationFn:userExist,
+        onSuccess:()=> qc.invalidateQueries(["user"])
+    })
 }
 
 export function useUpdateUser() {

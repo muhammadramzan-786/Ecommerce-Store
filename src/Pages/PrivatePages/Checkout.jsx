@@ -46,17 +46,18 @@ const finalItems = byNow ? buyNowProduct : orderItems?.items || [];
     postalCode: userData?.postalCode,
     phone: userData?.phone
   });
+
   useEffect(() => {
   if(userData){
     setShippingInfo({
-      email: userData.email || "",
-      name: userData.name || "",
-      address: userData.address || "",
-      city: userData.city || "",
-      postalCode: userData.postalCode || "",
-      phone: userData.phone || ""
+      email: userData?.email || "",
+      name: userData?.name || "",
+      address: userData?.address || "",
+      city: userData?.city || "",
+      postalCode: userData?.postalCode || "",
+      phone: userData?.phone || ""
     });
-  }
+  }  
 }, [userData]);
 
   const [paymentInfo, setPaymentInfo] = useState({
@@ -143,9 +144,9 @@ const deleteItem=useDeleteCartProduct()
   }
 };
 
-  const handleInputChange = (setter) => (e) => {
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setter(prev => ({ ...prev, [name]: value }));
+    setShippingInfo(prev => ({ ...prev, [name]: value }));
   };
 
   return (
@@ -234,7 +235,7 @@ const deleteItem=useDeleteCartProduct()
                         type="email"
                         name="email"
                         value={shippingInfo.email || ""}
-                        onChange={handleInputChange(setShippingInfo)}
+                        onChange={handleInputChange}
                         required
                         placeholder="your@email.com"
                       />
@@ -245,9 +246,9 @@ const deleteItem=useDeleteCartProduct()
                         </label>
                         <Input
                           type="text"
-                          name="firstName"
+                          name="name"
                           value={shippingInfo.name || ""}
-                          onChange={handleInputChange(setShippingInfo)}
+                          onChange={handleInputChange}
                           required
                         />
                       </div>
@@ -260,7 +261,7 @@ const deleteItem=useDeleteCartProduct()
                         type="text"
                         name="address"
                         value={shippingInfo.address || ""}
-                        onChange={handleInputChange(setShippingInfo)}
+                        onChange={handleInputChange}
                         required
                         placeholder="123 Main Street"
                       />
@@ -274,7 +275,7 @@ const deleteItem=useDeleteCartProduct()
                         type="text"
                         name="city"
                         value={shippingInfo.city || ""}
-                        onChange={handleInputChange(setShippingInfo)}
+                        onChange={handleInputChange}
                         required
                       />
                     </div>
@@ -284,10 +285,10 @@ const deleteItem=useDeleteCartProduct()
                         postalCode *
                       </label>
                       <Input
-                        type="text"
-                        name="zipCode"
-                        value={shippingInfo.postalCode || ""}
-                        onChange={handleInputChange(setShippingInfo)}
+                        type="number"
+                        name="postalCode"
+                        value={shippingInfo.postalCode || ""} maxLength={5}
+                        onChange={handleInputChange}
                         required
                       />
                     </div>
@@ -298,8 +299,8 @@ const deleteItem=useDeleteCartProduct()
                       <Input
                         type="tel"
                         name="phone"
-                        value={shippingInfo.phone || ""}
-                        onChange={handleInputChange(setShippingInfo)}
+                        value={shippingInfo.phone || ""} maxLength={11}
+                        onChange={handleInputChange}
                         required
                         placeholder="+91 1234567890"
                       />
@@ -403,14 +404,14 @@ const deleteItem=useDeleteCartProduct()
                     <h3 className="text-lg font-medium text-gray-900 mb-3">Order Items</h3>
                     <div className="space-y-4">
                       {finalItems?.map((item) => (
-                        <div key={item._id} className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
+                        <div key={item._id} className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg ">
                           <img
                             src={item.images[0]}
                             alt={item.name}
                             className="w-16 h-16 object-cover rounded"
                           />
                           <div className="flex-1">
-                            <h4 className="font-medium text-gray-900">{item.name}</h4>
+                            <AppLink to={`/product-details/${item._id}`} className="font-medium text-gray-900 hover:text-[#4B3EC4]">{item.name}</AppLink>
                             <p className="text-sm text-gray-600">{item.brand} • {item.color}</p>
                             <p className="text-sm text-gray-600">Qty: {byNow?quantity:item.quantity}</p>
                           </div>

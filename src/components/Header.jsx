@@ -63,11 +63,11 @@ const {isLoading, error, products}=useProductsStore()
             SHOPNEST
           </AppLink>
 
-          <div className="sm:hidden flex items-center justify-end gap-1 xl:gap-5 w-full @xsm:w-auto">
-                  <Button type="submit" onClick={()=>setSearchDropdown(!searchDropdown)} id="search-btn" aria-label="Search" className="border border-gray-300 p-1.5 rounded-full"
+          <div className="sm:hidden flex items-center justify-end gap-2 xl:gap-5 w-full @xsm:w-auto">
+                  <Button type="submit" onClick={()=>setSearchDropdown(!searchDropdown)} id="search-btn" aria-label="Search" className="border border-gray-300 p-1 rounded-full"
                     text={searchDropdown ? (
                       // Close Icon
-                      <svg className="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24">
                         <path stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
                           d="M6 6L18 18M6 18L18 6" />
                       </svg>
@@ -132,8 +132,8 @@ const {isLoading, error, products}=useProductsStore()
                   <span className="relative inline-block">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      width={18}
-                      height={18}
+                      width={20}
+                      height={20}
                       viewBox="0 0 18 18"
                       fill="none"
                     >
@@ -187,7 +187,7 @@ const {isLoading, error, products}=useProductsStore()
           <div className="hidden sm:flex items-center gap-1 xl:gap-5 w-full @xsm:w-auto">
               {/* Account - Hidden on mobile, visible on xl and up */}
 
-              <AppLink to={!userData? "/login" :"/profileLayout"} className="relative hidden xl:flex items-center gap-2.5 hover:text-[#4B3EC4] transition-colors" >
+              <AppLink to={!userData? "/login" :"/profileLayout"} className="relative hidden sm:flex items-center gap-2.5 hover:text-[#4B3EC4] transition-colors" >
               {userLoading && (
     // Loader -------------👇
     <div className="absolute top-0 flex items-center justify-center w-full h-full bg-[#00000066]">
@@ -242,8 +242,8 @@ const {isLoading, error, products}=useProductsStore()
                   <span className="relative inline-block">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      width={18}
-                      height={18}
+                      width={20}
+                      height={20}
                       viewBox="0 0 18 18"
                       fill="none"
                     >

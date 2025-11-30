@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react'
 import { FaTimes } from "react-icons/fa";
 import { useLogin } from '../hooks/useLogin';
 import { FaEye, FaEyeSlash, FaUser, FaLock, FaEnvelope } from "react-icons/fa";
+import { FcGoogle } from "react-icons/fc";
 import { useAuthStore } from '../hooks/useAuthStore';
 import { useGetCart } from '../hooks/useCart';
 import Input from './Input';
 import AppLink from './AppLink';
+import { useGoogleAuth } from '../hooks/useGoogleAuth';
 
 function LoginModal({ isModal, closeModal }) {
   const [showHidePass, setShowHidePass] = useState(false)
@@ -36,14 +38,23 @@ function LoginModal({ isModal, closeModal }) {
     e.preventDefault();
     handleLogin(formData, closeModal);    
   }
-
+const { googleLogin, siUpLoading, userExLoading, loginLoading:lgLoading } = useGoogleAuth()
+useEffect(()=>{
+  if(!lgLoading){
+  closeModal()
+}
+},[lgLoading])
   return (
     <div className={`fixed inset-0 flex items-center justify-center p-4 z-50 transition-all duration-500 ${
       isModal 
         ? "opacity-100 visible backdrop-blur-sm bg-black/50" 
         : "opacity-0 invisible backdrop-blur-0 bg-black/0"
     }`}>
-      
+      {(siUpLoading || userExLoading || lgLoading) && (
+        <div className="fixed inset-0 z-40 bg-[#0000007a] h-screen w-screen flex items-center justify-center">
+          <div className="w-10 h-10 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      )}
       {/* Modal Container */}
       <div className={`relative w-full max-w-md transform transition-all duration-500 ${
         isModal ? "scale-100 translate-y-0" : "scale-95 translate-y-8"
@@ -141,14 +152,37 @@ function LoginModal({ isModal, closeModal }) {
               </button>
 
               {/* Demo Credentials */}
-              <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 mt-3">
+              {/* <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 mt-3">
                 <p className="text-sm text-blue-800 font-medium text-center">
                   Demo Credentials
                 </p>
                 <p className="text-xs text-blue-600 text-center mt-1">
                   Email: test@gmail.com | Password: test
                 </p>
-              </div>
+              </div> */}
+              {/* Divider */}
+                <div className="relative flex items-center">
+                  <div className="flex-grow border-t border-gray-300"></div>
+                  <span className="flex-shrink mx-4 text-gray-500 text-sm">Or sign up with</span>
+                  <div className="flex-grow border-t border-gray-300"></div>
+                </div>
+
+                <div className="grid grid-cols-1 gap-4">
+                    <button onClick={googleLogin}
+                      type="button"
+                      className="flex items-center justify-center gap-2 py-3 px-4 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-200 transition-colors font-medium"
+                    >
+                      <FcGoogle className="text-red-500 text-2xl" />
+                      Google
+                    </button>
+                    {/* <button
+                      type="button"
+                      className="flex items-center justify-center gap-2 py-3 px-4 border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-200 transition-colors font-medium"
+                    >
+                      <FaFacebook className="text-blue-600" />
+                      Facebook
+                    </button> */}
+                </div>
             </form>
 
             {/* Footer */}

@@ -73,6 +73,10 @@ function ProductDetails() {
   };
 
   const discountPercentage = Math.round(((product?.price - product?.discountPrice)));
+const animationClass =
+  "transition-all duration-400 opacity-100 translate-y-0";
+const hiddenClass =
+  "opacity-0 -translate-y-7 pointer-events-none absolute";
 
   return (
     <>
@@ -189,7 +193,7 @@ function ProductDetails() {
                   </div>
                 </div>
 
-                <div className="flex gap-3 flex-col xsm:flex-row">
+                <div className="grid sm:grid-cols-2 gap-3 flex-col sm:flex-row">
                   <Button icon={IoCartOutline} text={addCart.isPending ? "Adding..." : "Add to Cart"} disabled={addCart.isPending} onClick={()=>addToCart(product?._id, quantity)} />
                   <AppLink to="/checkout" state={{ buyNow:true, productID:product?._id, quantity:quantity }}
                     onClick={buyNow}
@@ -233,34 +237,30 @@ function ProductDetails() {
             <div className="flex border-b border-gray-200">
               {['description', 'specifications', 'reviews'].map((tab) => (
                 <Button text={tab} key={tab} onClick={() => setActiveTab(tab)}
-                  className={`px-6 py-4 font-medium text-sm capitalize transition-colors ${
+                  className={`px-6 py-4 font-medium text-sm capitalize transition-colors  ${
                     activeTab === tab ? 'text-[#4B3EC4] border-b-2 border-[#4B3EC4] rounded-none' : 'text-gray-500 hover:text-gray-700'
                   }`} />
               ))}
             </div>
 
             <div className="p-8">
-              {activeTab === 'description' && (
-                <div className="prose max-w-none">
+                <div className={`prose max-w-none ${activeTab === 'description'? animationClass : hiddenClass}`}>
                   <p className="text-gray-600 leading-relaxed">
                     {product?.description}
                   </p>
                   
                 </div>
-              )}
 
-              {activeTab === 'specifications' && (
-                <div className="grid gap-4">
+
+                <div className={`grid gap-4 ${activeTab === 'specifications'? animationClass : hiddenClass}`}>
                   <div className="grid grid-cols-2 gap-4">
                     <div><strong>Brand:</strong> {product?.brand}</div>
                     <div><strong>Category:</strong> {product?.category}</div>
                   </div>
                 </div>
-              )}
 
-              {activeTab === 'reviews' && (
-                <div className="space-y-6">
-                  {reviews.map((review) => (
+                <div className={`space-y-6 ${activeTab === 'reviews'? animationClass : hiddenClass}`}>
+                  {/* {reviews.map((review) => (
                     <div key={review.id} className="border-b border-gray-200 pb-6 last:border-b-0">
                       <div className="flex items-center gap-4 mb-2">
                         <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center font-medium">
@@ -293,9 +293,9 @@ function ProductDetails() {
                       </div>
                       <p className="text-gray-600">{review.comment}</p>
                     </div>
-                  ))}
+                  ))} */}
                 </div>
-              )}
+
             </div>
           </div>
         </div>
