@@ -199,7 +199,7 @@ const handleClickOutside = (event) => {
           </div>
 
           <div className="relative mx-auto hidden sm:inline-block" ref={containerRef} >
-            <div className="relative min-w-[200px] max-w-[475px] w-full sm:min-w-[300px] lg:min-w-[370px] border border-gray-300 rounded-full focus-within:border-gray-900 focus-within:ring-1 transition-all">
+            <div className="relative min-w-[200px] max-w-[475px] w-full sm:min-w-[300px] lg:min-w-[370px] border border-gray-300 rounded-full focus-within:border-[#4B3EC4] transition-all">
               <input
                 onFocus={() => setShowDropdown(true)}
                 onChange={(e) => setSearchVal(e.target.value)}

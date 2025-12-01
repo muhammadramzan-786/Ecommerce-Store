@@ -8,7 +8,7 @@ function Input({ value, placeholder, onInput, onChange, type = "text", className
       placeholder={placeholder}
       onInput={onInput} maxLength={maxLength}
       onChange={onChange} onKeyDown={onKeyDown}
-      className={`peer w-full bg-transparent text-gray-950 font-sans font-medium outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 border focus:ring-1 text-sm px-3 py-3 rounded-lg border-gray-300 focus:border-gray-900 ${className}`}
+      className={`peer w-full bg-transparent text-gray-950 font-sans font-medium outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 border text-sm px-3 py-3 rounded-lg border-gray-300 focus:border-[#4B3EC4] ${className}`}
     />
   );
 }
