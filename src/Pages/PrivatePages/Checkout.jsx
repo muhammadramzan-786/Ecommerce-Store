@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { FaLock, FaUser, FaMapMarkerAlt, FaCreditCard, FaCheck, FaArrowLeft, FaShieldAlt, FaTruck, FaUndo } from 'react-icons/fa';
-import { IoCartOutline } from 'react-icons/io5';
-import { useDeleteCartProduct, useGetCart } from '../../hooks/useCart';
-import { useUser } from "../../hooks/useUser";
+import { FaLock, FaUser, FaCreditCard, FaCheck, FaArrowLeft, FaShieldAlt, FaTruck, FaUndo } from 'react-icons/fa';
+import { useDeleteCartProduct } from '../../hooks/useCart';
 import Input from "../../components/Input";
 import { useAddOrder } from '../../hooks/useOrders';
 import { toast } from 'react-toastify';
@@ -16,8 +14,6 @@ import AppLink from '../../components/AppLink';
 function Checkout() {
   const [activeStep, setActiveStep] = useState(1);
   const [paymentMethod, setPaymentMethod] = useState('paypal');
-  const [saveShippingInfo, setSaveShippingInfo] = useState(true);
-  const [savePaymentInfo, setSavePaymentInfo] = useState(false);
   const [userId, setUserId] = useState(null);
   const [loading,setLoading]=useState(false)
   const navigate=useNavigate()
@@ -163,7 +159,7 @@ const deleteItem=useDeleteCartProduct()
         </div>
 
         {/* Progress Steps */}
-        <div className="mb-8 sticky top-17 z-40 bg-white p-2 border border-gray-200 rounded-xl">
+        <div className="mb-8 sticky top-17 z-40 bg-white p-2 border border-gray-200 rounded-xl shadow-lg">
          <ol className="flex items-center w-full">
   {steps.map((step, index) => {
     const StepIcon = step.icon;

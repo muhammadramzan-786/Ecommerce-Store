@@ -56,7 +56,7 @@ useEffect(()=>{
         </div>
       )}
       {/* Modal Container */}
-      <div className={`relative w-full max-w-md transform transition-all duration-500 ${
+      <div className={`relative w-full max-w-md transform transition-all duration-500 max-h-full ${
         isModal ? "scale-100 translate-y-0" : "scale-0 translate-y-8"
       }`}>
         
@@ -69,7 +69,7 @@ useEffect(()=>{
         </button>
 
         {/* Modal Content */}
-        <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
+        <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-2xl border border-gray-200 max-h-[92vh] overflow-hidden overflow-x-hidden overflow-y-scroll hide-scrollbar">
           
           {/* Header Section */}
           <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-4 py-5 text-center">

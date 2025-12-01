@@ -1,16 +1,13 @@
 import React, { useState } from 'react'
 import loginImg from '../../assets/images/loginImg.png'
 import { useNavigate } from 'react-router-dom'
-import { FaEye, FaEyeSlash, FaUser, FaEnvelope, FaLock, FaArrowRight, FaGoogle, FaFacebook, FaCheck } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaArrowRight } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
-import { signup } from '../../api/auth';
 import { toast } from 'react-toastify';
 import { useLogin } from '../../hooks/useLogin';
 import AppLink from '../../components/AppLink';
 import Input from "../../components/Input";
-import { signInWithPopup } from "firebase/auth";
 import { useSignUp } from '../../hooks/useUser';
-import { auth, googleProvider } from "../../firebase";
 import { useGoogleAuth } from '../../hooks/useGoogleAuth';
 
 function Signup() {
@@ -20,8 +17,6 @@ function Signup() {
     email: '',
     password: ''
   })
-  // const [loading, setLoading] = useState(false);
-  const [agreedToTerms, setAgreedToTerms] = useState(false)
 
   const navigate = useNavigate();
   const { loading:loginLoading, handleLogin } = useLogin()
@@ -59,36 +54,6 @@ function Signup() {
   });
 };
 
-    //  const googleLogin = async () => {
-    //    try {
-    //      const result = await signInWithPopup(auth, googleProvider);
-    //         const user = result.user;
-
-    //        // Google user data
-    //        const data = {
-    //          name: user.displayName,
-    //          email: user.email,
-    //          password: user.uid, // Google unique ID as password
-    //          image: user.photoURL
-    //        };
-          
-    //       mutate(data, {
-    //         onSuccess:async  () => {
-    //         const success = await handleLogin({
-    //          email: user.email,
-    //          password: user.uid
-    //         });
-        
-    //         if (success) {
-    //             navigate("/");
-    //         }
-    //         },
-    //       });
-    //      console.log(result.user);
-    //    } catch (err) {
-    //      console.log(err);
-    //    }
-    //  };
 const { googleLogin, siUpLoading, userExLoading, loginLoading:lgLoading } = useGoogleAuth()
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-green-50  to-emerald-100">

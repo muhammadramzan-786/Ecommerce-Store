@@ -1,18 +1,13 @@
 import React, { useState } from "react";
 import {
   FaStar,
-  FaHeart,
-  FaRegHeart,
-  FaShare,
   FaTruck,
   FaShieldAlt,
   FaUndo,
   FaCheck,
 } from "react-icons/fa";
 import { IoCartOutline } from "react-icons/io5";
-import { FaTimes } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
-import { useProducts, useSingleProduct } from "../../hooks/useProducts";
 import { useAddCart } from "../../hooks/useCart";
 import ProductCard from "../../components/ProductCard";
 import Button from "../../components/Button";
@@ -46,7 +41,6 @@ const reviews = [
 function ProductDetails() {
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [isWishlisted, setIsWishlisted] = useState(false);
   const [activeTab, setActiveTab] = useState("description");
   const [isModal, setisModal] = useState(false);
   const [singleProduct, setSingleProduct] = useState(null);
@@ -83,13 +77,6 @@ function ProductDetails() {
     });
   };
 
-  const buyNow = () => {
-    console.log(`Buying ${quantity} ${product?.name}`);
-    // Buy now logic here
-  };
-  const discountPercentage = Math.round(
-    product?.price - product?.discountPrice
-  );
   const animationClass =
     "transition-all duration-400 opacity-100 translate-y-0";
   const hiddenClass = "opacity-0 -translate-y-7 pointer-events-none absolute";
@@ -200,24 +187,17 @@ function ProductDetails() {
                 {/* Price */}
                 <div className="flex items-center gap-4">
                   <span className="text-3xl font-bold text-gray-900">
-                    Rs. {product?.price.toLocaleString()}
+                    Rs. {product?.discountPrice.toLocaleString()}
                   </span>
                   {product?.discountPrice && (
                     <>
                       <span className="text-xl line-through text-gray-400">
-                        Rs. {product?.discountPrice.toLocaleString()}
+                        Rs. {product?.price.toLocaleString()}
                       </span>
-                      <span className="px-2 py-1 bg-red-100 text-red-600 text-sm font-bold rounded">
-                        {discountPercentage}% OFF
-                      </span>
+                      
                     </>
                   )}
                 </div>
-
-                {/* Description */}
-                {/* <p className="text-gray-600 leading-relaxed">
-                {product?.description}
-              </p> */}
 
                 {/* Quantity and Actions */}
                 <div className="space-y-4">
@@ -225,11 +205,11 @@ function ProductDetails() {
                     <span className="text-sm font-medium text-gray-900">
                       Quantity:
                     </span>
-                    <div className="flex items-center border border-gray-300 rounded-lg">
+                    <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden">
                       <Button
                         text="-"
                         onClick={() => handleQuantityChange(-1)}
-                        className="px-4 py-2 text-gray-600 hover:text-gray-900 transition-colors"
+                        className="px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-300 rounded-none transition-colors"
                       />
                       <span className="px-4 py-2 border-x border-gray-300 font-medium">
                         {quantity}
@@ -237,7 +217,7 @@ function ProductDetails() {
                       <Button
                         text="+"
                         onClick={() => handleQuantityChange(1)}
-                        className="px-4 py-2 text-gray-600 hover:text-gray-900 transition-colors"
+                        className="px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-300 rounded-none transition-colors"
                       />
                     </div>
                   </div>

@@ -13,85 +13,119 @@ import { useAuthStore } from "../hooks/useAuthStore";
 import AppLink from "./AppLink";
 
 function Header() {
-  const [searchVal, setSearchVal] = useState('');
-  const userData=useUserStore((state)=>state.user)
-  const userLoading=useUserStore((state)=>state.loading)
-  const [showDropdown, setShowDropdown]=useState(false)
-  const [searchDropdown, setSearchDropdown]=useState(false)
-  const containerRef=useRef(null)
-const {isLoading, error, products}=useProductsStore()
-  const cartItems=useCartStore((state)=>state.cart)
+  const [searchVal, setSearchVal] = useState("");
+  const userData = useUserStore((state) => state.user);
+  const userLoading = useUserStore((state) => state.loading);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [searchDropdown, setSearchDropdown] = useState(false);
+  const containerRef = useRef(null);
+  const { isLoading, error, products } = useProductsStore();
+  const cartItems = useCartStore((state) => state.cart);
 
-    const filteredProducts=products?.filter((product)=>product.name.toLowerCase().includes(searchVal.toLowerCase()))
-    // console.log(filteredProducts);
-    useEffect(()=>{
-      const handleClickOutside=(event)=>{
-        if(containerRef.current && !containerRef.current.contains(event.target)){
-          setShowDropdown(false);
-        }
-      }
-      document.addEventListener("mousedown",handleClickOutside)
-      return ()=>document.removeEventListener("mousedown",handleClickOutside)
-    },[])
+  const filteredProducts = products?.filter((product) =>
+    product.name.toLowerCase().includes(searchVal.toLowerCase())
+  );
+  // console.log(filteredProducts);
+  useEffect(() => {
+const handleClickOutside = (event) => {
+  const clickedInsideDropdown = event.target.closest('.dropdown-area');
 
-    const clearAuth=useAuthStore(state=>state.clearAuth)
-    const logOut=()=>{
-      clearAuth()
-      useUserStore.getState().setUser(null);
-      useCartStore.getState().setCart({items:[]});
-      window.dispatchEvent(new Event("authChange"));
-    }
-    const logOutBtn=(<button onClick={logOut} className="bg-red-600 text-white p-1.5 rounded-sm">
-                  <FaArrowRightFromBracket />
-                </button>)
+  if ( containerRef.current && !containerRef.current.contains(event.target) && !clickedInsideDropdown) {
+    setShowDropdown(false);
+  }
+};
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
-                        const location=useLocation()
-      useEffect(()=>{
-        window.scrollTo({
-            top:0,
-            left:0,
-            behavior:"smooth"
-        })
-      },[location])
+  const clearAuth = useAuthStore((state) => state.clearAuth);
+  const logOut = () => {
+    clearAuth();
+    useUserStore.getState().setUser(null);
+    useCartStore.getState().setCart({ items: [] });
+    window.dispatchEvent(new Event("authChange"));
+  };
+  
+  const logOutBtn = (
+    <button onClick={logOut} className="bg-red-600 text-white p-1.5 rounded-sm">
+      <FaArrowRightFromBracket />
+    </button>
+  );
+
+  const location = useLocation();
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+  }, [location]);
 
   return (
     <div className="w-full px-4 sm:px-6 xl:px-0 sticky top-0 z-50 bg-white shadow-lg @container">
       <div className="flex mx-auto max-w-7xl flex-col @xsm:flex-row gap-2 lg:gap-5 md:items-end lg:items-center xl:justify-between ease-out duration-200 py-2 2xl:py-5">
         {/* Logo and Search Section */}
         <div className="flex w-full gap-3 lg:gap-5 flex-row justify-between sm:items-center sm:gap-6">
-          <AppLink className="shrink-0 text-xl sm:text-2xl font-semibold text-[#4B3EC4] transition-colors" to="/">
+          <AppLink
+            className="shrink-0 text-xl sm:text-2xl font-semibold text-[#4B3EC4] transition-colors"
+            to="/"
+          >
             SHOPNEST
           </AppLink>
 
           <div className="sm:hidden flex items-center justify-end gap-2 xl:gap-5 w-full @xsm:w-auto">
-                  <Button type="submit" onClick={()=>setSearchDropdown(!searchDropdown)} id="search-btn" aria-label="Search" className="border border-gray-300 p-1 rounded-full"
-                    text={searchDropdown ? (
-                      // Close Icon
-                      <svg className="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24">
-                        <path stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-                          d="M6 6L18 18M6 18L18 6" />
-                      </svg>
-                    ) : (
-                      // Search Icon
-                      <svg className="w-5 h-5 text-gray-600" viewBox="0 0 24 25" fill="none">
-                        <path
-                          fillRule="evenodd"
-                          clipRule="evenodd"
-                          d="M11.25 2.75C6.14154 2.75 2 6.89029 2 11.998C2 17.1056 6.14154 21.2459 11.25 21.2459C13.5335 21.2459 15.6238 20.4187 17.2373 19.0475L20.7182 22.5287C21.011 22.8216 21.4859 22.8217 21.7788 22.5288C22.0717 22.2359 22.0718 21.761 21.7789 21.4681L18.2983 17.9872C19.6714 16.3736 20.5 14.2826 20.5 11.998C20.5 6.89029 16.3585 2.75 11.25 2.75ZM3.5 11.998C3.5 7.71905 6.96962 4.25 11.25 4.25C15.5304 4.25 19 7.71905 19 11.998C19 16.2769 15.5304 19.7459 11.25 19.7459C6.96962 19.7459 3.5 16.2769 3.5 11.998Z"
-                          fill="currentColor"
-                        />
-                      </svg>
-                    )} />
+            <Button
+              type="submit"
+              onClick={() => setSearchDropdown(!searchDropdown)}
+              id="search-btn"
+              aria-label="Search"
+              className="border border-gray-300 p-1 rounded-full"
+              text={
+                searchDropdown ? (
+                  // Close Icon
+                  <svg
+                    className="w-4 h-4 text-gray-600"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6 6L18 18M6 18L18 6"
+                    />
+                  </svg>
+                ) : (
+                  // Search Icon
+                  <svg
+                    className="w-5 h-5 text-gray-600"
+                    viewBox="0 0 24 25"
+                    fill="none"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      clipRule="evenodd"
+                      d="M11.25 2.75C6.14154 2.75 2 6.89029 2 11.998C2 17.1056 6.14154 21.2459 11.25 21.2459C13.5335 21.2459 15.6238 20.4187 17.2373 19.0475L20.7182 22.5287C21.011 22.8216 21.4859 22.8217 21.7788 22.5288C22.0717 22.2359 22.0718 21.761 21.7789 21.4681L18.2983 17.9872C19.6714 16.3736 20.5 14.2826 20.5 11.998C20.5 6.89029 16.3585 2.75 11.25 2.75ZM3.5 11.998C3.5 7.71905 6.96962 4.25 11.25 4.25C15.5304 4.25 19 7.71905 19 11.998C19 16.2769 15.5304 19.7459 11.25 19.7459C6.96962 19.7459 3.5 16.2769 3.5 11.998Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                )
+              }
+            />
 
-              {/* Account - Hidden on mobile, visible on xl and up */}
-              
-              { userLoading ? (
-    // Loader -------------👇
-    <div className="flex items-center justify-center w-9 h-9">
-      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-    </div>
-  ) :!userData?(
-              <AppLink to="/login" className="items-center gap-2.5 hidden xl:flex hover:text-blue-600 transition-colors" >
+            {/* Account - Hidden on mobile, visible on xl and up */}
+
+            {userLoading ? (
+              // Loader -------------👇
+              <div className="flex items-center justify-center w-9 h-9">
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              </div>
+            ) : !userData ? (
+              <AppLink
+                to="/login"
+                className="items-center gap-2.5 hidden xl:flex hover:text-blue-600 transition-colors"
+              >
                 <div className="flex items-center justify-center w-8 h-8 lg:w-9 lg:h-9 border border-gray-300 rounded-full hover:border-blue-500 transition-colors">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -114,9 +148,16 @@ const {isLoading, error, products}=useProductsStore()
                     Sign In / Register
                   </p>
                 </div>
-              </AppLink>):(
-                <AppLink to="/profileLayout" className="items-center gap-2.5 flex hover:text-[#4B3EC4] transition-colors w-8 h-8 lg:w-auto lg:h-auto" >
-                  <img src={userData?.image} className="rounded-full w-8 h-8 lg:w-9 lg:h-9 border border-gray-300 flex-shrink-0 object-cover" />
+              </AppLink>
+            ) : (
+              <AppLink
+                to="/profileLayout"
+                className="items-center gap-2.5 flex hover:text-[#4B3EC4] transition-colors w-8 h-8 lg:w-auto lg:h-auto"
+              >
+                <img
+                  src={userData?.image}
+                  className="rounded-full w-8 h-8 lg:w-9 lg:h-9 border border-gray-300 flex-shrink-0 object-cover"
+                />
                 <div className="group hidden xl:inline-block">
                   <span className="block font-medium text-xs text-gray-600">
                     {userData?.name}
@@ -126,77 +167,97 @@ const {isLoading, error, products}=useProductsStore()
                   </p>
                 </div>
               </AppLink>
-              )}              
-              {/* Cart */}
-                <AppLink to="/cart" className="flex items-center gap-2.5 w-8 h-8 justify-center hover:text-[#4B3EC4] transition-colors" title="Cart">
-                  <span className="relative inline-block">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width={20}
-                      height={20}
-                      viewBox="0 0 18 18"
-                      fill="none"
-                    >
-                      <path
-                        d="M12 4V5C12 6.65685 10.6569 8 9 8C7.34315 8 6 6.65685 6 5V4M2.5 17H15.5C16.3284 17 17 16.3284 17 15.5V2.5C17 1.67157 16.3284 1 15.5 1H2.5C1.67157 1 1 1.67157 1 2.5V15.5C1 16.3284 1.67157 17 2.5 17Z"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    <span className="flex items-center justify-center font-medium text-xs absolute -right-2 -top-2 bg-red-600 w-4 h-4 rounded-full text-white">
-                      {cartItems?.items?.length || 0}
-                    </span>
-                  </span>
-                </AppLink>
-                {logOutBtn}
-            </div>
-
-           <div className="relative mx-auto hidden sm:inline-block" ref={containerRef}>
-                <div className="relative min-w-[200px] max-w-[475px] w-full sm:min-w-[300px] lg:min-w-[370px] border border-gray-300 rounded-full focus-within:border-gray-900 focus-within:ring-1 transition-all">
-                  <input onFocus={()=>setShowDropdown(true)} onChange={(e) => setSearchVal(e.target.value)} value={searchVal} id="search" placeholder="Search Products" autoComplete="off"
-                    className="w-full rounded-full border-0 focus:border-gray-800 h-[35px] sm:h-[42px] sm:py-2.5 pl-5 pr-12 outline-none ease-in duration-200 text-sm" type="search" name="search"
+            )}
+            {/* Cart */}
+            <AppLink
+              to="/cart"
+              className="flex items-center gap-2.5 w-8 h-8 justify-center hover:text-[#4B3EC4] transition-colors"
+              title="Cart"
+            >
+              <span className="relative inline-block">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width={20}
+                  height={20}
+                  viewBox="0 0 18 18"
+                  fill="none"
+                >
+                  <path
+                    d="M12 4V5C12 6.65685 10.6569 8 9 8C7.34315 8 6 6.65685 6 5V4M2.5 17H15.5C16.3284 17 17 16.3284 17 15.5V2.5C17 1.67157 16.3284 1 15.5 1H2.5C1.67157 1 1 1.67157 1 2.5V15.5C1 16.3284 1.67157 17 2.5 17Z"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
-                  <Button type="submit" id="search-btn" aria-label="Search"
-                    className="absolute flex items-center h-[42px] justify-center duration-200 ease-in -translate-y-1/2 right-3 top-1/2 hover:text-blue-600"
-                  text={<svg
-                      className="w-5 h-5 text-gray-600"
-                      width={24}
-                      height={24}
-                      viewBox="0 0 24 25"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M11.25 2.75C6.14154 2.75 2 6.89029 2 11.998C2 17.1056 6.14154 21.2459 11.25 21.2459C13.5335 21.2459 15.6238 20.4187 17.2373 19.0475L20.7182 22.5287C21.011 22.8216 21.4859 22.8217 21.7788 22.5288C22.0717 22.2359 22.0718 21.761 21.7789 21.4681L18.2983 17.9872C19.6714 16.3736 20.5 14.2826 20.5 11.998C20.5 6.89029 16.3585 2.75 11.25 2.75ZM3.5 11.998C3.5 7.71905 6.96962 4.25 11.25 4.25C15.5304 4.25 19 7.71905 19 11.998C19 16.2769 15.5304 19.7459 11.25 19.7459C6.96962 19.7459 3.5 16.2769 3.5 11.998Z"
-                        fill="currentColor"
-                      />
-                    </svg>} />
-                </div>
-              <SearchDropdown showDropdown={showDropdown} filteredProducts={filteredProducts} />
-        </div>
-        </div>
+                </svg>
+                <span className="flex items-center justify-center font-medium text-xs absolute -right-2 -top-2 bg-red-600 w-4 h-4 rounded-full text-white">
+                  {cartItems?.items?.length || 0}
+                </span>
+              </span>
+            </AppLink>
+            {logOutBtn}
+          </div>
 
-       
+          <div className="relative mx-auto hidden sm:inline-block" ref={containerRef} >
+            <div className="relative min-w-[200px] max-w-[475px] w-full sm:min-w-[300px] lg:min-w-[370px] border border-gray-300 rounded-full focus-within:border-gray-900 focus-within:ring-1 transition-all">
+              <input
+                onFocus={() => setShowDropdown(true)}
+                onChange={(e) => setSearchVal(e.target.value)}
+                value={searchVal}
+                id="search"
+                placeholder="Search Products"
+                autoComplete="off"
+                className="w-full rounded-full border-0 focus:border-gray-800 h-[35px] sm:h-[42px] sm:py-2.5 pl-5 pr-12 outline-none ease-in duration-200 text-sm"
+                type="search"
+                name="search"
+              />
+              <Button
+                type="submit"
+                id="search-btn"
+                aria-label="Search"
+                className="absolute flex items-center h-[42px] justify-center duration-200 ease-in -translate-y-1/2 right-3 top-1/2 hover:text-blue-600"
+                text={
+                  <svg
+                    className="w-5 h-5 text-gray-600"
+                    width={24}
+                    height={24}
+                    viewBox="0 0 24 25"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      clipRule="evenodd"
+                      d="M11.25 2.75C6.14154 2.75 2 6.89029 2 11.998C2 17.1056 6.14154 21.2459 11.25 21.2459C13.5335 21.2459 15.6238 20.4187 17.2373 19.0475L20.7182 22.5287C21.011 22.8216 21.4859 22.8217 21.7788 22.5288C22.0717 22.2359 22.0718 21.761 21.7789 21.4681L18.2983 17.9872C19.6714 16.3736 20.5 14.2826 20.5 11.998C20.5 6.89029 16.3585 2.75 11.25 2.75ZM3.5 11.998C3.5 7.71905 6.96962 4.25 11.25 4.25C15.5304 4.25 19 7.71905 19 11.998C19 16.2769 15.5304 19.7459 11.25 19.7459C6.96962 19.7459 3.5 16.2769 3.5 11.998Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                }
+              />
+            </div>
+            <SearchDropdown
+              showDropdown={showDropdown}
+              filteredProducts={filteredProducts}
+            />
+          </div>
+        </div>
 
         {/* User Actions Section */}
-
-          <div className="hidden sm:flex items-center gap-1 xl:gap-5 w-full @xsm:w-auto">
-              {/* Account - Hidden on mobile, visible on xl and up */}
-
-              <AppLink to={!userData? "/login" :"/profileLayout"} className="relative hidden sm:flex items-center gap-2.5 hover:text-[#4B3EC4] transition-colors" >
-              {userLoading && (
-    // Loader -------------👇
-    <div className="absolute top-0 flex items-center justify-center w-full h-full bg-[#00000066]">
-      <div className="w-4 h-4 border-2 border-white border-t-transparent  rounded-full animate-spin"></div>
-    </div>
-  )}
-                {!userData? (
-                  <>
-                  <div className="flex items-center justify-center w-8 h-8 lg:w-9 lg:h-9 border border-gray-300 rounded-full transition-colors">
+        <div className="hidden sm:flex items-center gap-1 xl:gap-5 w-full @xsm:w-auto">
+          {/* Account - Hidden on mobile, visible on xl and up */}
+          <AppLink
+            to={!userData ? "/login" : "/profileLayout"}
+            className="relative hidden sm:flex items-center gap-2.5 hover:text-[#4B3EC4] transition-colors"
+          >
+            {userLoading && (
+              // Loader -------------👇
+              <div className="absolute top-0 flex items-center justify-center w-full h-full bg-[#00000066]">
+                <div className="w-4 h-4 border-2 border-white border-t-transparent  rounded-full animate-spin"></div>
+              </div>
+            )}
+            {!userData ? (
+              <>
+                <div className="flex items-center justify-center w-8 h-8 lg:w-9 lg:h-9 border border-gray-300 rounded-full transition-colors">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width={18}
@@ -218,10 +279,13 @@ const {isLoading, error, products}=useProductsStore()
                     Sign In / Register
                   </p>
                 </div>
-                  </>
-                ):(
-                  <>
-                  <img src={userData?.image} className="rounded-full w-8 h-8 lg:w-9 lg:h-9 border border-gray-300 flex-shrink-0 object-cover" />
+              </>
+            ) : (
+              <>
+                <img
+                  src={userData?.image}
+                  className="rounded-full w-8 h-8 lg:w-9 lg:h-9 border border-gray-300 flex-shrink-0 object-cover"
+                />
                 <div className="group hidden xl:inline-block group">
                   <span className="block font-medium text-xs text-gray-600 group-hover:text-[#4B3EC4]">
                     {userData?.name}
@@ -230,59 +294,91 @@ const {isLoading, error, products}=useProductsStore()
                     {userData?.email}
                   </p>
                 </div>
-                  </>
-                )}
-                
-              </AppLink>     
-              {/* Cart */}
-                <AppLink to="/cart" 
-                  className="flex items-center gap-2.5 w-8 h-8 justify-center hover:text-[#4B3EC4] transition-colors"
-                  title="Cart"
+              </>
+            )}
+          </AppLink>
+          {/* Cart */}
+          <AppLink
+            to="/cart"
+            className="flex items-center gap-2.5 w-8 h-8 justify-center hover:text-[#4B3EC4] transition-colors"
+            title="Cart"
+          >
+            <span className="relative inline-block">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width={20}
+                height={20}
+                viewBox="0 0 18 18"
+                fill="none"
+              >
+                <path
+                  d="M12 4V5C12 6.65685 10.6569 8 9 8C7.34315 8 6 6.65685 6 5V4M2.5 17H15.5C16.3284 17 17 16.3284 17 15.5V2.5C17 1.67157 16.3284 1 15.5 1H2.5C1.67157 1 1 1.67157 1 2.5V15.5C1 16.3284 1.67157 17 2.5 17Z"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <span className="flex items-center justify-center font-medium text-xs absolute -right-2 -top-2 bg-red-600 w-4 h-4 rounded-full text-white">
+                {cartItems?.items?.length || 0}
+              </span>
+            </span>
+          </AppLink>
+          {logOutBtn}
+        </div>
+        <div
+          className={`absolute top-12 left-0 p-1 bg-white mx-auto w-full transform transition-transform duration-300 ${
+            searchDropdown
+              ? "translate-x-0"
+              : " -translate-x-full md:translate-x-0"
+          } sm:hidden`}
+          ref={containerRef}
+
+        >
+          <div className="relative min-w-[200px] mx-auto max-w-[475px] w-full sm:min-w-[300px] lg:min-w-[370px] border border-gray-300 rounded-full focus-within:border-gray-900 focus-within:ring-1 transition-all">
+            <input
+              onFocus={() => setShowDropdown(true)}
+              onChange={(e) => setSearchVal(e.target.value)}
+              value={searchVal}
+              id="search"
+              placeholder="Search Products"
+              autoComplete="off"
+              className="w-full rounded-full border-0 focus:border-gray-800 h-[35px] sm:h-[42px] sm:py-2.5 pl-5 pr-12 outline-none ease-in duration-200 text-sm"
+              type="search"
+              name="search"
+            />
+            <Button
+              type="submit"
+              id="search-btn"
+              aria-label="Search"
+              className="absolute flex items-center h-[42px] justify-center duration-200 ease-in -translate-y-1/2 right-3 top-1/2 hover:text-[#4B3EC4]"
+              text={
+                <svg
+                  className="w-5 h-5 text-gray-600"
+                  width={24}
+                  height={24}
+                  viewBox="0 0 24 25"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
-                  <span className="relative inline-block">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width={20}
-                      height={20}
-                      viewBox="0 0 18 18"
-                      fill="none"
-                    >
-                      <path
-                        d="M12 4V5C12 6.65685 10.6569 8 9 8C7.34315 8 6 6.65685 6 5V4M2.5 17H15.5C16.3284 17 17 16.3284 17 15.5V2.5C17 1.67157 16.3284 1 15.5 1H2.5C1.67157 1 1 1.67157 1 2.5V15.5C1 16.3284 1.67157 17 2.5 17Z"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    <span className="flex items-center justify-center font-medium text-xs absolute -right-2 -top-2 bg-red-600 w-4 h-4 rounded-full text-white">
-                      {cartItems?.items?.length || 0}
-                    </span>
-                  </span>
-                </AppLink>
-                {logOutBtn}
-            </div>
-            <div className={`absolute top-12 left-0 p-1 bg-white mx-auto w-full transform transition-transform duration-300 ${searchDropdown?"translate-x-0":" -translate-x-full md:translate-x-0"} sm:hidden`} ref={containerRef}>
-                <div className="relative min-w-[200px] mx-auto max-w-[475px] w-full sm:min-w-[300px] lg:min-w-[370px] border border-gray-300 rounded-full focus-within:border-gray-900 focus-within:ring-1 transition-all">
-                  <input onFocus={()=>setShowDropdown(true)} onChange={(e) => setSearchVal(e.target.value)} value={searchVal} id="search" placeholder="Search Products" autoComplete="off"
-                    className="w-full rounded-full border-0 focus:border-gray-800 h-[35px] sm:h-[42px] sm:py-2.5 pl-5 pr-12 outline-none ease-in duration-200 text-sm" type="search" name="search"
+                  <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M11.25 2.75C6.14154 2.75 2 6.89029 2 11.998C2 17.1056 6.14154 21.2459 11.25 21.2459C13.5335 21.2459 15.6238 20.4187 17.2373 19.0475L20.7182 22.5287C21.011 22.8216 21.4859 22.8217 21.7788 22.5288C22.0717 22.2359 22.0718 21.761 21.7789 21.4681L18.2983 17.9872C19.6714 16.3736 20.5 14.2826 20.5 11.998C20.5 6.89029 16.3585 2.75 11.25 2.75ZM3.5 11.998C3.5 7.71905 6.96962 4.25 11.25 4.25C15.5304 4.25 19 7.71905 19 11.998C19 16.2769 15.5304 19.7459 11.25 19.7459C6.96962 19.7459 3.5 16.2769 3.5 11.998Z"
+                    fill="currentColor"
                   />
-                  <Button type="submit" id="search-btn" aria-label="Search"
-                    className="absolute flex items-center h-[42px] justify-center duration-200 ease-in -translate-y-1/2 right-3 top-1/2 hover:text-[#4B3EC4]"
-                  text={<svg className="w-5 h-5 text-gray-600" width={24} height={24}
-                      viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path fillRule="evenodd" clipRule="evenodd"
-                        d="M11.25 2.75C6.14154 2.75 2 6.89029 2 11.998C2 17.1056 6.14154 21.2459 11.25 21.2459C13.5335 21.2459 15.6238 20.4187 17.2373 19.0475L20.7182 22.5287C21.011 22.8216 21.4859 22.8217 21.7788 22.5288C22.0717 22.2359 22.0718 21.761 21.7789 21.4681L18.2983 17.9872C19.6714 16.3736 20.5 14.2826 20.5 11.998C20.5 6.89029 16.3585 2.75 11.25 2.75ZM3.5 11.998C3.5 7.71905 6.96962 4.25 11.25 4.25C15.5304 4.25 19 7.71905 19 11.998C19 16.2769 15.5304 19.7459 11.25 19.7459C6.96962 19.7459 3.5 16.2769 3.5 11.998Z"
-                        fill="currentColor"/>
-                    </svg>} />
-                    
-                </div>
-                <SearchDropdown showDropdown={showDropdown} filteredProducts={filteredProducts} />
-               
-           </div>
+                </svg>
+              }
+            />
+          </div>
+          <SearchDropdown
+            showDropdown={showDropdown}
+            filteredProducts={filteredProducts}
+          />
+        </div>
       </div>
     </div>
   );
-} 
+}
 
 export default Header;

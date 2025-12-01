@@ -5,9 +5,9 @@ export default function SearchDropdown({ showDropdown, filteredProducts }) {
   if (!showDropdown) return null;
 
   return (
-    <div className="absolute top-14 left-0 px-2 right-0 w-full max-w-[700px] mx-auto bg-white border border-gray-200 rounded-xl shadow-2xl z-50 overflow-hidden">
+    <div className="dropdown-area absolute top-14 left-0 px-2 right-0 w-full max-w-[700px] mx-auto bg-white border border-gray-200 rounded-xl shadow-2xl z-90 overflow-hidden">
       {filteredProducts.length > 0 ? (
-        <div className="max-h-80 overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+        <div className="max-h-80 overflow-y-auto">
           {/* Header */}
           <div className="p-4 border-b border-gray-100 bg-gray-50">
             <div className="flex items-center justify-between">
@@ -19,11 +19,11 @@ export default function SearchDropdown({ showDropdown, filteredProducts }) {
           </div>
 
           {/* Product List */}
-          <div className="divide-y flex flex-col gap-1.5 divide-gray-100">
+          <div className="divide-y flex flex-col gap-1.5 divide-gray-100" >
             {filteredProducts.map((item, index) => (
               <AppLink
                 to={`/product-details/${item._id}`}
-                key={item._id || index}
+                key={item._id || index} 
                 className="hover:bg-blue-50 transition-colors duration-200 cursor-pointer rounded-lg group"
               >
                 <div className="flex items-center gap-4">

@@ -62,3 +62,8 @@ button{
 button:disabled{
   cursor: not-allowed;
 }
+
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
