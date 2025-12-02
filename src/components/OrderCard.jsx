@@ -81,7 +81,7 @@ export default function OrderCard({ order, onOpen, onCancel, loading, statusColo
             {order.status}
           </span>
 
-          {order.status !== "Cancelled" && (
+          {order.status !== "Cancelled" || order.status !== "Delivered" && (
             <button
               className="w-full rounded-lg border border-red-700 px-3 py-2 text-center text-sm font-medium text-red-700 hover:bg-red-700 hover:text-white focus:outline-none focus:ring-4 focus:ring-red-300 lg:w-auto"
               onClick={(e) => { 
