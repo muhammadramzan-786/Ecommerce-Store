@@ -1,7 +1,7 @@
 import Button from "./Button";
 import AppLink from "./AppLink";
 
-export default function SearchDropdown({ showDropdown, filteredProducts }) {
+export default function SearchDropdown({ showDropdown, filteredProducts, setDropdown }) {
   if (!showDropdown) return null;
 
   return (

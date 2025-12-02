@@ -95,9 +95,9 @@ function ProductDetails() {
               </li>
               <li className="flex items-center">
                 <span className="mx-2">/</span>
-                <a href="/categories" className="hover:text-[#4B3EC4]">
+                <AppLink to={`/category/${product?.category}`} className="hover:text-[#4B3EC4]">
                   {product?.category}
-                </a>
+                </AppLink>
               </li>
               <li className="flex items-center">
                 <span className="mx-2">/</span>
@@ -148,8 +148,8 @@ function ProductDetails() {
               <div className="space-y-6">
                 {/* Brand and Name */}
                 <div>
-                  <span className="text-sm font-medium text-[#4B3EC4] uppercase tracking-wide">
-                    {product?.brand}
+                  <span className="text-sm font-medium text-[#4B3EC4] tracking-wide">
+                    Brand : {product?.brand}
                   </span>
                   <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mt-2">
                     {product?.name}
