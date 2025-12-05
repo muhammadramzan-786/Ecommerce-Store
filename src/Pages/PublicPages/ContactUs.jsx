@@ -22,8 +22,6 @@ function ContactUs() {
   }
 
   const { isPending, mutate, isError, error }=useCreateContact()
-  const d=useCreateContact()
-  // console.log(d);
   
   const {isLoading, data:contacts=[]}=useGetContact()
   // console.log(data );

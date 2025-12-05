@@ -16,27 +16,9 @@ import ProductModal from "../../components/ProductModal ";
 import AppLink from "../../components/AppLink";
 import LoginModal from "../../components/LoginModal";
 import { useAuthStore } from "../../hooks/useAuthStore";
+import { useGetProductReviews } from "../../hooks/useReviews";
 
-const reviews = [
-  {
-    id: 1,
-    user: "John Doe",
-    rating: 5,
-    date: "2024-01-15",
-    comment:
-      "Excellent sound quality and very comfortable for long sessions. Battery life is amazing!",
-    verified: true,
-  },
-  {
-    id: 2,
-    user: "Sarah Smith",
-    rating: 4,
-    date: "2024-01-10",
-    comment:
-      "Great headphones, but a bit expensive. Noise cancellation works perfectly.",
-    verified: true,
-  },
-];
+
 
 function ProductDetails() {
   const [selectedImage, setSelectedImage] = useState(0);
@@ -52,6 +34,9 @@ function ProductDetails() {
   const { id } = useParams();
   // const {data:product}=useSingleProduct(id)
   const { isLoading, error, products } = useProductsStore();
+  const {data:reviews}=useGetProductReviews(id)
+
+  
 
   const singleProducts = products.filter((product) => product._id === id);
   const product = singleProducts[0];
@@ -328,19 +313,15 @@ function ProductDetails() {
                   </div>
                 </div>
 
-                <div
-                  className={`space-y-6 ${
-                    activeTab === "reviews" ? animationClass : hiddenClass
-                  }`}
-                >
-                  {/* {reviews.map((review) => (
-                    <div key={review.id} className="border-b border-gray-200 pb-6 last:border-b-0">
+                <div className={`space-y-6 ${ activeTab === "reviews" ? animationClass : hiddenClass }`} >
+                  {reviews?.map((review) => (
+                    <div key={review._id} className="border-b border-gray-200 pb-6 last:border-b-0">
                       <div className="flex items-center gap-4 mb-2">
-                        <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center font-medium">
-                          {review.user.charAt(0)}
+                        <div className="w-10 h-10 bg-gray-300 rounded-full overflow-hidden flex items-center justify-center font-medium">
+                          <img src={review.user.image} />
                         </div>
                         <div>
-                          <div className="font-medium">{review.user}</div>
+                          <div className="font-medium">{review.user.name}</div>
                           <div className="flex items-center gap-2 text-sm text-gray-500">
                             <div className="flex items-center gap-1">
                               {[...Array(5)].map((_, index) => (
@@ -354,19 +335,14 @@ function ProductDetails() {
                                 />
                               ))}
                             </div>
-                            <span>{new Date(review.date).toLocaleDateString()}</span>
-                            {review.verified && (
-                              <span className="text-green-600 flex items-center gap-1">
-                                <FaCheck className="text-xs" />
-                                Verified Purchase
-                              </span>
-                            )}
+                            <span>{new Date(review.createdAt).toLocaleDateString()}</span>
+                            
                           </div>
                         </div>
                       </div>
                       <p className="text-gray-600">{review.comment}</p>
                     </div>
-                  ))} */}
+                  ))}
                 </div>
               </div>
             </div>

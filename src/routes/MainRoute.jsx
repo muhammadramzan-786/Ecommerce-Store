@@ -27,6 +27,7 @@ import { useProducts } from '../hooks/useProducts';
 import { useCategories } from '../hooks/useCategories';
 import { useAuthStore } from '../hooks/useAuthStore';
 import ResetPassword from '../Pages/PublicPages/ResetPassword';
+import Reviews from '../Pages/PrivatePages/Reviews';
 // function MainRoute() {
 //   const [token, setToken] = useState(localStorage.getItem("token"));
 
@@ -80,6 +81,7 @@ function MainRoute() {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/profileLayout" element={<ProfileLayout />}>
             <Route index element={<Profile />} />
+            <Route path="reviews" element={<Reviews />} />
             <Route path="orders" element={<Orders />} />
             <Route path="changePassword" element={<ChangePassword />} />
           </Route>
