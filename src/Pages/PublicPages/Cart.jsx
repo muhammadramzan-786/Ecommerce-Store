@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { FaPlus, FaMinus, FaTrash, FaHeart, FaShoppingBag, FaArrowLeft, FaLock, FaShieldAlt, FaTruck, FaUndo } from 'react-icons/fa';
+import React, { useState } from 'react';
+import { FaPlus, FaMinus, FaTrash, FaShoppingBag, FaArrowLeft, FaLock, FaShieldAlt, FaTruck, FaUndo } from 'react-icons/fa';
 import { IoCartOutline } from 'react-icons/io5';
-import { getCart } from '../../services/cart';
-import { useDeleteCartProduct, useGetCart, useUpdateCart } from '../../hooks/useCart';
+import { useDeleteCartProduct, useUpdateCart } from '../../hooks/useCart';
 import { useCartStore } from '../../stores/cartStore';
 import Button from '../../components/Button';
 import { useAuthStore } from '../../hooks/useAuthStore';
@@ -27,7 +26,6 @@ const { isPending, isError, error, isSuccess } = updateCart;
 
   const deleteItem=useDeleteCartProduct()
   const removeItem = (id) => {
-    // setCartItems(prevItems => prevItems.filter(item => item.id !== id));
     deleteItem.mutate({
       userId:userId,
       productId:id
@@ -45,11 +43,6 @@ const { isPending, isError, error, isSuccess } = updateCart;
 
   const calculateTotal = () => {
     return calculateSubtotal() + calculateShipping();
-  };
-
-  const continueShopping = () => {
-    console.log('Continuing shopping');
-    // Navigate to products page
   };
 
       const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -223,7 +216,7 @@ const { isPending, isError, error, isSuccess } = updateCart;
 
               {/* Cart Footer */}
               <div className="p-6 bg-gray-50 border-t border-gray-200">
-            <AppLink to="/" onClick={continueShopping}
+            <AppLink to="/"
                 className="group flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
               >
                 <FaArrowLeft className="text-sm group-hover:-translate-x-1 transition-transform" /> Continue Shopping

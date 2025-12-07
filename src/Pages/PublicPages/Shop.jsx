@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useProductsStore } from '../../stores/productsStore'
 import ProductCard from '../../components/ProductCard'
 import Button from '../../components/Button'
@@ -20,13 +20,10 @@ const [selectedCategories, setSelectedCategories] = useState([]);
    const {isLoading, error, products}= useProductsStore()
    const {loading,categories}=useCategoryStore()
    const brands=products.map(item => item.brand).filter((brand,index,arr)=>arr.indexOf(brand)===index)
-// console.log(brands);
 
      const userId = localStorage.getItem("userId");
      const addCart =useAddCart()
-       const addToCart = (productId,quantity) => {
-         console.log(productId ,quantity);
-         
+       const addToCart = (productId,quantity) => {         
        // Add to cart logic here
        addCart.mutate({
          userId:userId,
@@ -34,11 +31,6 @@ const [selectedCategories, setSelectedCategories] = useState([]);
          quantity:quantity
        })
      };
-
-     useEffect(()=>{
-      console.log(selectedCategories);
-      
-     },[selectedCategories])
 
      const toggleBrand =(brand)=>{
       setSelectedBrands((prev)=>

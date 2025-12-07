@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { FaStar, FaHeart, FaRegHeart, FaShoppingBag, FaFilter, FaChevronDown } from 'react-icons/fa';
 import { useProductsStore } from '../../stores/productsStore';
 import { useAddCart } from '../../hooks/useCart';
 import { useCategoryStore } from '../../stores/categoryStore';
@@ -27,7 +26,6 @@ function Category() {
     const matchSearch=item.name.toLowerCase().includes(searchVal.toLowerCase())
     return matchCategory && matchSearch
   })
-  console.log(products);
   const {loading,categories}=useCategoryStore()
 
     const userId = localStorage.getItem("userId");

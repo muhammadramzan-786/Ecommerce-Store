@@ -1,25 +1,16 @@
-import React, { useEffect, useState } from "react";
-import Header from "../../components/Header";
-// App.jsx ya index.js me
+import React, { useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation"; // agar navigation chahiye
 import "swiper/css/pagination"; // agar dots chahiye
-import { FaTimes } from "react-icons/fa";
 import { IoIosArrowDown } from "react-icons/io";
 import ProductCard from "../../components/ProductCard";
-// import { category } from "../api/auth";
-import { useQuery } from "@tanstack/react-query";
-import { useCategories } from "../../hooks/useCategories";
-import { useProducts } from "../../hooks/useProducts";
-import Button from "../../components/Button";
 import { useAddCart } from "../../hooks/useCart";
 import CategoryCard from "../../components/CategoryCard";
 import { useProductsStore } from "../../stores/productsStore";
 import { useCategoryStore } from "../../stores/categoryStore";
 import ProductModal from "../../components/ProductModal ";
-import LoginModal from "../../components/LoginModal";
 import AppLink from "../../components/AppLink";
 
 function Home() {

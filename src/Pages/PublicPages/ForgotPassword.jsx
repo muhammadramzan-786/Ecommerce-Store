@@ -36,7 +36,7 @@ export default function ForgotPassword() {
           <FaArrowLeft className="text-sm group-hover:-translate-x-1 transition-transform" />
           Back to Login
         </AppLink>
-{/* <AppLink to="/reset-password/sdfsdf535" className="">reset password?</AppLink> */}
+
         {/* Main Card */}
         <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
           {/* Header */}

@@ -18,8 +18,6 @@ import LoginModal from "../../components/LoginModal";
 import { useAuthStore } from "../../hooks/useAuthStore";
 import { useGetProductReviews } from "../../hooks/useReviews";
 
-
-
 function ProductDetails() {
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
@@ -32,11 +30,14 @@ function ProductDetails() {
   const closeModal = () => setIsLoginModalOpen(false);
 
   const { id } = useParams();
-  // const {data:product}=useSingleProduct(id)
   const { isLoading, error, products } = useProductsStore();
-  const {data:reviews}=useGetProductReviews(id)
-
-  
+  const {data:reviews=[]}=useGetProductReviews(id)
+// Get all rating values
+  const ratings =reviews?.map((item)=>item?.rating || 0 )
+  // Total rating
+  const totalRating = ratings ?.reduce((acc,current)=> acc+ current,0) 
+  // Average rating
+  const averageRating =reviews.length ? totalRating /reviews.length : 0   
 
   const singleProducts = products.filter((product) => product._id === id);
   const product = singleProducts[0];
@@ -53,7 +54,6 @@ function ProductDetails() {
   };
 
   const addToCart = (id, quantity) => {
-    console.log(`Added ${quantity} ${product.name} to cart`);
     // Add to cart logic here
     addCart.mutate({
       userId: userId,
@@ -149,7 +149,7 @@ function ProductDetails() {
                         <FaStar
                           key={index}
                           className={`text-lg ${
-                            index < Math.floor(product?.rating)
+                            index < Math.floor(averageRating)
                               ? "text-yellow-400 fill-current"
                               : "text-gray-300"
                           }`}
@@ -286,35 +286,26 @@ function ProductDetails() {
               </div>
 
               <div className="p-8">
-                <div
-                  className={`prose max-w-none ${
-                    activeTab === "description" ? animationClass : hiddenClass
-                  }`}
-                >
+                <div className={`prose max-w-none ${ activeTab === "description" ? animationClass : hiddenClass }`} >
                   <p className="text-gray-600 leading-relaxed">
                     {product?.description}
                   </p>
                 </div>
 
-                <div
-                  className={`grid gap-4 ${
-                    activeTab === "specifications"
-                      ? animationClass
-                      : hiddenClass
-                  }`}
-                >
+                <div className={`grid gap-4 ${ activeTab === "specifications" ? animationClass : hiddenClass }`} >
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <strong>Brand:</strong> {product?.brand}
+                      <strong>Brand :</strong> {product?.brand? product?.brand : "No Brand"}
                     </div>
                     <div>
-                      <strong>Category:</strong> {product?.category}
+                      <strong>Category :</strong> {product?.category}
                     </div>
                   </div>
                 </div>
 
                 <div className={`space-y-6 ${ activeTab === "reviews" ? animationClass : hiddenClass }`} >
-                  {reviews?.map((review) => (
+                  {reviews.length > 0 ?
+                  reviews?.map((review) => (
                     <div key={review._id} className="border-b border-gray-200 pb-6 last:border-b-0">
                       <div className="flex items-center gap-4 mb-2">
                         <div className="w-10 h-10 bg-gray-300 rounded-full overflow-hidden flex items-center justify-center font-medium">
@@ -333,7 +324,7 @@ function ProductDetails() {
                                       : 'text-gray-300'
                                   }`}
                                 />
-                              ))}
+                              )) }
                             </div>
                             <span>{new Date(review.createdAt).toLocaleDateString()}</span>
                             
@@ -342,7 +333,8 @@ function ProductDetails() {
                       </div>
                       <p className="text-gray-600">{review.comment}</p>
                     </div>
-                  ))}
+                  )) : <p className="text-lg">No Reviews available for this Product</p>
+                }
                 </div>
               </div>
             </div>

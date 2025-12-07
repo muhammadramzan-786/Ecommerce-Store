@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Button from "../../components/Button";
 import { useGetReviewedProducts, useGetUnReviewedProducts, useSubmitReview } from "../../hooks/useReviews";
-import Input from "../../components/Input";
 import { FaTimes } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { useAuthStore } from "../../hooks/useAuthStore";
@@ -21,8 +20,6 @@ const userId=useAuthStore(state=>state.userId)
 const { isLoading, data: readyToReviewProducts=[] } = useGetUnReviewedProducts();
 const { isLoading : ReviewedProLoading, data: ReviewProducts=[] } = useGetReviewedProducts();
 const { isPending, mutate, isError, error }=useSubmitReview()
-// console.log("reviewed products :", ReviewProducts);
-console.log("unreviewed products :", readyToReviewProducts);
 
   const handleRating = ( star) => {
     setForm((prev) => ({
@@ -54,10 +51,7 @@ console.log("unreviewed products :", readyToReviewProducts);
     setSelectedProduct({})
     setForm({orderId:null, comment: "", rating: 0 });
   }
-useEffect(()=>{
-  console.log(form);
-  
-},[form])
+
   const queryClient = useQueryClient();
 
 const hanleSubmit = (e) => {
@@ -68,15 +62,11 @@ const hanleSubmit = (e) => {
   }
 
   const data = { productId: selectedProduct.productId, userId, ...form };
-  console.log("Submitting review data:", data);
   // ✅ Mutate with onSuccess/onError to get response
   mutate(data, {
     onSuccess: (res) => {
-      console.log("Review submitted successfully. Server response:", res);
       // Agar chahe to toast ya state update yahan kar sakte ho
       toast.success(res.message || "Review submitted!");
-      console.log("error message" ,res.message);
-      
             // 🚀 Instant UI refresh (NO reload)
       queryClient.invalidateQueries(["unreviewed-products", userId]);
       queryClient.invalidateQueries(["reviewed-products", userId]);

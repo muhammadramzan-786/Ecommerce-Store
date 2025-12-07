@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
+import { FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 import Input from "../../components/Input";
 import { useCreateContact, useGetContact } from "../../hooks/useContact";
 import { useUserStore } from "../../stores/userStore";
-import {  FaEye, FaTrash, FaUser, FaCalendarAlt } from "react-icons/fa";
+import {  FaUser, FaCalendarAlt } from "react-icons/fa";
 import { toast } from "react-toastify";
 
 
@@ -17,14 +17,12 @@ function ContactUs() {
   })
   const handleChange=(e)=>{
     const {name, value}=e.target
-    // console.log("name", value);
     setForm(prev=>({...prev,[name]:value}))
   }
 
   const { isPending, mutate, isError, error }=useCreateContact()
   
   const {isLoading, data:contacts=[]}=useGetContact()
-  // console.log(data );
   const filterContacts=contacts.filter(contact=>contact.userId===user?._id)
   const handleSubmit=(e)=>{
     e.preventDefault()
@@ -39,7 +37,6 @@ function ContactUs() {
   toast.error(error?.response.data.message);
   
   }
-  // console.log(data);
     const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDeleteOrder, useGetOrders } from '../../hooks/useOrders'
 import Button from '../../components/Button'
-import { FaTimes } from "react-icons/fa";
 import { useProductsStore } from '../../stores/productsStore';
 import OrderCard from '../../components/OrderCard';
 import AppLink from '../../components/AppLink';

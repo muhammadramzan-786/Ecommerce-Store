@@ -1,10 +1,6 @@
-// import React, { useEffect, useState } from 'react'
-// import { BrowserRouter } from 'react-router-dom'
-// import PrivateRouter from './PrivateRouter'
-// import AuthRouter from './AuthRouter'
-import React, { lazy, Suspense, useEffect } from 'react'
+import React, { lazy } from 'react'
 import { BrowserRouter } from "react-router-dom";
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 const ProfileLayout=lazy(()=>import("../Pages/PrivatePages/ProfileLayout"))
 const Profile=lazy(()=>import("../Pages/PrivatePages/Profile"))
 const Orders=lazy(()=>import("../Pages/PrivatePages/Orders"))
@@ -17,10 +13,12 @@ const Checkout=lazy(()=>import("../Pages/PrivatePages/Checkout"))
 const Cart=lazy(()=>import("../Pages/PublicPages/Cart"))
 const Category=lazy(()=>import("../Pages/PublicPages/Category"))
 const ChangePassword=lazy(()=>import("../Pages/PrivatePages/ChangePassword"))
-import Login from "../Pages/PublicPages/Login";
-import Signup from "../Pages/PublicPages/Signup";
-import ForgotPassword from "../Pages/PublicPages/ForgotPassword";
-import ContactUs from '../Pages/PublicPages/ContactUs';
+
+const Login=lazy(()=>import("../Pages/PublicPages/Login"))
+const Signup=lazy(()=>import("../Pages/PublicPages/Signup"))
+const ForgotPassword=lazy(()=>import("../Pages/PublicPages/ForgotPassword"))
+const ContactUs=lazy(()=>import("../Pages/PublicPages/ContactUs"))
+
 import { useUser } from '../hooks/useUser';
 import { useGetCart } from '../hooks/useCart';
 import { useProducts } from '../hooks/useProducts';
@@ -28,34 +26,8 @@ import { useCategories } from '../hooks/useCategories';
 import { useAuthStore } from '../hooks/useAuthStore';
 import ResetPassword from '../Pages/PublicPages/ResetPassword';
 import Reviews from '../Pages/PrivatePages/Reviews';
-// function MainRoute() {
-//   const [token, setToken] = useState(localStorage.getItem("token"));
-
-//   useEffect(() => {
-//     const handleAuthChange = () => {
-//       setToken(localStorage.getItem("token")); // update token state
-//     };
-
-//     // event listener lagao
-//     window.addEventListener("authChange", handleAuthChange);
-
-//     return () => {
-//       // cleanup
-//       window.removeEventListener("authChange", handleAuthChange);
-//     };
-//   }, []);
-
-//   return (
-//     <BrowserRouter>
-//       {token ? <PrivateRouter /> : <AuthRouter />}
-//     </BrowserRouter>
-//   )
-// }
-
-// export default MainRoute
 
 function MainRoute() {
-    const token=useAuthStore(state=>state.token)
     const userId=useAuthStore(state=>state.userId)
     useUser(userId)
     useGetCart(userId)

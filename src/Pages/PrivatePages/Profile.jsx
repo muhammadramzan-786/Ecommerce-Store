@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useUserStore } from '../../stores/userStore';
-import { useUpdateUser, useUser } from '../../hooks/useUser';
+import { useUpdateUser } from '../../hooks/useUser';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 import { FaImage } from 'react-icons/fa';

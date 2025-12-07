@@ -4,20 +4,12 @@ import { useNavigate } from "react-router-dom";
 import {
   FaEye,
   FaEyeSlash,
-  FaEnvelope,
-  FaLock,
   FaArrowRight,
-  FaGoogle,
-  FaFacebook,
 } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { useLogin } from "../../hooks/useLogin";
 import AppLink from "../../components/AppLink";
 import Input from "../../components/Input";
-import { signInWithPopup } from "firebase/auth";
-import { auth, googleProvider } from "../../firebase";
-import { useSignUp, useUserExist } from "../../hooks/useUser";
-import { userExist } from "../../api/auth";
 import { useGoogleAuth } from "../../hooks/useGoogleAuth";
 
 function Login() {
@@ -48,52 +40,6 @@ function Login() {
     }
   };
 
-//   const { isPending: siUpLoading, mutate, isError, siUpError } = useSignUp();
-//   const {
-//     isPending: userExLoading,
-//     mutateAsync: userExist,
-//     isError: userExErr,
-//   } = useUserExist();
-
-//   const googleLogin = async () => {
-//     try {
-//       const result = await signInWithPopup(auth, googleProvider);
-//       const user = result.user;
-//       // Google user data
-//       const data = {
-//         name: user.displayName,
-//         email: user.email,
-//         password: user.uid, // Google unique ID as password
-//         image: user.photoURL,
-//       };
-//       const res = await userExist({ email: user.email });
-//       console.log(res);
-
-//       if (res.data.exists) {
-//         // Already exists → Just login
-//         const success = await handleLogin({
-//           email: user.email,
-//           password: user.uid,
-//         });
-//         if (success) navigate("/");
-//       } else {
-//         mutate(data, {
-//           onSuccess: async () => {
-//             const success = await handleLogin({
-//               email: user.email,
-//               password: user.uid,
-//             });
-
-//             if (success) navigate("/");
-//           },
-//         });
-//       }
-
-//       // console.log(result);
-//     } catch (err) {
-//       console.log(err);
-//     }
-//   };
 const { googleLogin, siUpLoading, userExLoading, loginLoading } = useGoogleAuth()
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-50 to-indigo-100">
