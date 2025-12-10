@@ -147,7 +147,7 @@ const deleteItem=useDeleteCartProduct()
 };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 py-8 @container">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
@@ -160,7 +160,7 @@ const deleteItem=useDeleteCartProduct()
         </div>
 
         {/* Progress Steps */}
-        <div className="mb-8 sticky top-17 z-40 bg-white p-2 border border-gray-200 rounded-xl shadow-lg">
+        <div className="mb-8 sticky top-12 z-40 bg-white p-2 border border-gray-200 rounded-xl shadow-lg">
          <ol className="flex items-center w-full">
   {steps.map((step, index) => {
     const StepIcon = step.icon;
@@ -212,18 +212,18 @@ const deleteItem=useDeleteCartProduct()
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Checkout Forms */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 space-y-5">
             {/* Shipping Information */}
             {activeStep === 1 && (
               <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-                <div className="p-6 border-b border-gray-200">
+                <div className="p-2 sm:p-6 border-b border-gray-200">
                   <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
                     <FaUser className="text-[#4B3EC4]" />
                     Shipping Information
                   </h2>
                 </div>
-                <form onSubmit={handleShippingSubmit} className="p-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <form onSubmit={handleShippingSubmit} className="p-2 sm:p-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Email Address *
@@ -327,12 +327,12 @@ const deleteItem=useDeleteCartProduct()
                     ))}
                   </div>
 
-                  <div className="mt-8 flex justify-between">
+                  <div className="mt-8 @xsm:flex justify-between flex-wrap">
                     <Button text='Back to Shipping' type="button" onClick={() => setActiveStep(1)}
-                      className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+                      className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg w-full @xsm:w-max font-medium hover:bg-gray-50 transition-colors"
                     />
                     <Button icon={FaCheck} text='Review Order' type="submit"
-                      className="bg-[#4B3EC4] text-white px-8 py-3 rounded-lg font-medium hover:opacity-90 transition-colors flex items-center gap-2"
+                      className="bg-[#4B3EC4] text-white px-8 py-3 rounded-lg font-medium w-full @xsm:w-max mt-3 @xsm:mt-0 hover:opacity-90 transition-colors flex items-center gap-2"
                     />
 
                   </div>
@@ -349,7 +349,7 @@ const deleteItem=useDeleteCartProduct()
                     Order Review
                   </h2>
                 </div>
-                <div className="p-6">
+                <div className="p-2 sm:p-6">
                   {/* Shipping Information Review */}
                   <div className="mb-6">
                     <h3 className="text-lg font-medium text-gray-900 mb-3">Shipping Information</h3>
@@ -399,12 +399,12 @@ const deleteItem=useDeleteCartProduct()
                     </div>
                   </div>
 
-                  <div className="mt-8 flex justify-between">
+                  <div className="mt-8 @xsm:flex justify-between">
                     <Button text='Back to Payment' onClick={() => setActiveStep(2)}
-                      className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"/>
+                      className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg w-full @xsm:w-max font-medium hover:bg-gray-50 transition-colors"/>
                     <Button icon={FaLock} text={loading?"Order Placing":"Place Order"} disabled={loading || finalItems?.length===0}
                       onClick={handlePlaceOrder}
-                      className={`px-8 py-3 rounded-lg font-medium flex items-center gap-2 transition-colors
+                      className={`px-8 py-3 rounded-lg font-medium flex items-center gap-2 transition-colors w-full @xsm:w-max mt-3 @xsm:mt-0
                       ${finalItems?.length === 0 ? "bg-gray-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700 text-white"}`}
                     />
                   </div>

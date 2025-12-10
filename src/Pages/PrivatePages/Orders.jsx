@@ -56,13 +56,13 @@ function Orders() {
                 </div>
 
                 {/* Status Filter */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-2 sm:p-6 mb-6">
                     <div className="flex flex-wrap gap-2">
                         {["All orders", "Pending", "Processing", "Shipped", "Delivered", "Cancelled"].map((status) => (
                             <Button text={`${status} ${status==="All orders"? orders.length:orders.filter(item=> item.status === status).length}`}
                                 key={status}
                                 onClick={() => setOrderStatus(status)}
-                                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                                className={`px-4 py-2 rounded-lg font-medium text-sm sm:text-base transition-colors ${
                                     orderStatus === status
                                         ? "bg-[#4B3EC4] text-white"
                                         : "bg-gray-100 text-gray-700 hover:bg-gray-200"
