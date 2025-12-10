@@ -36,8 +36,8 @@ function Home() {
   
   return (
     <>
-      <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 xl:px-0">
-        <section className="w-full sm:px-4 mx-auto max-w-7xl xl:px-0 pb-5 border-gray-3 mt-5">
+      <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 xl:px-0 ">
+        <section className="w-full sm:px-4 mx-auto max-w-7xl xl:px-0 pb-5 border-gray-3 mt-5 ">
           <div className="swiper categories-carousel common-carousel">
             <div className="flex items-center justify-between mb-7">
               <h2 className="text-xl font-semibold xl:text-heading-5 text-dark mb-3">

@@ -51,7 +51,7 @@ function ProfileLayout() {
           </div>
         <div className="flex  gap-5 lg:gap-8 relative ">  
             {/* Sidebar */}
-<div className={`max-w-54 lg:min-w-54 lg:max-w-64 shadow-2xl md:shadow-none overflow-hidden border border-gray-200 md:rounded-xl mx-auto md:mx-0 h-full md:h-auto fixed top-12 sm:top-15 left-0 md:sticky md:top-18 self-start 
+<div className={`max-w-54 lg:min-w-54 lg:max-w-64 shadow-2xl md:shadow-none border border-gray-200 md:rounded-xl mx-auto md:mx-0 h-full md:h-auto fixed top-12 sm:top-15 left-0 md:sticky md:top-18 self-start 
   bg-white transform transition-transform duration-300 ${showSidebar ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}>
     {/* Close Button for Mobile */}
   <Button icon={FaTimes} onClick={() => setShowSidebar(false)}

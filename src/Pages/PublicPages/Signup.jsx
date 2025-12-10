@@ -9,45 +9,38 @@ import AppLink from '../../components/AppLink';
 import Input from "../../components/Input";
 import { useSignUp } from '../../hooks/useUser';
 import { useGoogleAuth } from '../../hooks/useGoogleAuth';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { signupSchema } from '../../validation/signupSchema';
 
 function Signup() {
   const [showHidePass, setShowHidePass] = useState(false)
-  const [formData, setFormData] = useState({
+
+  const {register,handleSubmit, reset,formState:{errors},trigger}=useForm({
+    resolver:yupResolver(signupSchema),
+    defaultValues:{
     name: '',
     email: '',
     password: ''
+  },
+  mode:"onChange",
+  reValidateMode:"onChange"
   })
 
   const navigate = useNavigate();
   const { loading:loginLoading, handleLogin } = useLogin()
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target
-    setFormData(prev => ({
-      ...prev, [name]: value
-    }))
-  }
-
   const { isPending:loading, mutate, isError, error }=useSignUp()
-  const signUp = (e) => {
-  e.preventDefault();
 
-  if (!formData.name || !formData.email || !formData.password) {
-    toast.error("Please fill all fields");
-    return;
-  }
-  if (formData.password.length < 6) {
-    toast.error("Password must be at least 6 characters long");
-    return;
-  }
-
-  mutate(formData, {
+  const signUp = (data) => {
+  mutate(data, {
     onSuccess:async () => {
           const success=await handleLogin({
-          email: formData.email,
-          password: formData.password
+          email: data.email,
+          password: data.password
         })
         if(success){
+          reset()
           navigate("/");
         }  
     },
@@ -113,54 +106,39 @@ const { googleLogin, siUpLoading, userExLoading, loginLoading:lgLoading } = useG
                 </p>
               </div>
 
-              <form onSubmit={signUp} className="space-y-6">
+              <form onSubmit={handleSubmit(signUp)} className="space-y-5">
                 {/* Full Name Input */}
-                <div className="space-y-2">
+                <div className="space-y-1 mb-1">
                   <label htmlFor="name" className="block text-sm font-semibold text-gray-700">
                     Full Name
                   </label>
-                    <Input 
-                      type="text" 
-                      id="name" 
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      placeholder="Enter your full name"
-                      required
-                    />
+                    <Input {...register("name")} error={errors.name} onBlur={()=>trigger("name")} id="name"  name="name" placeholder="Enter your full name" />
+                    <p className={`text-red-500 text-sm mt-1 h-5 transition-opacity duration-200 ${errors.name ? "opacity-100" : "opacity-0"}`}>
+                      {errors.name?.message || " "}
+                    </p>
                 </div>
 
                 {/* Email Input */}
-                <div className="space-y-2">
+                <div className="space-y-1 mb-1">
                   <label htmlFor="email" className="block text-sm font-semibold text-gray-700">
                     Email Address
                   </label>
-                    <Input 
-                      type="email" 
-                      id="email" 
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      placeholder="Enter your email"
-                      required
-                    />
+                    <Input {...register("email")} error={errors.email} onBlur={()=>trigger("email")} type="email" id="email" 
+                      name="email" placeholder="Enter your email" />
+                    <p className={`text-red-500 text-sm mt-1 h-5 transition-opacity duration-200 ${errors.email ? "opacity-100" : "opacity-0"}`}>
+                      {errors.email?.message || " "}
+                    </p>
                 </div>
 
                 {/* Password Input */}
-                <div className="space-y-3">
+                <div className="space-y-1 mb-1">
                   <label htmlFor="password" className="block text-sm font-semibold text-gray-700">
                     Password
                   </label>
                   <div className="relative">
-                    <Input 
+                    <Input {...register("password")} error={errors.password} onBlur={()=>trigger("password")}
                       type={showHidePass ? "text" : "password"}
-                      id="password" 
-                      name="password"
-                      value={formData.password}
-                      onChange={handleInputChange}
-                      placeholder="Create a strong password"
-                      required
-                    />
+                      id="password" name="password" placeholder="Create a strong password" />
                     <button
                       type="button"
                       onClick={() => setShowHidePass(!showHidePass)}
@@ -169,14 +147,16 @@ const { googleLogin, siUpLoading, userExLoading, loginLoading:lgLoading } = useG
                       {showHidePass ? <FaEyeSlash className="h-5 w-5" /> : <FaEye className="h-5 w-5" />}
                     </button>
                   </div>
-
+                  <p className={`text-red-500 text-sm mt-1 h-5 transition-opacity duration-200 ${errors.password ? "opacity-100" : "opacity-0"}`}>
+                    {errors.password?.message || " "}
+                  </p>
                 </div>
 
                 {/* Sign Up Button */}
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-gradient-to-r from-purple-600 to-indigo-700 text-white py-3 px-4 rounded-lg font-semibold hover:from-purple-700 hover:to-indigo-800 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
+                  className="w-full bg-gradient-to-r from-purple-600 to-indigo-700 text-white py-3 px-4 mt-2 rounded-lg font-semibold hover:from-purple-700 hover:to-indigo-800 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
                 >
                   {loading ? (
                     <div className="flex items-center justify-center gap-2">

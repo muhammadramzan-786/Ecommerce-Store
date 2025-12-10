@@ -3,6 +3,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useResetPassword } from "../../hooks/useUser";
 import { FaLock, FaCheck, FaExclamationTriangle, FaArrowLeft, FaEye, FaEyeSlash } from "react-icons/fa";
 import Input from "../../components/Input";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { resetPasswordSchema } from "../../validation/resetPasswordSchema";
 
 export default function ResetPassword() {
   const { token } = useParams();
@@ -15,32 +18,30 @@ export default function ResetPassword() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  const {register,watch ,handleSubmit, reset, formState:{errors}, trigger}=useForm({
+    resolver:yupResolver(resetPasswordSchema),
+    defaultValues:{
+      password:"",
+      confirmPassword:""
+    },
+    mode:"onChange",
+    reValidateMode:"onChange"
+  })
+  const passwordValue=watch("password")
+  const confirmPasswordValue=watch("confirmPassword")
   const resetPassword = useResetPassword();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleFormSubmit = async (data) => {
     setMessage("");
     setError("");
 
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
-
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters long");
-      return;
-    }
-
     try {
-      const res = await resetPassword.mutateAsync({ token, password });
+      const res = await resetPassword.mutateAsync({ token, password:data.password });
       setMessage(res.data.message || "Password reset successfully! Redirecting to login...");
-      setPassword("");
-      setConfirmPassword("");
-
+      reset()
       setTimeout(() => {
         navigate("/login");
-      }, 3000);
+      }, 2000);
     } catch (err) {
       setError(err.response?.data?.message || "Something went wrong. Please try again.");
     }
@@ -71,7 +72,6 @@ export default function ResetPassword() {
               Create a new strong password for your account
             </p>
           </div>
-
           {/* Form Section */}
           <div className="p-8">
             {/* Success Message */}
@@ -96,18 +96,15 @@ export default function ResetPassword() {
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-5">
               {/* New Password Input */}
-              <div className="space-y-3">
+              <div className="space-y-3 mb-0">
                 <label className="block text-sm font-medium text-gray-700">
                   New Password
                 </label>
                 <div className="relative">
-                  <Input
+                  <Input {...register("password")} error={errors.password} onBlur={()=>trigger("password")}
                     type={showPassword ? "text" : "password"}
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
                     placeholder="Enter new password"
                   />
                   <button
@@ -118,20 +115,19 @@ export default function ResetPassword() {
                     {showPassword ? <FaEyeSlash className="h-5 w-5" /> : <FaEye className="h-5 w-5" />}
                   </button>
                 </div>
-
+                <p className={`text-red-500 text-sm mt-1 h-5 transition-opacity duration-200 ${errors.password ? "opacity-100" : "opacity-0"}`}>
+                      {errors.password?.message || " "}
+                </p>
               </div>
 
               {/* Confirm Password Input */}
-              <div className="space-y-2">
+              <div className="space-y-2 mb-0">
                 <label className="block text-sm font-medium text-gray-700">
                   Confirm Password
                 </label>
                 <div className="relative">
-                  <Input
+                  <Input {...register("confirmPassword")} error={errors.confirmPassword} onBlur={()=>trigger("confirmPassword")}
                     type={showConfirmPassword ? "text" : "password"}
-                    required
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="Confirm new password"
                   />
                   <button
@@ -142,23 +138,16 @@ export default function ResetPassword() {
                     {showConfirmPassword ? <FaEyeSlash className="h-5 w-5" /> : <FaEye className="h-5 w-5" />}
                   </button>
                 </div>
-                
-                {/* Password Match Indicator */}
-                {confirmPassword && (
-                  <div className="flex items-center gap-2 text-sm">
-                    <div className={`w-3 h-3 rounded-full ${password === confirmPassword ? 'bg-green-500' : 'bg-red-500'}`}></div>
-                    <span className={password === confirmPassword ? 'text-green-600' : 'text-red-600'}>
-                      {password === confirmPassword ? 'Passwords match' : 'Passwords do not match'}
-                    </span>
-                  </div>
-                )}
+                <p className={`text-red-500 text-sm mt-1 h-5 transition-opacity duration-200 ${errors.confirmPassword ? "opacity-100" : "opacity-0"}`}>
+                      {errors.confirmPassword?.message || " "}
+                </p>
               </div>
 
               {/* Submit Button */}
               <button
                 type="submit"
-                disabled={resetPassword.isPending || password !== confirmPassword || password.length < 6}
-                className="w-full bg-gradient-to-r from-purple-600 to-indigo-700 text-white py-4 px-4 rounded-lg font-semibold hover:from-purple-700 hover:to-indigo-800 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
+                disabled={resetPassword.isPending || passwordValue !== confirmPasswordValue || passwordValue.length < 4}
+                className="w-full bg-gradient-to-r from-purple-600 to-indigo-700 text-white py-4 px-4 mt-2 rounded-lg font-semibold hover:from-purple-700 hover:to-indigo-800 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
               >
                 {resetPassword.isPending ? (
                   <div className="flex items-center justify-center gap-2">

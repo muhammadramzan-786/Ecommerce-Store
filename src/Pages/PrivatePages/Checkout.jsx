@@ -10,6 +10,9 @@ import { useCartStore } from '../../stores/cartStore';
 import { useProductsStore } from '../../stores/productsStore';
 import Button from '../../components/Button';
 import AppLink from '../../components/AppLink';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { shippingSchema } from '../../validation/shippingSchema';
 
 function Checkout() {
   const [activeStep, setActiveStep] = useState(1);
@@ -34,27 +37,31 @@ useEffect(() => {
   const userData=useUserStore((state)=>state.user)
 const finalItems = byNow ? buyNowProduct : orderItems?.items || [];
 
-  const [shippingInfo, setShippingInfo] = useState({
-    email: userData?.email,
+  const {register, reset,handleSubmit, formState:{errors}, trigger, watch, setValue, getValues} =useForm({
+    resolver:yupResolver(shippingSchema),
+    defaultValues:{
+          email: userData?.email,
     name: userData?.name,
-    address: userData?.address,
+    streetAddress: userData?.address,
     city: userData?.city,
     postalCode: userData?.postalCode,
     phone: userData?.phone
-  });
-
+    },
+    mode:"onChange",
+    reValidateMode:"onChange"
+  })
   useEffect(() => {
   if(userData){
-    setShippingInfo({
+    reset({
       email: userData?.email || "",
       name: userData?.name || "",
-      address: userData?.address || "",
+      streetAddress: userData?.address || "",
       city: userData?.city || "",
       postalCode: userData?.postalCode || "",
       phone: userData?.phone || ""
     });
   }  
-}, [userData]);
+}, [userData, reset]);
 
   const [paymentInfo, setPaymentInfo] = useState({
     cardNumber: '',
@@ -79,16 +86,12 @@ const finalItems = byNow ? buyNowProduct : orderItems?.items || [];
     return 100; // Fixed shipping cost
   };
 
-  const calculateTax = () => {
-    return calculateSubtotal() * 0.18; // 18% tax
-  };
-
   const calculateTotal = () => {
     return calculateSubtotal() + calculateShipping()
   };
 
-  const handleShippingSubmit = (e) => {
-    e.preventDefault();
+  const handleShippingSubmit = (data) => {
+    console.log("Payment Data:", data);
     setActiveStep(2);
   };
 
@@ -96,13 +99,14 @@ const finalItems = byNow ? buyNowProduct : orderItems?.items || [];
     e.preventDefault();
     setActiveStep(3);
   };
-
+  
+const data = getValues(); 
+ 
 const deleteItem=useDeleteCartProduct()
   const addOrder=useAddOrder()
 
   const handlePlaceOrder = async () => {
     setLoading(true)
-    
   const orderData = {
     userId,
     items: finalItems?.map(item => ({
@@ -111,18 +115,20 @@ const deleteItem=useDeleteCartProduct()
       price: item.discountPrice,
     })),
     shippingAddress: {
-      fullName: shippingInfo.name,
-      address: shippingInfo.address,
-      city: shippingInfo.city,
-      postalCode: shippingInfo.postalCode,
+      fullName: data.name,
+      address: data.streetAddress,
+      city: data.city,
+      postalCode: data.postalCode,
       country: "Pakistan",
     },
     totalAmount: calculateTotal(),
     paymentMethod
   };
-
   try {
+    
+    
     const res = await addOrder.mutateAsync(orderData);
+    console.log(res);
     toast.success("Order created!");
     finalItems.forEach((item)=>{
       deleteItem.mutate({
@@ -139,11 +145,6 @@ const deleteItem=useDeleteCartProduct()
     setLoading(false)
   }
 };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setShippingInfo(prev => ({ ...prev, [name]: value }));
-  };
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -222,84 +223,63 @@ const deleteItem=useDeleteCartProduct()
                   </h2>
                 </div>
                 <form onSubmit={handleShippingSubmit} className="p-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Email Address *
                       </label>
-                      <Input
-                        type="email"
-                        name="email"
-                        value={shippingInfo.email || ""}
-                        onChange={handleInputChange}
-                        required
-                        placeholder="your@email.com"
-                      />
+                      <Input {...register("email")} error={errors.email} onBlur={()=>trigger("email")} name="email" placeholder="your@email.com" required />
+                      <p className={`text-red-500 text-sm mt-1 h-5 transition-opacity duration-200 ${errors.email ? "opacity-100" : "opacity-0"}`}>
+                        {errors.email?.message || " "}
+                      </p>
                     </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           Name *
                         </label>
-                        <Input
-                          type="text"
-                          name="name"
-                          value={shippingInfo.name || ""}
-                          onChange={handleInputChange}
-                          required
-                        />
+                        <Input {...register("name")} error={errors.name} onBlur={()=>trigger("name")} name="name" required />
+                        <p className={`text-red-500 text-sm mt-1 h-5 transition-opacity duration-200 ${errors.name ? "opacity-100" : "opacity-0"}`} >
+                        {errors.name?.message || " "}
+                      </p>
                       </div>
                       
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                         Street Address *
                       </label>
-                      <Input
-                        type="text"
-                        name="address"
-                        value={shippingInfo.address || ""}
-                        onChange={handleInputChange}
-                        required
-                        placeholder="123 Main Street"
-                      />
+                      <Input {...register("streetAddress")} error={errors.streetAddress} onBlur={()=>trigger("streetAddress")} name="streetAddress" required placeholder="123 Main Street" />
+                      <p className={`text-red-500 text-sm mt-1 h-5 transition-opacity duration-200 ${errors.streetAddress ? "opacity-100" : "opacity-0"}`}>
+                        {errors.streetAddress?.message || " "}
+                      </p>
                       </div>
                     
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         City *
                       </label>
-                      <Input
-                        type="text"
-                        name="city"
-                        value={shippingInfo.city || ""}
-                        onChange={handleInputChange}
-                        required
-                      />
+                      <Input {...register("city")} error={errors.city} onBlur={()=>trigger("city")} name="city" required />
+                      <p className={`text-red-500 text-sm mt-1 h-5 transition-opacity duration-200 ${errors.city ? "opacity-100" : "opacity-0"}`}>
+                        {errors.city?.message || " "}
+                      </p>
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         postalCode *
                       </label>
-                      <Input
-                        type="number"
-                        name="postalCode"
-                        value={shippingInfo.postalCode || ""} maxLength={5}
-                        onChange={handleInputChange}
-                        required
-                      />
+                      <Input {...register("postalCode")} error={errors.postalCode} onBlur={()=>trigger("postalCode")} name="postalCode" required />
+                      <p className={`text-red-500 text-sm mt-1 h-5 transition-opacity duration-200 ${errors.postalCode ? "opacity-100" : "opacity-0"}`}>
+                        {errors.postalCode?.message || " "}
+                      </p>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Phone Number *
                       </label>
-                      <Input
-                        type="tel"
-                        name="phone"
-                        value={shippingInfo.phone || ""} maxLength={11}
-                        onChange={handleInputChange}
-                        required
-                        placeholder="+91 1234567890"
-                      />
+                      <Input {...register("phone")} error={errors.phone} onBlur={()=>trigger("phone")} type="tel" name="phone" placeholder="+91 1234567890" required />
+                      <p className={`text-red-500 text-sm mt-1 h-5 transition-opacity duration-200 ${errors.phone ? "opacity-100" : "opacity-0"}`}>
+                        {errors.phone?.message || " "}
+                      </p>
                     </div>
                   </div>  
 
@@ -374,11 +354,11 @@ const deleteItem=useDeleteCartProduct()
                   <div className="mb-6">
                     <h3 className="text-lg font-medium text-gray-900 mb-3">Shipping Information</h3>
                     <div className="bg-gray-50 rounded-lg p-4">
-                      <p className="font-medium">{shippingInfo.firstName} {shippingInfo.lastName}</p>
-                      <p className="text-gray-600">{shippingInfo.address}</p>
-                      <p className="text-gray-600">{shippingInfo.city}, {shippingInfo.state} {shippingInfo.zipCode}</p>
-                      <p className="text-gray-600">{shippingInfo.phone}</p>
-                      <p className="text-gray-600">{shippingInfo.email}</p>
+                      <p className="font-medium">{data.name}</p>
+                      <p className="text-gray-600">{data.streetAddress}</p>
+                      <p className="text-gray-600">{data.city}, {data.postalCode}</p>
+                      <p className="text-gray-600">{data.phone}</p>
+                      <p className="text-gray-600">{data.email}</p>
                     </div>
                     <Button text='Edit shipping information' onClick={() => setActiveStep(1)} className="mt-2 text-[#4B3EC4] hover:opacity-90 text-sm font-medium"/>
                   </div>

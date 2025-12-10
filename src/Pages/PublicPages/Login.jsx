@@ -1,16 +1,15 @@
 import React, { useState } from "react";
 import loginImg from "../../assets/images/loginImg.png";
 import { useNavigate } from "react-router-dom";
-import {
-  FaEye,
-  FaEyeSlash,
-  FaArrowRight,
-} from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaArrowRight } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { useLogin } from "../../hooks/useLogin";
 import AppLink from "../../components/AppLink";
 import Input from "../../components/Input";
 import { useGoogleAuth } from "../../hooks/useGoogleAuth";
+import { useForm } from "react-hook-form";
+import { yupResolver } from '@hookform/resolvers/yup'
+import { loginSchema } from "../../validation/loginSchema";
 
 function Login() {
   const [showHidePass, setShowHidePass] = useState(false);
@@ -19,21 +18,28 @@ function Login() {
     password: "test",
   });
 
+  const {register, handleSubmit, formState:{errors } ,trigger}=useForm({resolver : yupResolver(loginSchema),defaultValues:{
+    email: "test@gmail.com",
+    password: "test",
+  },
+  mode: "onChange",           // typing par validate
+  reValidateMode: "onChange"
+})
+  
   const navigate = useNavigate();
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  // const handleInputChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     [name]: value,
+  //   }));
+  // };
 
   const { handleLogin, loading, error } = useLogin();
 
-  const loginFormSubmit = async (e) => {
-    e.preventDefault();
-    const success = await handleLogin(formData);
+  const loginFormSubmit = async (data) => {
+    const success = await handleLogin(data);
 
     if (success) {
       navigate("/");
@@ -111,28 +117,29 @@ const { googleLogin, siUpLoading, userExLoading, loginLoading } = useGoogleAuth(
                 </div>
               )}
 
-              <form onSubmit={loginFormSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit(loginFormSubmit)} className="space-y-5">
                 {/* Email Input */}
-                <div className="space-y-2">
+                <div className="space-y-2 mb-1">
                   <label
                     htmlFor="email"
                     className="block text-sm font-semibold text-gray-700"
                   >
                     Email Address
                   </label>
-                  <Input
-                    type="email"
+                  <Input {...register("email")} onBlur={() => trigger("email")}
                     id="email"
                     name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
                     placeholder="Enter your email"
-                    required
+                    error={errors.email}
                   />
+                   <p className={`text-red-500 text-sm mt-1 h-5 transition-opacity duration-200 ${errors.email ? "opacity-100" : "opacity-0"}`}>
+  {errors.email?.message || " "}
+</p>
+
                 </div>
 
                 {/* Password Input */}
-                <div className="space-y-2">
+                <div className="space-y-2 mb-1">
                   <div className="flex items-center justify-between">
                     <label
                       htmlFor="password"
@@ -148,14 +155,12 @@ const { googleLogin, siUpLoading, userExLoading, loginLoading } = useGoogleAuth(
                     </AppLink>
                   </div>
                   <div className="relative">
-                    <Input
-                      type={showHidePass ? "text" : "password"}
+                    <Input {...register("password")}
+                      type={showHidePass ? "text" : "password"} onBlur={() => trigger("password")}
                       id="password"
                       name="password"
-                      value={formData.password}
-                      onChange={handleInputChange}
                       placeholder="Enter your password"
-                      required
+                      error={errors.password}
                     />
                     <button
                       type="button"
@@ -169,6 +174,10 @@ const { googleLogin, siUpLoading, userExLoading, loginLoading } = useGoogleAuth(
                       )}
                     </button>
                   </div>
+                               <p className={`text-red-500 text-sm mt-1 h-5 transition-opacity duration-200 ${errors.password ? "opacity-100" : "opacity-0"}`}>
+  {errors.password?.message || " "}
+</p>
+          
                 </div>
 
                 {/* Login Button */}

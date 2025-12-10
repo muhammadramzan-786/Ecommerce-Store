@@ -3,21 +3,29 @@ import { useForgotPassword } from "../../hooks/useUser";
 import AppLink from "../../components/AppLink";
 import { FaEnvelope, FaArrowLeft, FaCheckCircle, FaExclamationTriangle } from "react-icons/fa";
 import Input from "../../components/Input";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { forgotPasswordSchema } from "../../validation/forgotPasswordSchema";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("mr4323992@gmail.com");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
+  const {register, handleSubmit, formState:{errors}, trigger}=useForm({
+    resolver:yupResolver(forgotPasswordSchema),
+    defaultValues :{email : ""},
+    mode :"onChange",
+    reValidateMode :"onChange"
+  })
   const forgotPassword = useForgotPassword();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleFormSubmit = async (data) => {
     setMessage("");
     setError("");
 
     try {
-      const res = await forgotPassword.mutateAsync({ email });
+      const res = await forgotPassword.mutateAsync({ email :data.email});
       setMessage(res.data.message);
       setEmail("");
     } catch (err) {
@@ -74,20 +82,17 @@ export default function ForgotPassword() {
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
               {/* Email Input */}
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700">
                   Email Address
                 </label>
                 <div className="relative">
-                  <Input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email address"
-                  />
+                  <Input {...register("email")} error={errors.email} onBlur={()=>trigger("email")} type="email" placeholder="Enter your email address" />
+                  <p className={`text-red-500 text-sm mt-1 h-5 transition-opacity duration-200 ${errors.email ? "opacity-100" : "opacity-0"}`}>
+                      {errors.email?.message || " "}
+                    </p>
                 </div>
                 <p className="text-xs text-gray-500">
                   We'll send a password reset link to this email

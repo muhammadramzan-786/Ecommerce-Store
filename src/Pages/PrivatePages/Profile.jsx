@@ -5,62 +5,65 @@ import Input from '../../components/Input';
 import Button from '../../components/Button';
 import { FaImage } from 'react-icons/fa';
 import { toast } from 'react-toastify';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { updateProfileSchema } from '../../validation/updateProfileSchema';
 
  const cloudinaryUploadUrl ="https://api.cloudinary.com/v1_1/dzqdp2i1t/image/upload";
  const uploadPreset = "ecommerce_products";
 function Profile() {
-    const [form, setForm] = useState({
-    name: '',
+  const [imageFile,setImageFile]=useState(null)
+
+  const {register, reset,handleSubmit, formState:{errors}, trigger, watch, setValue} =useForm({
+    resolver:yupResolver(updateProfileSchema),
+    defaultValues:{
+    fullName: '',
     email: '',
     phone: '',
     city: '',
     image:'',
     password:""
-  });
-  const [imageFile,setImageFile]=useState(null)
+    },
+    mode:"onChange",
+    reValidateMode:"onChange"
+  })
   // Zustand state
   const user = useUserStore((state) => state.user);
 
   useEffect(()=>{
-    setForm({
-      name:user?.name,
-      email: user?.email,
-      phone: user?.phone,
-      city: user?.city,
-      image: user?.image,
-    })
+    reset({
+    fullName: user?.name || '',
+    email: user?.email || '',
+    phone: user?.phone || '',
+    city: user?.city || '',
+    image: user?.image || '',
+    password: ''
+  });
     
-  },[user])
+  },[user, reset])
+const imagePreview = watch("image");
 
-  const uploadImage=(e)=>{
-    const file=e.target.files[0]
-    setImageFile(file)
-    const validTypes = ['image/png', 'image/jpeg', 'image/webp'];
-    const maxSize = 500 * 1024; // 500KB
+const uploadImage = (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
 
-    if(!validTypes.includes(file.type)){
-      toast.error("Upload Valid Image Formate");
-      e.target.value=""
-      return
-    }
-    if(file.size >= maxSize){
-      toast.error(`Maximum 500KB size image allowed`);
-      e.target.value=""
-      return
-    }
-    setForm(prev=>(
-      {
-        ...prev,
-      image:URL.createObjectURL(file)
-    }
-    ))
-    e.target.value=""
+  const validTypes = ['image/png', 'image/jpeg', 'image/webp'];
+  const maxSize = 500 * 1024; // 500KB
+
+  if (!validTypes.includes(file.type)) {
+    toast.error("Upload Valid Image Format");
+    return;
+  }
+  if (file.size >= maxSize) {
+    toast.error("Maximum 500KB size image allowed");
+    return;
   }
 
-  const handleChange=(e)=>{
-    const {name, value}=e.target
-    setForm({...form,[name]:value})
-  }
+  setImageFile(file); 
+  setValue("image", URL.createObjectURL(file), { shouldValidate: true, shouldDirty: true }); 
+  // Important: shouldValidate & shouldDirty → react-hook-form ko batata hai ki value change hui hai
+};
+
 
   const uploadToCloudinary = async (file) => {
     const formData = new FormData();
@@ -82,14 +85,15 @@ function Profile() {
 
   const updateUser=useUpdateUser()
   const { isPending, isError, error, isSuccess } = updateUser;
-  const handleSubmit=async(e)=>{
-    e.preventDefault()
-    let finalImageUrl =form.image
+  const handleFormSubmit=async(data)=>{
+    let finalImageUrl =data.image
     if(imageFile){
       finalImageUrl =await uploadToCloudinary(imageFile)
     }
 
-    updateUser.mutate({id:user._id,...form,image:finalImageUrl})
+    const res=await updateUser.mutate({id:user._id,...data,image:finalImageUrl})
+    console.log(res);
+    
   }
   return (
     <div className=" bg-white p-4 md:p-6  w-full">
@@ -99,7 +103,7 @@ function Profile() {
           Profile Information
         </h2>
         <div className='relative w-max mb-5'>
-          <img src={form.image} className='w-54 h-40 object-cover rounded-lg' />
+          <img src={imagePreview || user?.image} className='w-54 h-40 object-cover rounded-lg' />
           <label className='border border-gray-300 absolute -bottom-3 -right-3 cursor-pointer bg-white duration-300 hover:bg-[#4B3EC4] hover:text-white p-2 rounded-full'>
             <FaImage />
             <input type='file' className='hidden' onChange={uploadImage} accept="image/png, image/jpeg, image/webp" />
@@ -109,12 +113,18 @@ function Profile() {
           {/* Name */}
         <div className="mb-4 w-full">
           <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-          <Input type="text" value={form?.name || ""} onChange={handleChange} placeholder="Enter your name" name="name" />
+          <Input {...register("fullName")} error={errors.fullName} onBlur={()=>trigger("fullName")} placeholder="Enter your name" name="fullName" />
+          <p className={`text-red-500 text-sm mt-1 h-5 transition-opacity duration-200 ${errors.fullName ? "opacity-100" : "opacity-0"}`}>
+            {errors.fullName?.message || " "}
+          </p>
         </div>
         {/* Email */}
         <div className="mb-4 w-full">
           <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-          <Input type="email" value={form?.email || ""} onChange={handleChange} placeholder="Enter your email" name="email" />
+          <Input {...register("email")} error={errors.email} onBlur={()=>trigger("email")} placeholder="Enter your email" name="email" />
+          <p className={`text-red-500 text-sm mt-1 h-5 transition-opacity duration-200 ${errors.email ? "opacity-100" : "opacity-0"}`}>
+            {errors.email?.message || " "}
+          </p>
         </div>
         </div>
 
@@ -122,22 +132,31 @@ function Profile() {
           {/* Phone */}
         <div className="mb-6 w-full">
           <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-          <Input type="number" value={form?.phone || ""} onChange={handleChange} placeholder="Enter phone number" name="phone" />
+          <Input type="number" {...register("phone")} error={errors.phone} onBlur={()=>trigger("phone")} placeholder="Enter phone number" name="phone" />
+          <p className={`text-red-500 text-sm mt-1 h-5 transition-opacity duration-200 ${errors.phone ? "opacity-100" : "opacity-0"}`}>
+            {errors.phone?.message || " "}
+          </p>
         </div>
         {/* City */}
         <div className="mb-6 w-full">
           <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
-          <Input type="text" value={form?.city || ""} onChange={handleChange} placeholder="Enter City" name="city" />
+          <Input {...register("city")} error={errors.city} onBlur={()=>trigger("city")} placeholder="Enter City" name="city" />
+          <p className={`text-red-500 text-sm mt-1 h-5 transition-opacity duration-200 ${errors.city ? "opacity-100" : "opacity-0"}`}>
+            {errors.city?.message || " "}
+          </p>
         </div>
         </div>
 
         {/* Passwod */}
         <div className="mb-4 w-full">
           <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-          <Input type="password" value={form?.password || ""} onChange={handleChange} placeholder="Enter your password" name="password" />
+          <Input {...register("password")} error={errors.password} onBlur={()=>trigger("password")} placeholder="Enter your password" name="password" />
+          <p className={`text-red-500 text-sm mt-1 h-5 transition-opacity duration-200 ${errors.password ? "opacity-100" : "opacity-0"}`}>
+            {errors.password?.message || " "}
+          </p>
         </div>
         {/* Save Button */}
-        <Button text={"Save Changes"} loading={isPending} onClick={handleSubmit} className=" px-5 bg-[#4B3EC4] text-white py-3 rounded-lg font-medium hover:bg-[#6352f3] transition-colors" disabled={isPending} />
+        <Button text={"Save Changes"} loading={isPending} onClick={handleSubmit(handleFormSubmit)} className=" px-5 bg-[#4B3EC4] text-white py-3 rounded-lg font-medium hover:bg-[#6352f3] transition-colors" disabled={isPending} />
 
     </div>
   );

@@ -14,8 +14,6 @@ function Orders() {
     const userId = localStorage.getItem("userId");
     const {  error, products } = useProductsStore()
     const { data, isLoading } = useGetOrders(userId)
-
-    
     
     const productsIds = orderDetail?.items?.map((item) => item.product)
     const filteredProducts = products?.filter(product => productsIds?.includes(product._id))

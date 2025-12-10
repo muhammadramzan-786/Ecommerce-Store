@@ -92,7 +92,14 @@ const { isPending, isError, error, isSuccess } = updateCart;
   }
 
   return (
+    <>
+                          {deleteItem.isPending && (
+                                <div className="flex items-center justify-center bg-[#0000006b] w-full h-full fixed z-30">
+                                  <div className="w-15 h-15 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+                                </div>
+                              )}
     <div className="min-h-screen bg-gray-50 py-8">
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
@@ -117,9 +124,11 @@ const { isPending, isError, error, isSuccess } = updateCart;
               </div>
 
               {/* Cart Items List */}
-              <div className="divide-y divide-gray-200">
+              <div className="divide-y divide-gray-200 relative">
+
                 {cartItems?.items?.map((item) => (
-                  <div key={item._id} className="p-6">
+                  <div key={item._id} className="p-6 ">
+                    
                     <div className="flex flex-col sm:flex-row gap-4">
                       {/* Product Image */}
                       <div className="flex-shrink-0">
@@ -168,13 +177,18 @@ const { isPending, isError, error, isSuccess } = updateCart;
                         <div className="flex items-center justify-between mt-4">
                           <div className="flex items-center gap-3">
                             <span className="text-sm font-medium text-gray-700">Quantity:</span>
-                            <div className="flex items-center border border-gray-300 rounded-lg">
-                              <Button icon={FaMinus}
+                            <div className='relative overflow-hidden rounded-lg'>
+                              {isPending && (
+                                <div className="flex items-center justify-center bg-[#0000006b] w-full h-full absolute">
+                                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                </div>
+                              )}
+                              <div className="flex items-center border border-gray-300 rounded-lg">
+                                <Button icon={FaMinus}
                                 onClick={() => updateProductQuantity(item._id,item.quantity-1)}
                                 disabled={item.quantity <= 1 || isPending}
                                 className="px-3 py-1 text-gray-600 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                               />
-
                               <span className="px-3 py-1 border-x border-gray-300 font-medium min-w-12 text-center">
                                 {item.quantity}
                               </span>
@@ -185,6 +199,7 @@ const { isPending, isError, error, isSuccess } = updateCart;
                                 disabled={item.quantity >= item.maxQuantity || isPending}
                                 className="px-3 py-1 text-gray-600 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                               />
+                              </div>
                             </div>
                             {isError && <p className="text-red-500">{error?.message}</p>}
                           </div>
@@ -309,6 +324,7 @@ const { isPending, isError, error, isSuccess } = updateCart;
         closeModal={closeModal}
       />
     </div>
+    </>
   );
 }
 

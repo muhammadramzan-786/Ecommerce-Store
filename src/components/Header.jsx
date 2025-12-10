@@ -25,7 +25,6 @@ function Header() {
   const filteredProducts = products?.filter((product) =>
     product.name.toLowerCase().includes(searchVal.toLowerCase())
   );
-  // console.log(filteredProducts);
   useEffect(() => {
 const handleClickOutside = (event) => {
   const clickedInsideDropdown = event.target.closest('.dropdown-area');
@@ -237,7 +236,7 @@ const handleClickOutside = (event) => {
             </div>
             <SearchDropdown
               showDropdown={showDropdown}
-              filteredProducts={filteredProducts}
+              filteredProducts={filteredProducts.slice(0,16)}
             />
           </div>
         </div>
@@ -373,7 +372,7 @@ const handleClickOutside = (event) => {
           </div>
           <SearchDropdown
             showDropdown={showDropdown}
-            filteredProducts={filteredProducts}
+            filteredProducts={filteredProducts.slice(0,16)}
           />
         </div>
       </div>
