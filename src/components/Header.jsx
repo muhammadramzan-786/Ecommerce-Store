@@ -123,7 +123,7 @@ const handleClickOutside = (event) => {
             ) : !userData ? (
               <AppLink
                 to="/login"
-                className="items-center gap-2.5 hidden xl:flex hover:text-blue-600 transition-colors"
+                className="items-center gap-2.5 flex hover:text-blue-600 transition-colors"
               >
                 <div className="flex items-center justify-center w-8 h-8 lg:w-9 lg:h-9 border border-gray-300 rounded-full hover:border-blue-500 transition-colors">
                   <svg
@@ -139,14 +139,7 @@ const handleClickOutside = (event) => {
                     />
                   </svg>
                 </div>
-                <div className="group">
-                  <span className="block uppercase font-medium text-xs text-gray-600">
-                    account
-                  </span>
-                  <p className="font-medium text-sm text-gray-800 hover:text-blue-600">
-                    Sign In / Register
-                  </p>
-                </div>
+                
               </AppLink>
             ) : (
               <AppLink
@@ -270,7 +263,7 @@ const handleClickOutside = (event) => {
                     />
                   </svg>
                 </div>
-                <div className="group text-nowrap">
+                <div className="group text-nowrap hidden md:inline-block">
                   <span className="block uppercase font-medium text-xs text-gray-600">
                     account
                   </span>
